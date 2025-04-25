@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copiar al Portapapeles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f5f2;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ff9800;
+        }
+        h2 {
+            color: #ff9800;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+        input:hover, input:focus {
+            border-color: #ff9800;
+            box-shadow: 0 0 8px rgba(255, 152, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>PARA REQUISICIONES...</h2>
+        <input type="text" value="TALLERES, REFACCIONES PARA UNIDAD" onclick="copyToClipboard(this)">
+        <input type="text" value="ALMACEN DE TALLERES" onclick="copyToClipboard(this)">
+        <input type="text" value="JUAN FERNANDO MOLINA ARVAYO" onclick="copyToClipboard(this)">
+        <input type="text" value="6622449069" onclick="copyToClipboard(this)">
+        <h2>SEGUIMIENTO...</h2>
+        <input type="text" value="SEGUIMIENTO DE PROCEDIMIENTO" onclick="copyToClipboard(this)">
+        <h2>ORDENES DE COMPRA...</h2>
+        <input type="text" value="SUBDIRECTOR ADMINISTRATIVO TALLERES" onclick="copyToClipboard(this)">
+        <input type="text" value="ING. VICTOR EMMANUEL ZARATE IBARRA" onclick="copyToClipboard(this)">
+        <input type="text" value="DIRECTOR DE TALLERES" onclick="copyToClipboard(this)">
+        <input type="text" value="ING. HECTOR MANUEL DIAZ YOUNG" onclick="copyToClipboard(this)">
+        <h2>PORTAL WEB</h2>
+        <input type="text" value="HERMOSILLO, SONORA." onclick="copyToClipboard(this)">
+        <h2>SOLICITUDES DE PAGO</h2>
+        <input type="text" value="XXXX: PAGO DE FACTURA XXX POR ADQUISICION DE XXX PARA UNIDAD XXX DE XXX" onclick="copyToClipboard(this)">
+        <input type="text" value="OC XXX REQ XXX E XXXXX" onclick="copyToClipboard(this)">
+        <input type="text" value="PROCEDIMIENTO EN PORTAL WEB DE COMPRAS: T-" onclick="copyToClipboard(this)">
+    
+    
+    </div>
+
+    <script>
+        function copyToClipboard(element) {
+            element.select();
+            document.execCommand("copy");
+        }
+    </script>
+</body>
+</html>

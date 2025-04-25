@@ -1,0 +1,71 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Table } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+
+const requisicionesIniciales = [
+  { id: 1, fecha: "2025-02-06", proveedor: "Proveedor A", descripcion: "Compra de material", estatus: "Pendiente" },
+  { id: 2, fecha: "2025-02-05", proveedor: "Proveedor B", descripcion: "Equipo de cómputo", estatus: "Aprobado" },
+];
+
+export default function RequisicionesApp() {
+  const [requisiciones, setRequisiciones] = useState(requisicionesIniciales);
+  const [filtro, setFiltro] = useState("");
+  const [nuevaRequisicion, setNuevaRequisicion] = useState({ fecha: "", proveedor: "", descripcion: "", estatus: "Pendiente" });
+
+  const cambiarEstatus = (id, nuevoEstatus) => {
+    setRequisiciones((prev) =>
+      prev.map((req) => (req.id === id ? { ...req, estatus: nuevoEstatus } : req))
+    );
+  };
+
+  const agregarRequisicion = () => {
+    setRequisiciones((prev) => [...prev, { id: prev.length + 1, ...nuevaRequisicion }]);
+    setNuevaRequisicion({ fecha: "", proveedor: "", descripcion: "", estatus: "Pendiente" });
+  };
+
+  return (
+    <div className="p-4">
+      <h1 className="text-xl font-bold mb-4">Seguimiento de Requisiciones</h1>
+      <Input placeholder="Filtrar por proveedor" value={filtro} onChange={(e) => setFiltro(e.target.value)} className="mb-4" />
+      <Card className="mb-4">
+        <CardContent>
+          <Input placeholder="Fecha" value={nuevaRequisicion.fecha} onChange={(e) => setNuevaRequisicion({ ...nuevaRequisicion, fecha: e.target.value })} className="mb-2" />
+          <Input placeholder="Proveedor" value={nuevaRequisicion.proveedor} onChange={(e) => setNuevaRequisicion({ ...nuevaRequisicion, proveedor: e.target.value })} className="mb-2" />
+          <Input placeholder="Descripción" value={nuevaRequisicion.descripcion} onChange={(e) => setNuevaRequisicion({ ...nuevaRequisicion, descripcion: e.target.value })} className="mb-2" />
+          <Button onClick={agregarRequisicion}>Agregar Requisición</Button>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <Table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Proveedor</th>
+                <th>Descripción</th>
+                <th>Estatus</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {requisiciones.filter(req => req.proveedor.includes(filtro)).map((req) => (
+                <tr key={req.id}>
+                  <td>{req.fecha}</td>
+                  <td>{req.proveedor}</td>
+                  <td>{req.descripcion}</td>
+                  <td>{req.estatus}</td>
+                  <td>
+                    <Button onClick={() => cambiarEstatus(req.id, "Aprobado")} className="mr-2">Aprobar</Button>
+                    <Button onClick={() => cambiarEstatus(req.id, "Rechazado")} variant="destructive">Rechazar</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

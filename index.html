@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Menú Principal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('fondo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* filtro oscuro con transparencia */
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 400px;
+      margin: auto;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    h1 {
+      color: #ff6600;
+      margin-bottom: 30px;
+    }
+
+    .boton {
+      display: block;
+      background-color: #ff6600;
+      color: white;
+      text-decoration: none;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .boton:hover {
+      background-color: #e65c00;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Menú Principal</h1>
+    <a class="boton" href="parque.html">Parque Vehicular</a>
+    <a class="boton" href="copiar.html">Copiar y Pegar</a>
+    <a class="boton" href="peticiones.html">Peticiones</a>
+    <a class="boton" href="vales.html">Vales</a>
+    <a class="boton" href="seguimiento.html">Seguimiento de Trámites</a>
+    <div class="footer">Talleres 2025</div>
+  </div>
+</body>
+</html>

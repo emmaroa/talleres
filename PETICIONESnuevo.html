@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro Peticion de Refacciones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fdf6e3; 
+      color: #333;
+    }
+
+    header {
+      background-color: #ff7f11; 
+      color: white;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .imagen-mediana {
+      max-width: 70px; 
+      height: auto; 
+      display: block; 
+      margin: 10px auto;
+    }
+
+    main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 70vh;
+    }
+
+    form {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+      color: #ff7f11; 
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    input:focus, select:focus {
+      border-color: #ff7f11;
+      outline: none;
+      box-shadow: 0 0 5px rgba(255, 127, 17, 0.6);
+    }
+
+    button {
+      background-color: #ff7f11; 
+      color: white;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #e66e0a; 
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #ff7f11;
+      color: white;
+      position: relative;
+      width: 100%;
+    }
+
+    #mensaje {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>
+      <img 
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Escudo_de_Hermosillo.svg/509px-Escudo_de_Hermosillo.svg.png" 
+        alt="Escudo de Hermosillo" 
+        class="imagen-mediana"
+      >
+      Registro de Petición de Refacciones
+    </h1>
+  </header>
+  <main>
+    <form id="formulario_pet">
+      <label for="unidad">Unidad:</label>
+      <input type="text" id="unidad" name="unidad" pattern="\d+" title="Solo números" placeholder="Ejemplo: 01535" required>
+
+      <label for="peticion">Petición:</label>
+      <input type="text" id="peticion" name="peticion" placeholder="Ejemplo: Filtro de aire" required>
+
+      <label for="solicita">¿Quién Solicita?</label>
+      <input type="text" id="solicita" name="solicita" placeholder="Ejemplo: Juan Pérez" required>
+
+      <label for="muestra">¿Se deja muestra?</label>
+      <select id="muestra" name="muestra" required>
+        <option value="">Seleccione...</option>
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
+      </select>
+
+      <button type="submit">Enviar Pedido</button>
+    </form>
+    <div id="mensaje"></div>
+  </main>
+  <footer>
+    &copy; 2024 Dirección de Talleres. Municipio de Hermosillo.
+  </footer>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzV7f93JGqzJFbLNt51IbzUmqoFOy84Pyi23_4k3_zbu5p9mmGPhXOC33ltExxl6cSx/exec';
+    const form = document.getElementById('formulario_pet');
+    const mensaje = document.getElementById('mensaje');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.json();
+        mensaje.style.color = 'green';
+        mensaje.textContent = result.message;
+        mensaje.style.display = 'block';
+        form.reset();
+      } catch (error) {
+        mensaje.style.color = 'red';
+        mensaje.textContent = 'Ocurrió un problema al enviar los datos. Intenta nuevamente.';
+        mensaje.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
