@@ -100,6 +100,38 @@
       font-weight: bold;
       display: none;
     }
+
+  .spinner {
+      .check {
+  display: inline-block;
+  color: #00c853; /* verde bonito */
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 8px;
+  animation: scaleUp 0.3s ease forwards;
+  vertical-align: middle;
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+    
   </style>
 </head>
 <body>
@@ -131,23 +163,36 @@
         <option value="No">No</option>
       </select>
 
-      <button type="submit">Enviar Pedido</button>
+    <button type="submit">
+      <span id="spinner" class="spinner" style="display: none;"></span>
+      <span id="check" class="check" style="display: none;">✔️</span>
+      <span id="boton-texto">Enviar Pedido</span>
+    </button>
+
     </form>
-    <div id="mensaje"></div>
+      <div id="mensaje"></div>
   </main>
   <footer>
-    &copy; 2024 Dirección de Talleres. Municipio de Hermosillo.
+    &copy; 2025 Dirección de Talleres. Municipio de Hermosillo.
   </footer>
 
   <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzV7f93JGqzJFbLNt51IbzUmqoFOy84Pyi23_4k3_zbu5p9mmGPhXOC33ltExxl6cSx/exec';
     const form = document.getElementById('formulario_pet');
     const mensaje = document.getElementById('mensaje');
+    const boton = form.querySelector('button');
+    const spinner = document.getElementById('spinner');
+    const botonTexto = document.getElementById('boton-texto');
 
+    
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
 
+    boton.disabled = true;
+      spinner.style.display = 'inline-block'; 
+       botonTexto.textContent = 'Enviando...'; 
+      
       try {
         const response = await fetch(scriptURL, {
           method: 'POST',
@@ -164,6 +209,11 @@
         mensaje.textContent = 'Ocurrió un problema al enviar los datos. Intenta nuevamente.';
         mensaje.style.display = 'block';
       }
+
+      boton.disabled = false;
+      spinner.style.display = 'none';
+      boton.textContent = 'Enviar Pedido';
+      
     });
   </script>
 </body>
