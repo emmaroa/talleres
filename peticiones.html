@@ -182,6 +182,7 @@
     const mensaje = document.getElementById('mensaje');
     const boton = form.querySelector('button');
     const spinner = document.getElementById('spinner');
+    const check = document.getElementById('check');
     const botonTexto = document.getElementById('boton-texto');
 
     
@@ -191,6 +192,7 @@
 
     boton.disabled = true;
       spinner.style.display = 'inline-block'; 
+      check.style.display = 'none';
        botonTexto.textContent = 'Enviando...'; 
       
       try {
@@ -204,6 +206,18 @@
         mensaje.textContent = result.message;
         mensaje.style.display = 'block';
         form.reset();
+
+      spinner.style.display = 'none';
+      check.style.display = 'inline-block';
+      botonTexto.textContent = 'Enviado';
+
+
+        setTimeout(() => {
+      check.style.display = 'none';
+      botonTexto.textContent = 'Enviar Pedido';
+      boton.disabled = false;
+    }, 2000); 
+        
       } catch (error) {
         mensaje.style.color = 'red';
         mensaje.textContent = 'Ocurrió un problema al enviar los datos. Intenta nuevamente.';
