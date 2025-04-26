@@ -64,7 +64,7 @@
         <h1>Consulta de Parque Vehicular</h1>
     </header>
 
-    <!-- Pantalla Principal -->
+
     <div class="main-screen" id="mainScreen">
         <h2>Buscar Número Económico</h2>
         <input type="text" id="searchBox" placeholder="Escribe el Número Económico o Patrulla...">
@@ -83,11 +83,11 @@
     <script>
          const apiKey = 'AIzaSyDM8m9-bZM2stDAt1V0i-H-iStD0Vi6Z7k';
         const sheetId = '1jjWtlbLhO4BGqGJKWyXneb4r2WbcFBqDDcb9rEh8J8c';
-        const range = 'A1:C'; // Ajusta según las columnas de tu hoja
+        const range = 'A1:C'; 
         const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
 
-        // Fetch data from Google Sheets
+   
         async function fetchData() {
             try {
                 const response = await fetch(apiUrl);
@@ -98,10 +98,10 @@
             }
         }
 
-        // Render table data
+     
         function renderTable(data) {
             const table = document.getElementById('dataTable');
-            table.innerHTML = '';  // Clear existing table data
+            table.innerHTML = '';  
             data.forEach(row => {
                 const tr = document.createElement('tr');
                 row.forEach(cell => {
@@ -113,7 +113,7 @@
             });
         }
 
-        // Search functionality
+    
         function searchTable(query, data) {
             return data.filter(row => row[0].toLowerCase().includes(query.toLowerCase()));
         }
@@ -121,14 +121,13 @@
         document.getElementById('searchBox').addEventListener('input', async (event) => {
             const query = event.target.value;
             const allData = await fetchData();
-            const filteredData = searchTable(query, allData.slice(1)); // Exclude header row
+            const filteredData = searchTable(query, allData.slice(1)); 
             renderTable(filteredData);
         });
 
-        // Initial fetch and render
         (async function init() {
             const allData = await fetchData();
-            renderTable(allData.slice(1)); // Exclude header row
+            renderTable(allData.slice(1)); 
         })();
     </script>
 </body>
