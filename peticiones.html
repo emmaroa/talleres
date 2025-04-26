@@ -134,7 +134,11 @@
     
   </style>
 </head>
+
+
+  
 <body>
+  
   <header>
     <h1>
       <img 
@@ -177,7 +181,7 @@
   </footer>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzV7f93JGqzJFbLNt51IbzUmqoFOy84Pyi23_4k3_zbu5p9mmGPhXOC33ltExxl6cSx/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzsUrBRVT7KF3yOxWkV3hdZ0D87Fu9IjKUXE3K3LVtt4Tkv9wq5_mnhFOu4cPksU045/exec';
     const form = document.getElementById('formulario_pet');
     const mensaje = document.getElementById('mensaje');
     const boton = form.querySelector('button');
@@ -186,49 +190,48 @@
     const botonTexto = document.getElementById('boton-texto');
 
     
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
+   form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    boton.disabled = true;
-      spinner.style.display = 'inline-block'; 
-      check.style.display = 'none';
-       botonTexto.textContent = 'Enviando...'; 
-      
-      try {
-        const response = await fetch(scriptURL, {
-          method: 'POST',
-          body: formData,
-        });
+  const data = {
+    unidad: document.getElementById('unidad').value,
+    peticion: document.getElementById('peticion').value,
+    solicita: document.getElementById('solicita').value,
+    muestra: document.getElementById('muestra').value
+  };
+try {
+    const response = await fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
 
-        const result = await response.json();
-        mensaje.style.color = 'green';
-        mensaje.textContent = result.message;
-        mensaje.style.display = 'block';
-        form.reset();
+    const result = await response.json();
+    mensaje.style.color = 'green';
+    mensaje.textContent = result.message;
+    mensaje.style.display = 'block';
+    form.reset();
 
-      spinner.style.display = 'none';
-      check.style.display = 'inline-block';
-      botonTexto.textContent = 'Enviado';
+    spinner.style.display = 'none';
+    check.style.display = 'inline-block';
+    botonTexto.textContent = 'Enviado';
 
-
-        setTimeout(() => {
+    setTimeout(() => {
       check.style.display = 'none';
       botonTexto.textContent = 'Enviar Pedido';
       boton.disabled = false;
-    }, 2000); 
-        
-      } catch (error) {
-        mensaje.style.color = 'red';
-        mensaje.textContent = 'Ocurrió un problema al enviar los datos. Intenta nuevamente.';
-        mensaje.style.display = 'block';
-      }
-
-      boton.disabled = false;
-      spinner.style.display = 'none';
-      boton.textContent = 'Enviar Pedido';
-      
-    });
+    }, 2000);
+  } catch (error) {
+    mensaje.style.color = 'red';
+    mensaje.textContent = 'Ocurrió un problema al enviar los datos. Intenta nuevamente.';
+    mensaje.style.display = 'block';
+    spinner.style.display = 'none';
+    botonTexto.textContent = 'Enviar Pedido';
+    boton.disabled = false;
+  }
+});
   </script>
 </body>
 </html>
