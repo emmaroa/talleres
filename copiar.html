@@ -21,11 +21,13 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border: 2px solid #ff9800;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         h2 {
             color: #ff9800;
         }
-        input {
+        input, textarea {
             padding: 10px;
             font-size: 16px;
             width: 250px;
@@ -36,9 +38,15 @@
             background: #fff;
             transition: all 0.3s ease;
         }
-        input:hover, input:focus {
+        input:hover, input:focus, textarea:hover, textarea:focus {
             border-color: #ff9800;
             box-shadow: 0 0 8px rgba(255, 152, 0, 0.5);
+        }
+        textarea {
+            resize: none;
+            width: 250px;
+            height: 100px;
+            text-align: left;
         }
     </style>
 </head>
@@ -49,26 +57,34 @@
         <input type="text" value="ALMACEN DE TALLERES" onclick="copyToClipboard(this)">
         <input type="text" value="JUAN FERNANDO MOLINA ARVAYO" onclick="copyToClipboard(this)">
         <input type="text" value="6622449069" onclick="copyToClipboard(this)">
+
         <h2>SEGUIMIENTO...</h2>
         <input type="text" value="SEGUIMIENTO DE PROCEDIMIENTO" onclick="copyToClipboard(this)">
+
         <h2>ORDENES DE COMPRA...</h2>
         <input type="text" value="SUBDIRECTOR ADMINISTRATIVO TALLERES" onclick="copyToClipboard(this)">
         <input type="text" value="ING. VICTOR EMMANUEL ZARATE IBARRA" onclick="copyToClipboard(this)">
         <input type="text" value="DIRECTOR DE TALLERES" onclick="copyToClipboard(this)">
         <input type="text" value="ING. HECTOR MANUEL DIAZ YOUNG" onclick="copyToClipboard(this)">
+
         <h2>PORTAL WEB</h2>
         <input type="text" value="HERMOSILLO, SONORA." onclick="copyToClipboard(this)">
+
         <h2>SOLICITUDES DE PAGO</h2>
         <input type="text" value="XXXX: PAGO DE FACTURA XXX POR ADQUISICION DE XXX PARA UNIDAD XXX DE XXX" onclick="copyToClipboard(this)">
         <input type="text" value="OC XXX REQ XXX E XXXXX" onclick="copyToClipboard(this)">
         <input type="text" value="PROCEDIMIENTO EN PORTAL WEB DE COMPRAS: T-" onclick="copyToClipboard(this)">
-    
-    
+
+        <h2>SOLICITUDES DE PAGO (MULTILÍNEA)</h2>
+        <textarea onclick="copyToClipboard(this)">XXXX : PAGO DE FACTURA XXX  POR ADQUISICION DE XXX  PARA UNIDAD XXX DE XXX
+OC XXX REQ XXX E XXXXX
+PROCEDIMIENTO EN PORTAL WEB DE COMPRAS: T-</textarea>
     </div>
 
     <script>
         function copyToClipboard(element) {
             element.select();
+            element.setSelectionRange(0, 99999); 
             document.execCommand("copy");
         }
     </script>
