@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Consulta de Peticiones</title>
+</head>
+<body>
+  <h1>Listado de Peticiones</h1>
+  <ul id="lista"></ul>
+
+  <script>
+    fetch('TU_URL_DEL_WEB_APP') // pon aquí la URL desplegada de tu script
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          const lista = document.getElementById('lista');
+          data.data.forEach(peticion => {
+            const item = document.createElement('li');
+            item.textContent = `${peticion.fecha} - ${peticion.unidad} - ${peticion.peticion}`;
+            lista.appendChild(item);
+          });
+        }
+      });
+  </script>
+</body>
+</html>
