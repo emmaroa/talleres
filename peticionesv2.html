@@ -163,6 +163,10 @@
         mensaje.textContent = result.message;
         mensaje.style.display = 'block';
         form.reset();
+        
+   setTimeout(() => {
+        mensaje.style.display = 'none';
+    }, 5000); 
 
         
       } catch (error) {
@@ -170,10 +174,7 @@
         mensaje.textContent = 'Ocurrió un problema al enviar los datos. Intenta nuevamente.';
         mensaje.style.display = 'block';
       
-      setTimeout(() => {
-        mensaje.style.display = 'none';
-    }, 5000); 
-
+   
       
       }
 
