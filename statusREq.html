@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Filtro de Datos - Requisiciones</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #ff7f11;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .filtros input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 200px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .filtros input:focus {
+      border-color: #ff7f11;
+      outline: none;
+      box-shadow: 0 0 5px rgba(255, 127, 17, 0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+    }
+
+    th {
+      background-color: #ff7f11;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f7f7f7;
+    }
+
+    .mensaje {
+      text-align: center;
+      font-weight: bold;
+      color: #ff7f11;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Filtrar Requisiciones</h2>
+
+  <div class="filtros">
+    <input type="text" id="buscarRequisicion" placeholder="Buscar Requisición">
+    <input type="text" id="buscarDependencia" placeholder="Buscar Dependencia">
+    <input type="text" id="buscarProveedor" placeholder="Buscar Proveedor ">
+    <input type="text" id="buscarUnidad" placeholder="Buscar Unidad">
+  </div>
+
+  <table id="tablaDatos"></table>
+  <div class="mensaje" id="mensaje"></div>
+
+  <script>
+    let datos = [];
+
+    async function cargarDatos() {
+      const url = 'https://script.google.com/macros/s/AKfycbxFCHZ-Y7NwhY6oAIZWm-25053Fn7p2yo5J4_jlqX5GmBFYShqZVbRmQ9U9Vv4ZplBwjg/exec';
+      const res = await fetch(url);
+      datos = await res.json();
+      mostrarDatos(datos);
+    }
+
+    function mostrarDatos(filas) {
+      const tabla = document.getElementById("tablaDatos");
+      const mensaje = document.getElementById("mensaje");
+      if (filas.length === 0) {
+        tabla.innerHTML = "";
+        mensaje.textContent = "No hay resultados.";
+        return;
+      }
+
+      mensaje.textContent = "";
+
+      const encabezados = ['Requisición', 'Dependencia', 'Proveedor', 'Unidad', 'Dependencia', 'Solicitado', 'Estatus', 'Proveedor', 'Unidad', 'Descripcion Unidad'];  
+      const cuerpo = filas.slice(1).map(row => [
+      row[0],
+      row[2],
+      row[3],  
+      row[4], 
+        row[5],
+        row[6],
+        row[7],  
+        row[9], 
+        row[10],
+        row[11]
+      ]);
+
+      let html = '<thead><tr>' + encabezados.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+      html += cuerpo.map(row =>
+        `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`
+      ).join('');
+      html += '</tbody>';
+      tabla.innerHTML = html;
+    }
+
+    function aplicarFiltro() {
+      const req = document.getElementById("buscarRequisicion").value.toLowerCase();
+      const dep = document.getElementById("buscarDependencia").value.toLowerCase();
+      const prov = document.getElementById("buscarProveedor").value.toLowerCase();
+      const uni = document.getElementById("buscarUnidad").value.toLowerCase();
+
+      const filtrados = datos.slice(1).filter(row =>
+        (row[2] && row[2].toLowerCase().includes(req)) &&    // Columna C
+        (row[5] && row[5].toLowerCase().includes(dep)) &&    // Columna F
+        (row[9] && row[9].toLowerCase().includes(prov)) &&   // Columna J
+        (row[10] && row[10].toLowerCase().includes(uni))      // Columna K
+      );
+
+      mostrarDatos([datos[0], ...filtrados]);
+    }
+
+    document.getElementById("buscarRequisicion").addEventListener("input", aplicarFiltro);
+    document.getElementById("buscarDependencia").addEventListener("input", aplicarFiltro);
+    document.getElementById("buscarProveedor").addEventListener("input", aplicarFiltro);
+    document.getElementById("buscarUnidad").addEventListener("input", aplicarFiltro);
+
+    cargarDatos();
+  </script>
+
+</body>
+</html>
