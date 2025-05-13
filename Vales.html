@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Vales de Refacciones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fef9f5;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      color: #d35400;
+    }
+    form {
+      background-color: #fff3e0;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #5d4037;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+    }
+    button {
+      background-color: #ef6c00;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e65100;
+    }
+    #formatoImpresion {
+      display: none;
+      margin-top: 40px;
+      background-color: #fff3e0;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px dashed #ccc;
+      page-break-before: always; /* Asegura que la impresión empiece en la segunda página */
+    }
+    .printable {
+      display: block;
+      padding: 10px;
+      font-size: 12px;
+      width: 100%;
+      margin: 0 auto;
+      border: 1px dashed #ccc;
+      page-break-before: always; /* Salto de página antes de imprimir */
+    }
+    .printable p {
+      margin: 0;
+    }
+    .printable .firma {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .header-image {
+      width: 60px;
+      height: 60px;
+      margin-right: 20px;
+    }
+    .header-text {
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 1.5;
+      display: inline-block;
+      vertical-align: top;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .printable, .printable * {
+        visibility: visible;
+      }
+      .printable {
+        width: 100%;
+        padding: 20px;
+        border: 1px dashed #ccc;
+        font-size: 12px;
+        max-width: 100%;
+        margin: 0 auto; /* No centrado */
+        page-break-before: always; /* Salto de página para empezar en la segunda página */
+      }
+      .printable .header {
+        display: flex;
+        align-items: center;
+      }
+      .printable .header img {
+        width: 60px;
+        height: 60px;
+        margin-right: 20px;
+      }
+      .printable .header .header-text {
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 1.5;
+      }
+      .printable .firma {
+        margin-top: 20px;
+        text-align: center;
+        font-weight: bold;
+      }
+      /* Ajuste de márgenes para evitar espacio extra en la primera página */
+      @page {
+        size: A4;
+        margin: 10mm 15mm; /* Márgenes ajustados */
+      }
+
+      /* Evitar que el contenido de la página web (primera página) se imprima */
+      body {
+        visibility: hidden;
+      }
+
+      /* Solo mostrar la segunda página (el contenido imprimible) */
+      .printable {
+        visibility: visible;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+<div class="header">
+  <h1>Registro de Vale de Entrega</h1>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Escudo_de_Hermosillo.svg/800px-Escudo_de_Hermosillo.svg.png" alt="Escudo de Hermosillo" class="header-image">
+  <p class="header-text"><strong>H. AYUNTAMIENTO DE HERMOSILLO</strong><br>OFICIALÍA MAYOR<br>DIRECCIÓN DE TALLERES</p>
+</div>
+
+<style>
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .header-image {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px; /* Espacio entre imagen y texto */
+  }
+
+  .header-text {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.5;
+  }
+</style>
+<form id="formVale">
+  <label>Fecha:</label>
+  <input type="text" id="fecha" readonly>
+
+  <label>Folio:</label>
+  <input type="text" id="folio" readonly>
+
+  <label>Unidad:</label>
+  <input type="number" name="unidad" required>
+
+  <label>Refacciones:</label>
+  <table>
+    <tr>
+      <th>Cantidad</th>
+      <th>Descripción</th>
+    </tr>
+    <tr><td><input name='cantidad1'></td><td><input name='descripcion1'></td></tr>
+    <tr><td><input name='cantidad2'></td><td><input name='descripcion2'></td></tr>
+    <tr><td><input name='cantidad3'></td><td><input name='descripcion3'></td></tr>
+    <tr><td><input name='cantidad4'></td><td><input name='descripcion4'></td></tr>
+    <tr><td><input name='cantidad5'></td><td><input name='descripcion5'></td></tr>
+    <tr><td><input name='cantidad6'></td><td><input name='descripcion6'></td></tr>
+  </table>
+
+  <label>Quién entrega:</label>
+  <input type="text" name="entrega" required>
+
+  <label>Quién recibe:</label>
+  <input type="text" name="recibe" required>
+
+  <button type="submit">Guardar</button>
+</form>
+
+<div id="formatoImpresion" class="printable">
+  <!-- Imagen y texto en el formato imprimible -->
+  <div class="header">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Escudo_de_Hermosillo.svg/800px-Escudo_de_Hermosillo.svg.png" alt="Escudo de Hermosillo" class="header-image">
+    <div class="header-text">
+      <p>H. AYUNTAMIENTO DE HERMOSILLO<br>OFICIALÍA MAYOR<br>DIRECCIÓN DE TALLERES</p>
+      <h2>VALE DE REFACCIONES</h2>
+    </div>
+  </div>
+
+  <p><strong>Fecha:</strong> <span id="printFecha"></span></p>
+  <p><strong>Folio:</strong> <span id="printFolio"></span></p>
+  <p><strong>Unidad:</strong> <span id="printUnidad"></span></p>
+  <p><strong>Refacciones:</strong></p>
+  <ul id="printRefacciones"></ul>
+  <p><strong>Entrega:</strong> <span id="printEntrega"></span></p>
+  <p><strong>Recibe:</strong> <span id="printRecibe"></span></p>
+  <br>
+  <div class="firma">
+    <p><strong>Firma de recibido: __________________________</strong></p>
+  </div>
+</div>
+
+<script>
+document.getElementById("fecha").value = new Date().toLocaleDateString("es-MX");
+
+// Simulador de folio automático
+let folioActual = localStorage.getItem("folio") || 0;
+const anio = new Date().getFullYear();
+folioActual++;
+const folioFormato = folioActual.toString().padStart(4, '0') + '-' + anio;
+document.getElementById("folio").value = folioFormato;
+localStorage.setItem("folio", folioActual);
+
+document.getElementById("formVale").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const form = e.target;
+
+  // Construir datos para enviar
+  const data = new FormData(form);
+  const params = new URLSearchParams();
+  for (const pair of data.entries()) {
+    params.append(pair[0], pair[1]);
+  }
+
+  fetch('https://script.google.com/macros/s/AKfycbxAoiKlIN9pmapcYNYxgT58w9JJaFA0xuoKmV2CGqL2mdvECCC9IXXdzChjSpWSy6Bk6Q/exec', {
+    method: 'POST',
+    body: params
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.message.includes("correctamente")) {
+      // Llenar formato de impresión
+      document.getElementById("printFecha").innerText = document.getElementById("fecha").value;
+      document.getElementById("printFolio").innerText = document.getElementById("folio").value;
+      document.getElementById("printUnidad").innerText = data.get("unidad");
+      document.getElementById("printEntrega").innerText = data.get("entrega");
+      document.getElementById("printRecibe").innerText = data.get("recibe");
+
+      const lista = document.getElementById("printRefacciones");
+      lista.innerHTML = "";
+      for (let i = 1; i <= 6; i++) {
+        const c = data.get("cantidad" + i);
+        const d = data.get("descripcion" + i);
+        if (c || d) {
+          lista.innerHTML += `<li>${c || '-'} ${d || '-'}</li>`;
+        }
+      }
+
+      document.getElementById("formatoImpresion").style.display = "block";
+      window.print();
+
+      // Limpiar formulario
+      form.reset();
+    } else {
+      alert("Error al guardar: " + result.error);
+    }
+  });
+});
+</script>
+
+</body>
+</html>
