@@ -1,159 +1,162 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Filtro de Datos - Requisiciones</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Consulta de Requisiciones</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+      background-color: #fdf6ec;
       color: #333;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-
-    h2 {
-      color: #ff7f11;
+    header {
+      background-color: #f57c00;
+      color: white;
+      padding: 15px;
       text-align: center;
-      margin-bottom: 20px;
     }
-
-    .filtros {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 20px;
+    .main-screen {
+      padding: 20px;
+      text-align: center;
     }
-
-    .filtros input {
-      padding: 10px;
+    input[type="text"] {
+      width: 180px;
+      padding: 8px;
+      margin: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 200px;
-      font-size: 1rem;
-      transition: border-color 0.3s;
+      border-radius: 5px;
     }
-
-    .filtros input:focus {
-      border-color: #ff7f11;
-      outline: none;
-      box-shadow: 0 0 5px rgba(255, 127, 17, 0.3);
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      background-color: white;
+      margin-top: 20px;
+      font-size: 14px;
     }
-
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
     th {
-      background-color: #ff7f11;
-      color: white;
-      padding: 12px;
-      text-align: left;
-      position: sticky;
-      top: 0;
-    }
-
-    td {
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f7f7f7;
-    }
-
-    .mensaje {
-      text-align: center;
-      font-weight: bold;
-      color: #ff7f11;
-      margin-top: 10px;
+      background-color: #ffe0b2;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Consulta de Requisiciones y Compras</h1>
+  </header>
 
-  <h2>Filtrar Requisiciones</h2>
+  <div class="main-screen">
+    <h2>Filtrar Información</h2>
+    <input type="text" id="filtroFecha" placeholder="Fecha" />
+    <input type="text" id="filtroRequisicion" placeholder="Requisición" />
+    <input type="text" id="filtroOrden" placeholder="Orden de Compra" />
+    <input type="text" id="filtroDependencia" placeholder="Dependencia" />
+    <input type="text" id="filtroProveedor" placeholder="Proveedor" />
+    <input type="text" id="filtroNumero" placeholder="Número Económico" />
+    <input type="text" id="filtroPedido" placeholder="Pedido" />
 
-  <div class="filtros">
-    <input type="text" id="buscarRequisicion" placeholder="Buscar Requisición">
-    <input type="text" id="buscarDependencia" placeholder="Buscar Dependencia">
-    <input type="text" id="buscarProveedor" placeholder="Buscar Proveedor ">
-    <input type="text" id="buscarUnidad" placeholder="Buscar Unidad">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Requisición</th>
+          <th>Orden de Compra</th>
+          <th>Dependencia</th>
+          <th>Pedido</th>
+          <th>Status SIFF</th>
+          <th>Proveedor</th>
+          <th>Unidad</th>
+          <th>Descripción de Unidad</th>
+          <th>Monto</th>
+        </tr>
+      </thead>
+      <tbody id="dataTable"></tbody>
+    </table>
   </div>
 
-  <table id="tablaDatos"></table>
-  <div class="mensaje" id="mensaje"></div>
-
   <script>
-    let datos = [];
+    const apiKey = 'AIzaSyDM8m9-bZM2stDAt1V0i-H-iStD0Vi6Z7k';
+    const sheetId = '1L6EsYC_PNp7lxjqTgVaGEFuXsINWBUsxWYsMzBAQ55Y';
+    const range = 'Requis!A2:N'; // Datos desde fila 2 para omitir encabezados
 
-    async function cargarDatos() {
-      const url = 'https://script.google.com/macros/s/AKfycbxFCHZ-Y7NwhY6oAIZWm-25053Fn7p2yo5J4_jlqX5GmBFYShqZVbRmQ9U9Vv4ZplBwjg/exec';
-      const res = await fetch(url);
-      datos = await res.json();
-      mostrarDatos(datos);
-    }
+    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
-    function mostrarDatos(filas) {
-      const tabla = document.getElementById("tablaDatos");
-      const mensaje = document.getElementById("mensaje");
-      if (filas.length === 0) {
-        tabla.innerHTML = "";
-        mensaje.textContent = "No hay resultados.";
-        return;
+    async function fetchData() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        return data.values || [];
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+        return [];
       }
-
-      mensaje.textContent = "";
-
-      const encabezados = ['Requisición', 'Dependencia', 'Proveedor', 'Unidad', 'Dependencia', 'Solicitado', 'Estatus', 'Proveedor', 'Unidad', 'Descripcion Unidad'];  
-      const cuerpo = filas.slice(1).map(row => [
-      row[0],
-      row[2],
-      row[3],  
-      row[4], 
-        row[5],
-        row[6],
-        row[7],  
-        row[9], 
-        row[10],
-        row[11]
-      ]);
-
-      let html = '<thead><tr>' + encabezados.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
-      html += cuerpo.map(row =>
-        `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`
-      ).join('');
-      html += '</tbody>';
-      tabla.innerHTML = html;
     }
 
-    function aplicarFiltro() {
-      const req = document.getElementById("buscarRequisicion").value.toLowerCase();
-      const dep = document.getElementById("buscarDependencia").value.toLowerCase();
-      const prov = document.getElementById("buscarProveedor").value.toLowerCase();
-      const uni = document.getElementById("buscarUnidad").value.toLowerCase();
+    function renderTable(data) {
+      const table = document.getElementById('dataTable');
+      table.innerHTML = '';
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        const selectedColumns = [
+          row[0],  // Fecha (A)
+          row[2],  // Requisición (C)
+          row[3],  // Orden de Compra (D)
+          row[5],  // Dependencia (F)
+          row[6],  // Pedido (G)
+          row[7],  // Status SIFF (H)
+          row[9],  // Proveedor (J)
+          row[10], // Unidad (K)
+          row[11], // Descripción de Unidad (L)
+          row[12]  // Monto (M)
+        ];
+        selectedColumns.forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell || '';
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      });
+    }
 
-      const filtrados = datos.slice(1).filter(row =>
-        (row[2] && row[2].toLowerCase().includes(req)) &&    // Columna C
-        (row[5] && row[5].toLowerCase().includes(dep)) &&    // Columna F
-        (row[9] && row[9].toLowerCase().includes(prov)) &&   // Columna J
-        (row[10] && row[10].toLowerCase().includes(uni))      // Columna K
+    function applyFilters(data) {
+      const fecha = document.getElementById('filtroFecha').value.toLowerCase();
+      const requisicion = document.getElementById('filtroRequisicion').value.toLowerCase();
+      const orden = document.getElementById('filtroOrden').value.toLowerCase();
+      const dependencia = document.getElementById('filtroDependencia').value.toLowerCase();
+      const proveedor = document.getElementById('filtroProveedor').value.toLowerCase();
+      const numero = document.getElementById('filtroNumero').value.toLowerCase();
+      const pedido = document.getElementById('filtroPedido').value.toLowerCase();
+
+      return data.filter(row =>
+        (row[0] || '').toLowerCase().includes(fecha) &&
+        (row[2] || '').toLowerCase().includes(requisicion) &&
+        (row[3] || '').toLowerCase().includes(orden) &&
+        (row[5] || '').toLowerCase().includes(dependencia) &&
+        (row[6] || '').toLowerCase().includes(pedido) &&
+        (row[9] || '').toLowerCase().includes(proveedor) &&
+        (row[10] || '').toLowerCase().includes(numero)
       );
-
-      mostrarDatos([datos[0], ...filtrados]);
     }
 
-    document.getElementById("buscarRequisicion").addEventListener("input", aplicarFiltro);
-    document.getElementById("buscarDependencia").addEventListener("input", aplicarFiltro);
-    document.getElementById("buscarProveedor").addEventListener("input", aplicarFiltro);
-    document.getElementById("buscarUnidad").addEventListener("input", aplicarFiltro);
+    async function init() {
+      const allData = await fetchData();
+      renderTable(allData);
 
-    cargarDatos();
+      const inputs = document.querySelectorAll('input[type="text"]');
+      inputs.forEach(input => {
+        input.addEventListener('input', () => {
+          const filtered = applyFilters(allData);
+          renderTable(filtered);
+        });
+      });
+    }
+
+    init();
   </script>
-
 </body>
 </html>
+
