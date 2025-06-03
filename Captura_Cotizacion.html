@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Formulario de Refacciones</title>
+  <title>Entrega de Refacciones</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -17,11 +17,11 @@
       padding: 1em 0;
     }
     header img {
-      max-height: 80px;
+      max-height: 50px;
       margin-bottom: 10px;
     }
     main {
-      max-width: 800px;
+      max-width: 900px;
       margin: 30px auto;
       background: white;
       padding: 30px;
@@ -53,7 +53,10 @@
     .refaccion input {
       flex: 1;
     }
-    button {
+    .refacciones-contenedor {
+      margin-bottom: 20px;
+    }
+    button, .agregar-btn {
       background-color: #ff7f11;
       color: white;
       padding: 12px 20px;
@@ -63,7 +66,7 @@
       cursor: pointer;
       font-size: 16px;
     }
-    button:hover {
+    button:hover, .agregar-btn:hover {
       background-color: #e06c00;
     }
     .mensaje {
@@ -79,7 +82,7 @@
 <body>
 
   <header>
-    <img src="tu_logo.png" alt="Logotipo">
+    <img src="fondo.png" alt="Logotipo">
     <h1>Entrega de Refacciones</h1>
   </header>
 
@@ -87,26 +90,38 @@
     <h2>Registro de entrega por proveedor</h2>
     <form id="formulario">
       <label for="proveedor">Proveedor:</label>
-      <input type="text" id="proveedor" name="proveedor" required>
+      <select id="proveedor" required>
+        <option value="">Selecciona un proveedor</option>
+        <option>Barruel</option>
+        <option>PH</option>
+        <option>Ventas</option>
+        <option>Duarmar</option>
+        <option>REFISA</option>
+     
+      </select>
 
       <label for="fecha">Fecha:</label>
-      <input type="date" id="fecha" name="fecha" required>
+      <input type="date" id="fecha" required>
 
       <label for="unidad">Número de Unidad:</label>
-      <input type="text" id="unidad" name="unidad" required>
+      <input type="text" id="unidad" required>
 
       <label>Refacciones Entregadas:</label>
-      <div class="refaccion">
-        <input type="number" placeholder="Cantidad" id="cantidad" required>
-        <input type="text" placeholder="Descripción" id="descripcion" required>
-        <input type="number" placeholder="Precio Unitario" id="precio" required>
+      <div class="refacciones-contenedor" id="refacciones-contenedor">
+        <div class="refaccion">
+          <input type="number" placeholder="Cantidad" class="cantidad" required>
+          <input type="text" placeholder="Descripción" class="descripcion" required>
+          <input type="number" placeholder="Precio Unitario" class="precio" required>
+        </div>
       </div>
 
-      <label for="solicitante">Solicitante:</label>
-      <input type="text" id="solicitante" name="solicitante" required>
+      <button type="button" class="agregar-btn" onclick="agregarRefaccion()">+ Agregar Refacción</button>
 
-      <label for="total">Total del Pedido:</label>
-      <input type="number" id="total" name="total" step="0.01" required>
+      <label for="solicitante">Solicitante:</label>
+      <input type="text" id="solicitante" required>
+
+      <label for="total">Total del Pedido (con IVA 16%):</label>
+      <input type="text" id="total" readonly>
 
       <button type="submit">Enviar</button>
 
@@ -115,19 +130,56 @@
   </main>
 
   <script>
+    function agregarRefaccion() {
+      const contenedor = document.getElementById("refacciones-contenedor");
+      const refDiv = document.createElement("div");
+      refDiv.className = "refaccion";
+      refDiv.innerHTML = `
+        <input type="number" placeholder="Cantidad" class="cantidad" required>
+        <input type="text" placeholder="Descripción" class="descripcion" required>
+        <input type="number" placeholder="Precio Unitario" class="precio" required>
+      `;
+      contenedor.appendChild(refDiv);
+    }
+
+    function calcularTotal() {
+      const cantidades = document.querySelectorAll(".cantidad");
+      const precios = document.querySelectorAll(".precio");
+      let subtotal = 0;
+
+      for (let i = 0; i < cantidades.length; i++) {
+        const cant = parseFloat(cantidades[i].value) || 0;
+        const precio = parseFloat(precios[i].value) || 0;
+        subtotal += cant * precio;
+      }
+
+      const totalConIVA = subtotal * 1.16;
+      document.getElementById("total").value = totalConIVA.toFixed(2);
+    }
+
+    document.getElementById("formulario").addEventListener("input", calcularTotal);
+
     document.getElementById("formulario").addEventListener("submit", async function(e) {
       e.preventDefault();
 
       const proveedor = document.getElementById("proveedor").value;
       const fecha = document.getElementById("fecha").value;
       const unidad = document.getElementById("unidad").value;
-      const cantidad = document.getElementById("cantidad").value;
-      const descripcion = document.getElementById("descripcion").value;
-      const precio = document.getElementById("precio").value;
       const solicitante = document.getElementById("solicitante").value;
       const total = document.getElementById("total").value;
 
-      const refacciones = `Cantidad: ${cantidad}, Descripción: ${descripcion}, Precio: ${precio}`;
+      const cantidades = document.querySelectorAll(".cantidad");
+      const descripciones = document.querySelectorAll(".descripcion");
+      const precios = document.querySelectorAll(".precio");
+
+      const refacciones = [];
+      for (let i = 0; i < cantidades.length; i++) {
+        refacciones.push({
+          cantidad: cantidades[i].value,
+          descripcion: descripciones[i].value,
+          precio: precios[i].value
+        });
+      }
 
       try {
         const response = await fetch("https://script.google.com/macros/s/AKfycbwFrme-UGplEWKP_ckjCtee7Mud3lNOQdseuhFiWzzNum6EWRAu5N1iaVqP47c-9bB2/exec", {
@@ -137,9 +189,9 @@
             proveedor,
             fecha,
             unidad,
-            refacciones,
             solicitante,
-            total
+            total,
+            refacciones
           })
         });
 
@@ -149,6 +201,14 @@
           document.getElementById("mensajeFolio").style.display = "block";
           document.getElementById("mensajeFolio").textContent = `¡Formulario enviado correctamente! Folio asignado: ${result.folio}`;
           document.getElementById("formulario").reset();
+          document.getElementById("total").value = "";
+          document.getElementById("refacciones-contenedor").innerHTML = `
+            <div class="refaccion">
+              <input type="number" placeholder="Cantidad" class="cantidad" required>
+              <input type="text" placeholder="Descripción" class="descripcion" required>
+              <input type="number" placeholder="Precio Unitario" class="precio" required>
+            </div>
+          `;
         } else {
           alert("Hubo un problema al guardar. Intenta de nuevo.");
         }
@@ -159,5 +219,7 @@
       }
     });
   </script>
+
 </body>
 </html>
+
