@@ -72,6 +72,7 @@
           <th>Unidad</th>
           <th>Descripción de Unidad</th>
           <th>Monto</th>
+          <th>Factura</th>
         </tr>
       </thead>
       <tbody id="dataTable"></tbody>
@@ -112,6 +113,7 @@
           row[10], // Unidad (K)
           row[11], // Descripción de Unidad (L)
           row[12]  // Monto (M)
+          row[13]  // Factura (N)
         ];
         selectedColumns.forEach(cell => {
           const td = document.createElement('td');
