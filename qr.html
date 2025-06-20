@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<title>Corregir URL QR SAT Mejorada</title>
+<title>Corregir y Extraer Datos CFDI SAT</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -42,6 +42,28 @@
     padding: 15px;
     border-radius: 10px;
     word-break: break-word;
+    text-align: left;
+  }
+  #parametros {
+    margin-top: 20px;
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .param {
+    margin-bottom: 8px;
+  }
+  label {
+    font-weight: bold;
+  }
+  input {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 14px;
+    border: 1px solid #ffa94d;
+    border-radius: 6px;
+    background-color: #fffdfb;
   }
   a#abrir {
     display: inline-block;
@@ -60,57 +82,101 @@
 </head>
 <body>
 
-<h1>🔧 Corregir URL QR del SAT</h1>
+<h1>🔧 Corregir y Extraer Datos CFDI SAT</h1>
+<p>Pega la cadena mal formada del lector QR y obtén la URL limpia y los datos para copiar.</p>
 
-<textarea id="entrada" placeholder="Pega aquí el texto malformado del lector QR..."></textarea>
+<textarea id="entrada" placeholder="Pega aquí el texto escaneado..."></textarea>
 <br/>
-<button onclick="corregirURL()">Corregir URL</button>
+<button onclick="procesarCadena()">Procesar</button>
 
 <div id="resultado" style="display:none;">
+  <h2>URL corregida</h2>
   <div id="urlCorregida"></div>
   <a id="abrir" href="#" target="_blank">🌐 Abrir URL corregida</a>
+
+  <div id="parametros">
+    <h3>Parámetros extraídos</h3>
+    <div class="param">
+      <label for="id">id:</label>
+      <input type="text" id="id" readonly />
+    </div>
+    <div class="param">
+      <label for="re">re:</label>
+      <input type="text" id="re" readonly />
+    </div>
+    <div class="param">
+      <label for="rr">rr:</label>
+      <input type="text" id="rr" readonly />
+    </div>
+    <div class="param">
+      <label for="tt">tt:</label>
+      <input type="text" id="tt" readonly />
+    </div>
+    <div class="param">
+      <label for="fe">fe:</label>
+      <input type="text" id="fe" readonly />
+    </div>
+  </div>
 </div>
 
 <script>
-function corregirURL() {
-  let texto = document.getElementById('entrada').value;
+function procesarCadena() {
+  const cadenaOriginal = document.getElementById("entrada").value;
 
-  // Convertir a minúsculas para URL (excepto el fragmento fe que puede tener mayúsculas)
-  // Lo hacemos solo para la parte fija para evitar errores
-  texto = texto.trim();
-
-  // Reemplazos específicos según el patrón que diste
-  let url = texto
-    .replace(/HTTPSñ--/i, "https://")
-    .replace(/ñ--/gi, "://")
-    .replace(/_/g, "/")
-    .replace(/¿/g, "=")
-    .replace(/'/g, "-")
-    // Aquí corregimos el carácter raro ¡ por = también si aparece
-    .replace(/¡/g, "=")
-    .replace(/\s/g, ""); // eliminar espacios en blanco
-
-  // Hacer todo minúscula excepto lo que viene después de "fe="
-  // Para eso, dividimos en partes con fe=
-  const partes = url.split(/(fe=)/i);
-  if (partes.length === 3) {
-    // partes[0] y partes[1] son antes y el "fe=", partes[2] es el resto
-    url = partes[0].toLowerCase() + partes[1].toLowerCase() + partes[2];
-  } else {
-    url = url.toLowerCase();
+  if (!cadenaOriginal.trim()) {
+    alert("Por favor pega la cadena del lector QR.");
+    return;
   }
 
-  // Mostrar resultado y poner el link
-  const divRes = document.getElementById('resultado');
-  const divUrl = document.getElementById('urlCorregida');
-  const aAbrir = document.getElementById('abrir');
+  // Normalizar y limpiar
+  let texto = cadenaOriginal.toLowerCase().replace(/\s+/g, "");
 
-  divUrl.textContent = url;
-  aAbrir.href = url;
+  const reemplazos = {
+    "httpsñ--": "https://",
+    "ñ--": "://",
+    "_": "/",
+    "¿": "=",
+    "¡": "=",
+    "'": "-",
+  };
 
-  divRes.style.display = 'block';
+  for (const key in reemplazos) {
+    texto = texto.split(key).join(reemplazos[key]);
+  }
+
+  function extraerValor(etiqueta) {
+    const re = new RegExp(etiqueta + "=([^/&]+)", "i");
+    const m = texto.match(re);
+    return m ? m[1] : "";
+  }
+
+  const id = extraerValor("id");
+  const re = extraerValor("re");
+  const rr = extraerValor("rr");
+  const tt = extraerValor("tt");
+  const fe = extraerValor("fe");
+
+  if (!id || !re || !rr || !tt || !fe) {
+    alert("No se pudieron extraer todos los parámetros necesarios.");
+    return;
+  }
+
+  const urlFinal = `https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id=${id}&re=${re}&rr=${rr}&tt=${tt}&fe=${fe}`;
+
+  // Mostrar resultados
+  document.getElementById("urlCorregida").textContent = urlFinal;
+  document.getElementById("abrir").href = urlFinal;
+
+  document.getElementById("id").value = id;
+  document.getElementById("re").value = re;
+  document.getElementById("rr").value = rr;
+  document.getElementById("tt").value = tt;
+  document.getElementById("fe").value = fe;
+
+  document.getElementById("resultado").style.display = "block";
 }
 </script>
 
 </body>
 </html>
+
