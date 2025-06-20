@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Convertidor URL CFDI SAT - Formato Exacto</title>
+<title>Convertidor URL CFDI SAT Dinámico</title>
 <style>
   body {
     font-family: Arial, sans-serif;
     background: #fff7f0;
     color: #4a3a1a;
-    margin: 0;
-    padding: 20px;
+    margin: 0; padding: 20px;
   }
   h1 {
     color: #d35400;
@@ -55,12 +54,12 @@
 </head>
 <body>
 
-<h1>Convertidor URL CFDI SAT - Formato Exacto</h1>
+<h1>Convertidor URL CFDI SAT Dinámico</h1>
 
-<label for="inputUrl">Pega aquí la URL mal formateada:</label><br/>
-<textarea id="inputUrl" placeholder="Ejemplo: httpsÑ--verificacfdi.facturaelectronica.sat.gob.mx-default.aspx_id¿0a84a86e'6305'4ad6'bc7d'fa98dd02e3cb/re¿VSH961217GF4/rr¿MHE570101FI1/tt¿0000143793.600000/fe¿NDRi+A=="></textarea>
+<label for="inputUrl">Pega aquí la URL malformada:</label><br/>
+<textarea id="inputUrl" placeholder="Ejemplo: httpsÑ--verificacfdi.facturaelectronica.sat.gob.mx-default.aspx_/id¿0AB1ECE5'16BF'41DA'8B0D'BABA61BB541D/re¿CBN240224PJ8/rr¿MHE570101FI1/tt¿5894.25/fe¿-LqccA¿¿"></textarea>
 
-<button id="convertBtn">Convertir a URL Correcta (Formato exacto)</button>
+<button id="convertBtn">Convertir a URL Correcta</button>
 
 <div id="result" class="output" style="display:none;">
   <div><span class="label">URL corregida:</span></div>
@@ -80,32 +79,37 @@
   const cfdiElementsDiv = document.getElementById('cfdiElements');
   const openUrlBtn = document.getElementById('openUrlBtn');
 
-  function corregirUrlExacta(malUrl) {
+  function corregirUrl(malUrl) {
     let url = malUrl.trim();
 
-    // Solo reemplazos básicos para formar la URL válida sin tocar valores:
+    // Reemplazos básicos para formar URL válida:
     url = url.replace('httpsÑ--', 'https://');
     url = url.replace('-.aspx_', '/default.aspx?');
     url = url.replace(/¿/g, '&');
     url = url.replace(/'/g, '-');
-    url = url.replace(/¡/g, '+'); // Si quieres que el signo ¡ pase a +
+    url = url.replace(/¡/g, '+'); // si quieres mantener '+', si no cambia a '-'
     url = url.replace(/¿¿/g, '');
 
-    return url;
-  }
-
-  function extraerElementos(url) {
+    // Ahora intentamos extraer parámetros para normalizarlos
     try {
       const u = new URL(url);
       const params = u.searchParams;
-      return {
-        id: params.get('id') || '(no encontrado)',
-        re: params.get('re') || '(no encontrado)',
-        rr: params.get('rr') || '(no encontrado)',
-        tt: params.get('tt') || '(no encontrado)',
-        fe: params.get('fe') || '(no encontrado)',
-      };
-    } catch(e) {
+
+      // Extraemos valores originales
+      let id = params.get('id') || '';
+      let re = params.get('re') || '';
+      let rr = params.get('rr') || '';
+      let tt = params.get('tt') || '';
+      let fe = params.get('fe') || '';
+
+      // Opcional: convertir id a minúsculas
+      id = id.toLowerCase();
+
+      // Construir URL limpia con valores extraídos (sin modificar valores)
+      const nuevaUrl = `https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id=${id}&re=${re}&rr=${rr}&tt=${tt}&fe=${fe}`;
+      return { url: nuevaUrl, valores: { id, re, rr, tt, fe } };
+
+    } catch (e) {
       return null;
     }
   }
@@ -113,26 +117,25 @@
   convertBtn.addEventListener('click', () => {
     const inputUrl = input.value;
     if (!inputUrl.trim()) {
-      alert('Por favor, ingresa una URL mal formateada');
+      alert('Por favor, ingresa la URL malformada');
       return;
     }
-    const urlCorregida = corregirUrlExacta(inputUrl);
-    correctUrlDiv.textContent = urlCorregida;
 
-    const elementos = extraerElementos(urlCorregida);
-    if (!elementos) {
-      cfdiElementsDiv.innerHTML = '<i>No se pudo extraer los elementos. Revisa la URL.</i>';
-      openUrlBtn.style.display = 'none';
-    } else {
-      cfdiElementsDiv.innerHTML = `
-        <div class="cfdi-element"><strong>id:</strong> ${elementos.id}</div>
-        <div class="cfdi-element"><strong>re:</strong> ${elementos.re}</div>
-        <div class="cfdi-element"><strong>rr:</strong> ${elementos.rr}</div>
-        <div class="cfdi-element"><strong>tt:</strong> ${elementos.tt}</div>
-        <div class="cfdi-element"><strong>fe:</strong> ${elementos.fe}</div>
-      `;
-      openUrlBtn.style.display = 'inline-block';
+    const resultado = corregirUrl(inputUrl);
+    if (!resultado) {
+      alert('No se pudo procesar la URL. Revisa el formato.');
+      return;
     }
+
+    correctUrlDiv.textContent = resultado.url;
+    const v = resultado.valores;
+    cfdiElementsDiv.innerHTML = `
+      <div class="cfdi-element"><strong>id:</strong> ${v.id}</div>
+      <div class="cfdi-element"><strong>re:</strong> ${v.re}</div>
+      <div class="cfdi-element"><strong>rr:</strong> ${v.rr}</div>
+      <div class="cfdi-element"><strong>tt:</strong> ${v.tt}</div>
+      <div class="cfdi-element"><strong>fe:</strong> ${v.fe}</div>
+    `;
 
     resultDiv.style.display = 'block';
   });
@@ -147,8 +150,3 @@
 
 </body>
 </html>
-
-
-</body>
-</html>
-
