@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Corregir URL QR SAT</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fefaf6;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: #e76f00;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 20px;
+      text-align: center;
+      max-width: 600px;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      height: 120px;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ffcc99;
+      border-radius: 10px;
+      resize: none;
+      background-color: #fffdfb;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #ff914d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #e36b00;
+    }
+
+    #resultado {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .url-box {
+      background-color: #fff2e0;
+      border: 1px solid #ffc999;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 600px;
+      word-break: break-word;
+      margin-bottom: 15px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🔧 Corregir URL QR </h1>
+  <p>Pega aquí el texto escaneado.</p>
+
+  <textarea id="entrada" placeholder="Ejemplo: httpsÑ--verificacfdi.facturaelectronica.sat.gob.mx-default.aspx_/id¿ABC123...'"></textarea>
+  <button onclick="corregirURL()">Corregir URL</button>
+
+  <div id="resultado" class="hidden">
+    <div class="url-box" id="urlCorregida"></div>
+    <a id="enlaceCorregido" href="#" target="_blank">
+      <button>🌐 Ir a la URL corregida</button>
+    </a>
+  </div>
+
+  <script>
+    function corregirURL() {
+      const entrada = document.getElementById("entrada").value.trim();
+
+      let corregida = entrada
+        .replace("httpsÑ--", "https://")
+        .replace(/Ñ--/g, "://")
+        .replace(/_/g, "/")
+        .replace(/¿/g, "=")
+        .replace(/'/g, "-");
+
+      // Mostrar resultado
+      document.getElementById("urlCorregida").textContent = corregida;
+      document.getElementById("enlaceCorregido").href = corregida;
+      document.getElementById("resultado").classList.remove("hidden");
+    }
+  </script>
+
+</body>
+</html>
