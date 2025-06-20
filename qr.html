@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Corregidor de URL CFDI SAT</title>
+<title>Convertidor URL CFDI SAT - Formato Exacto</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -55,12 +55,12 @@
 </head>
 <body>
 
-<h1>Corregidor de URL CFDI SAT</h1>
+<h1>Convertidor URL CFDI SAT - Formato Exacto</h1>
 
 <label for="inputUrl">Pega aquí la URL mal formateada:</label><br/>
 <textarea id="inputUrl" placeholder="Ejemplo: httpsÑ--verificacfdi.facturaelectronica.sat.gob.mx-default.aspx_id¿0a84a86e'6305'4ad6'bc7d'fa98dd02e3cb/re¿VSH961217GF4/rr¿MHE570101FI1/tt¿0000143793.600000/fe¿NDRi+A=="></textarea>
 
-<button id="convertBtn">Convertir a URL Correcta</button>
+<button id="convertBtn">Convertir a URL Correcta (Formato exacto)</button>
 
 <div id="result" class="output" style="display:none;">
   <div><span class="label">URL corregida:</span></div>
@@ -80,15 +80,17 @@
   const cfdiElementsDiv = document.getElementById('cfdiElements');
   const openUrlBtn = document.getElementById('openUrlBtn');
 
-  function corregirUrl(malUrl) {
-    // Reemplazos básicos sin modificar valores
+  function corregirUrlExacta(malUrl) {
     let url = malUrl.trim();
+
+    // Solo reemplazos básicos para formar la URL válida sin tocar valores:
     url = url.replace('httpsÑ--', 'https://');
     url = url.replace('-.aspx_', '/default.aspx?');
     url = url.replace(/¿/g, '&');
     url = url.replace(/'/g, '-');
-    url = url.replace(/¡/g, '-');
+    url = url.replace(/¡/g, '+'); // Si quieres que el signo ¡ pase a +
     url = url.replace(/¿¿/g, '');
+
     return url;
   }
 
@@ -114,7 +116,7 @@
       alert('Por favor, ingresa una URL mal formateada');
       return;
     }
-    const urlCorregida = corregirUrl(inputUrl);
+    const urlCorregida = corregirUrlExacta(inputUrl);
     correctUrlDiv.textContent = urlCorregida;
 
     const elementos = extraerElementos(urlCorregida);
