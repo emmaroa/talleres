@@ -1,0 +1,6 @@
+django>=5.0,<6
+psycopg[binary]
+djangorestframework
+django-filter
+djangorestframework-simplejwt
+pillow

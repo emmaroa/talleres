@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Vehículos{% endblock %}
+{% block content %}
+<h2>Vehículos</h2>
+<table class="table table-striped">
+  <thead><tr><th>Número</th><th>Descripción</th><th>Dependencia</th><th>Estatus</th></tr></thead>
+  <tbody>
+    {% for v in vehiculos %}
+    <tr>
+      <td>{{ v.numero_economico }}</td>
+      <td>{{ v.descripcion }}</td>
+      <td>{{ v.dependencia.nombre }}</td>
+      <td>{{ v.estatus }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay vehículos</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
