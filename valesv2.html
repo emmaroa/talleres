@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Vales de Refacciones</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg: #f8f6f2; --card: #ffffff; --text: #2e2e2e; --muted: #6b7280;
+      --brand: #ff7f11; --accent: #10c6d1; --accent-700: #0ea5b0;
+      --ring: rgba(16,198,209,.45); --radius: 10px; --shadow: 0 6px 20px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:Arial, sans-serif;background:var(--bg);color:var(--text);}
+    header{background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;padding:15px;text-align:center;box-shadow:var(--shadow);}
+    main{display:flex;justify-content:center;padding:15px;}
+    .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);max-width:700px;width:100%;padding:20px;}
+    label{font-weight:bold;color:var(--brand);margin-top:8px;display:block;font-size:0.9rem;}
+    input,textarea{width:100%;padding:8px;margin-top:3px;border:1px solid #ccc;border-radius:8px;font-size:0.9rem;}
+    input:focus,textarea:focus{outline:none;border-color:var(--accent-700);box-shadow:0 0 0 2px var(--ring);}
+    button{margin-top:15px;width:100%;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;padding:10px;border:none;border-radius:8px;font-weight:bold;font-size:1rem;cursor:pointer;}
+    button:hover{opacity:.9;}
+    table{width:100%;border-collapse:collapse;margin-top:8px;}th,td{border:1px solid #ddd;padding:6px;text-align:left;font-size:0.9rem;}th{background:rgba(16,198,209,.1);}
+
+    .compact-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+    .compact-row label{margin-top:0;}
+    .compact-row .small-input{width:120px;flex:1 1 120px;min-width:100px;}
+
+    .encabezado{text-align:center;border-bottom:3px solid var(--accent);margin-bottom:20px;padding-bottom:10px;}
+    .encabezado h2{margin:0;color:var(--brand);font-size:1.4rem;}
+    .encabezado p{margin:3px 0 0;color:var(--muted);font-size:0.9rem;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dirección de Talleres</h1>
+    <p style="font-size:0.9rem;">H. Ayuntamiento de Hermosillo · Oficialía Mayor</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="encabezado">
+        <h2>Registro de Vales</h2>
+        <p>Captura y control de vales de refacciones</p>
+      </div>
+
+      <form id="formVale">
+        <div class="compact-row">
+          <label>Fecha:</label>
+          <input type="text" id="fecha" name="fecha" readonly class="small-input">
+
+          <label>Folio:</label>
+          <input type="text" id="folio" name="folio" readonly class="small-input">
+
+          <label>Unidad:</label>
+          <input type="number" id="unidad" name="unidad" required class="small-input">
+        </div>
+
+        <label>Proveedor:</label>
+        <input type="text" name="proveedor" placeholder="Nombre del proveedor" required>
+
+        <label>Refacciones:</label>
+        <table>
+          <tr><th>Cantidad</th><th>Descripción</th></tr>
+          <tr><td><input name='cantidad1'></td><td><input name='descripcion1'></td></tr>
+          <tr><td><input name='cantidad2'></td><td><input name='descripcion2'></td></tr>
+          <tr><td><input name='cantidad3'></td><td><input name='descripcion3'></td></tr>
+          <tr><td><input name='cantidad4'></td><td><input name='descripcion4'></td></tr>
+          <tr><td><input name='cantidad5'></td><td><input name='descripcion5'></td></tr>
+          <tr><td><input name='cantidad6'></td><td><input name='descripcion6'></td></tr>
+        <tr><td><input name='cantidad7'></td><td><input name='descripcion7'></td></tr>
+        <tr><td><input name='cantidad8'></td><td><input name='descripcion8'></td></tr>
+        <tr><td><input name='cantidad9'></td><td><input name='descripcion9'></td></tr>
+        <tr><td><input name='cantidad10'></td><td><input name='descripcion10'></td></tr>
+        </table>
+
+        <label>Quién entrega:</label>
+        <input type="text" name="entrega" required>
+
+        <label>Quién recibe:</label>
+        <input type="text" name="recibe" required>
+
+        <button type="submit">Guardar</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Establecer fecha y folio por defecto
+    document.addEventListener('DOMContentLoaded', () => {
+      const fecha = new Date();
+      const fechaStr = fecha.toLocaleDateString('es-MX');
+      document.getElementById('fecha').value = fechaStr;
+
+      let folioActual = localStorage.getItem('folio_vale') || 0;
+      folioActual++;
+      const anio = fecha.getFullYear();
+      const folio = String(folioActual).padStart(4, '0') + '-' + anio;
+      document.getElementById('folio').value = folio;
+      localStorage.setItem('folio_vale', folioActual);
+    });
+
+    const form = document.getElementById('formVale');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzvPUWbAdrOwepiTMDThikwbqJ4jClodgD4XgfYPW2ukOlL3-C3VA_MxZijPFRWt4nQhw/exec', {
+          method: 'POST',
+          body: data
+        });
+
+        const result = await response.json();
+        if (result.message && result.message.includes('correctamente')) {
+         alert('Vale guardado correctamente. Se imprimirá el formato.');    
+        window.print();
+        form.reset();
+        const fecha = new Date();
+        const fechaStr = fecha.toLocaleDateString('es-MX');
+        document.getElementById('fecha').value = fechaStr;
+        let folioActual = Number(localStorage.getItem('folio_vale')) + 1;
+        const anio = new Date().getFullYear();
+        const folio = String(folioActual).padStart(4, '0') + '-' + anio;
+        document.getElementById('folio').value = folio;
+        localStorage.setItem('folio_vale', folioActual);
+    }  else {
+        alert('Error al guardar el vale.');
+}
+        } catch (error) {
+        alert('Ocurrió un error al enviar los datos.');
+    console.error(error);
+}
+});
+</script>
+</body>
+</html>
