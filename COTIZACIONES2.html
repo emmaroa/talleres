@@ -138,7 +138,7 @@
 
    
   
-  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzy_px0h6fCYEX7LxTaWU101kKVxbIF6TPnui07bJIi0_KGh7LlNQPSQYAtyB6Nl0KsAA/exec';
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby3dN7rrAhRaOIkhR6663_mVpLTzijAsv8vbg7hO8OynfFXDeAAKRo4GkTjCHTyaNNqWw/exec';
 
   document.getElementById('formCot').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -171,7 +171,7 @@
       // Pero Apps Script normalmente permite leerlo si el preflight no ocurre.
       const json = await res.json();
       if (json.ok) {
-        div.innerHTML = `✅ Guardado en Sheets (fila ${json.row}).<br>
+        div.innerHTML = `✅ Guardado (fila ${json.row}).<br>
                          <a href="${json.pdfUrl}" target="_blank">📄 Abrir PDF</a>`;
       } else {
         div.textContent = '❌ Error: ' + (json.error || 'desconocido');
@@ -183,6 +183,7 @@
 </script>
 </body>
 </html>
+
 
 
 
