@@ -137,44 +137,50 @@
     nuevaFila();
 
     // 👉 Reemplaza con tu URL de Apps Script
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw6qbgNMuP__hY55W5WmuWcuZ0WsiCvwcyu9hLoHuAPiNLvqgdssh-DMV53lvsWSBuz/exec';
+  <script>
+  const WEB_APP_URL = 'TU_URL_WEB_APP';
 
-    document.getElementById('formCot').addEventListener('submit', async e => {
-      e.preventDefault();
-      const filas = Array.from(tbody.querySelectorAll('tr')).map(r => ({
-        cantidad: parseFloat(r.querySelector('.cant').value) || 0,
-        descripcion: r.querySelector('.desc').value,
-        costo: parseFloat(r.querySelector('.cost').value) || 0
-      })).filter(p => p.cantidad > 0 && p.descripcion.trim() !== '');
+  document.getElementById('formCot').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const data = {
-        proveedor: document.getElementById('proveedor').value,
-        unidad: document.getElementById('unidad').value,
-        fecha_entrega: document.getElementById('fecha_entrega').value,
-        notas: document.getElementById('notas').value,
-        partidas: filas
-      };
+    const filas = Array.from(document.querySelectorAll('#tbody tr')).map(r => ({
+      cantidad: parseFloat(r.querySelector('.cant').value) || 0,
+      descripcion: r.querySelector('.desc').value,
+      costo: parseFloat(r.querySelector('.cost').value) || 0
+    })).filter(p => p.cantidad > 0 && p.descripcion.trim() !== '');
 
-      const div = document.getElementById('resultado');
-      div.textContent = 'Enviando…';
+    const payload = {
+      proveedor: document.getElementById('proveedor').value,
+      unidad: document.getElementById('unidad').value,
+      fecha_entrega: document.getElementById('fecha_entrega').value,
+      notas: document.getElementById('notas').value,
+      partidas: filas
+    };
 
-      try {
-        const res = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        const json = await res.json();
-        if(json.ok){
-          div.innerHTML = `✅ Guardado en Sheets (fila ${json.row}). <br>
-                           <a href="${json.pdfUrl}" target="_blank">📄 Abrir PDF</a>`;
-        } else {
-          div.textContent = '❌ Error: ' + (json.error || 'desconocido');
-        }
-      } catch (err) {
-        div.textContent = '❌ Error de red: ' + err.message;
+    const div = document.getElementById('resultado');
+    div.textContent = 'Enviando…';
+
+    try {
+      // 👇 Ojo: SIN headers personalizados, y body como texto
+      const res = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload) // Content-Type será text/plain por defecto y no hace preflight
+      });
+
+      // Algunos navegadores pueden no exponer el cuerpo si hay CORS estricto.
+      // Pero Apps Script normalmente permite leerlo si el preflight no ocurre.
+      const json = await res.json();
+      if (json.ok) {
+        div.innerHTML = `✅ Guardado en Sheets (fila ${json.row}).<br>
+                         <a href="${json.pdfUrl}" target="_blank">📄 Abrir PDF</a>`;
+      } else {
+        div.textContent = '❌ Error: ' + (json.error || 'desconocido');
       }
-    });
-  </script>
+    } catch (err) {
+      div.textContent = '❌ Error de red: ' + err.message;
+    }
+  });
+</script>
 </body>
 </html>
+
