@@ -7,252 +7,185 @@
 
   <style>
     :root{
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-
-      --turq: #10c6d1;
-      --turq-2: #0ea5b0;
-      --orange: #ff7f11;
-      --orange-2: #f97316;
-
-      --shadow: 0 12px 28px rgba(17, 24, 39, 0.08);
-      --shadow-soft: 0 8px 18px rgba(17, 24, 39, 0.06);
-      --radius: 16px;
+      --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --border:#e5e7eb;
+      --turq:#10c6d1; --turq2:#0ea5b0; --orange:#ff7f11; --orange2:#f97316;
+      --shadow: 0 12px 28px rgba(17,24,39,.08);
+      --radius:16px;
     }
-
-    *{ box-sizing: border-box; }
+    *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% -10%, rgba(16,198,209,.18), transparent 50%),
-                  radial-gradient(900px 500px at 90% 0%, rgba(255,127,17,.14), transparent 55%),
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
+      background: radial-gradient(1100px 500px at 18% -10%, rgba(16,198,209,.18), transparent 55%),
+                  radial-gradient(900px 450px at 90% 0%, rgba(255,127,17,.14), transparent 55%),
                   var(--bg);
-      color: var(--text);
     }
-
     header{
-      position: sticky;
-      top: 0;
-      z-index: 20;
+      position:sticky; top:0; z-index:10;
       backdrop-filter: blur(10px);
-      background: rgba(255,255,255,.75);
-      border-bottom: 1px solid rgba(229,231,235,.7);
+      background: rgba(255,255,255,.78);
+      border-bottom:1px solid rgba(229,231,235,.7);
     }
-
     .header-inner{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 18px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 12px;
+      max-width:1200px; margin:0 auto; padding:16px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width: 240px;
-    }
-
+    .brand{display:flex; align-items:center; gap:12px}
     .logo{
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
+      width:42px; height:42px; border-radius:12px;
       background: linear-gradient(135deg, var(--turq), var(--orange));
-      box-shadow: var(--shadow-soft);
+      box-shadow: 0 10px 18px rgba(17,24,39,.12);
     }
-
-    .title-wrap h1{
-      font-size: 16px;
-      margin:0;
-      line-height:1.2;
-      letter-spacing: .2px;
-    }
-    .title-wrap p{
-      margin:2px 0 0 0;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .badge{
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--muted);
-      display:flex;
-      align-items:center;
-      gap:8px;
-      white-space: nowrap;
-    }
-    .dot{
-      width: 8px; height: 8px; border-radius: 999px;
-      background: var(--turq);
-      box-shadow: 0 0 0 4px rgba(16,198,209,.18);
-    }
-
-    main{
-      max-width: 1200px;
-      margin: 18px auto 36px;
-      padding: 0 16px;
-    }
-
+    h1{font-size:16px; margin:0; line-height:1.2}
+    .sub{font-size:12px; color:var(--muted); margin:2px 0 0}
+    main{max-width:1200px; margin:18px auto 36px; padding:0 16px;}
     .card{
-      background: var(--card);
-      border: 1px solid rgba(229,231,235,.9);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
+      background:var(--card); border:1px solid rgba(229,231,235,.9);
+      border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;
     }
-
     .card-head{
-      padding: 16px 16px 10px 16px;
-      border-bottom: 1px solid var(--border);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
+      padding:14px 16px; border-bottom:1px solid var(--border);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
     }
-
-    .card-head h2{
-      margin:0;
-      font-size: 14px;
-      letter-spacing: .2px;
-    }
-    .card-head span{
-      display:block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .filters{
-      padding: 14px 16px 16px;
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0,1fr));
-      gap: 12px;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      text-align:left;
-    }
-    .field label{
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .input{
-      width: 100%;
-      height: 40px;
-      padding: 0 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #fff;
-      outline: none;
-      transition: box-shadow .15s ease, border-color .15s ease;
-      font-size: 13px;
-    }
-    .input:focus{
-      border-color: rgba(16,198,209,.9);
-      box-shadow: 0 0 0 4px rgba(16,198,209,.16);
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      padding: 0 16px 16px;
-    }
-
-    .btn{
-      height: 40px;
-      padding: 0 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #fff;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--text);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      transition: transform .08s ease, box-shadow .15s ease, border-color .15s ease;
-    }
-    .btn:hover{
-      border-color: rgba(255,127,17,.55);
-      box-shadow: var(--shadow-soft);
-    }
-    .btn:active{ transform: translateY(1px); }
-
-    .btn.primary{
-      border: none;
-      color: #fff;
-      background: linear-gradient(135deg, var(--turq-2), var(--orange-2));
-      box-shadow: 0 10px 20px rgba(16,198,209,.16);
-    }
-    .btn.primary:hover{
-      box-shadow: 0 14px 24px rgba(255,127,17,.16);
-    }
-
-    .statusline{
-      margin-left:auto;
-      color: var(--muted);
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .table-wrap{
-      overflow: auto;
-      border-top: 1px solid var(--border);
-    }
-
-    table{
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1050px;
-      font-size: 13px;
-    }
-
-    thead th{
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      background: linear-gradient(180deg, rgba(16,198,209,.10), rgba(255,255,255,1));
-      border-bottom: 1px solid var(--border);
-      color: #0f172a;
-      text-align:left;
-      padding: 12px 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    tbody td{
-      border-bottom: 1px solid rgba(229,231,235,.9);
-      padding: 10px 12px;
-      vertical-align: top;
-      color: #111827;
-    }
-
-    tbody tr:nth-child(2n){
-      background: rgba(243,244,246,.55);
-    }
-
-    tbody tr:hover{
-      background: rgba(16,198,209,.08);
-    }
-
+    .card-head h2{margin:0; font-size:14px}
+    .card-head .hint{margin-top:4px; font-size:12px; color:var(--muted)}
     .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 6px 10px;
-      border-
+      font-size:12px; font-weight:700; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,127,17,.22); background: rgba(255,127,17,.10); color:#9a4a00;
+      white-space:nowrap;
+    }
+    .filters{
+      padding:14px 16px 16px;
+      display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:12px;
+    }
+    .field{display:flex; flex-direction:column; gap:6px}
+    .field label{font-size:12px; color:var(--muted)}
+    .input{
+      height:40px; border-radius:12px; border:1px solid var(--border);
+      padding:0 12px; outline:none; font-size:13px;
+      transition: box-shadow .15s ease, border-color .15s ease;
+      background:#fff;
+    }
+    .input:focus{ border-color: rgba(16,198,209,.9); box-shadow: 0 0 0 4px rgba(16,198,209,.16); }
+    .actions{
+      display:flex; gap:10px; align-items:center; padding:0 16px 16px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      height:40px; padding:0 14px; border-radius:12px; border:1px solid var(--border);
+      background:#fff; cursor:pointer; font-size:13px;
+    }
+    .btn.primary{
+      border:none; color:#fff;
+      background: linear-gradient(135deg, var(--turq2), var(--orange2));
+      box-shadow: 0 10px 18px rgba(16,198,209,.18);
+    }
+    .statusline{ margin-left:auto; font-size:12px; color:var(--muted); }
+    .errorbox{
+      display:none;
+      margin: 0 16px 16px;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(239,68,68,.25);
+      background: rgba(239,68,68,.08);
+      color: #7f1d1d;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+    .table-wrap{overflow:auto; border-top:1px solid var(--border);}
+    table{width:100%; border-collapse:collapse; min-width:1100px; font-size:13px;}
+    thead th{
+      position:sticky; top:0; z-index:5;
+      background: linear-gradient(180deg, rgba(16,198,209,.10), rgba(255,255,255,1));
+      border-bottom:1px solid var(--border);
+      padding:12px; text-align:left; white-space:nowrap;
+    }
+    tbody td{ border-bottom:1px solid rgba(229,231,235,.9); padding:10px 12px; vertical-align:top; }
+    tbody tr:nth-child(2n){ background: rgba(243,244,246,.55); }
+    tbody tr:hover{ background: rgba(16,198,209,.08); }
+    @media (max-width:980px){ .filters{grid-template-columns: repeat(2, minmax(0,1fr));} }
+    @media (max-width:520px){ .filters{grid-template-columns:1fr;} .statusline{width:100%; margin-left:0;} }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Consulta de Requisiciones y Compras 2026</h1>
+          <div class="sub">Turquesa • Gris • Naranja · Consulta en Google Sheets (solo lectura)</div>
+        </div>
+      </div>
+      <div class="pill" id="countPill">0 resultados</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Filtros</h2>
+          <div class="hint">Escribe para filtrar. Si algo falla, verás el error aquí abajo.</div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="field"><label>Fecha</label><input class="input" id="filtroFecha" placeholder="Ej. 03/02/2026"></div>
+        <div class="field"><label>Requisición</label><input class="input" id="filtroRequisicion" placeholder="Ej. 03237"></div>
+        <div class="field"><label>Orden de compra</label><input class="input" id="filtroOrden" placeholder="OC..."></div>
+        <div class="field"><label>Dependencia</label><input class="input" id="filtroDependencia" placeholder="Talleres / Vialidades..."></div>
+
+        <div class="field"><label>Proveedor</label><input class="input" id="filtroProveedor" placeholder="Nombre proveedor"></div>
+        <div class="field"><label>Unidad / Núm. Económico</label><input class="input" id="filtroNumero" placeholder="Ej. 3529"></div>
+        <div class="field"><label>Descripción breve</label><input class="input" id="filtroPedido" placeholder="Texto en H"></div>
+        <div class="field"><label>Factura</label><input class="input" id="filtroFactura" placeholder="F0000 / UUID"></div>
+
+        <!-- SOLO LOS 2 QUE PEDISTE -->
+        <div class="field"><label>Solicitud de pago</label><input class="input" id="filtroSolicitudPago" placeholder="Folio / solicitud (F)"></div>
+        <div class="field"><label>Acuse</label><input class="input" id="filtroAcuse" placeholder="Acuse (R)"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="btnRecargar">Recargar</button>
+        <button class="btn" id="btnLimpiar">Limpiar filtros</button>
+        <div class="statusline" id="statusLine">Listo</div>
+      </div>
+
+      <div class="errorbox" id="errorBox"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Requisición</th>
+              <th>Orden de Compra</th>
+              <th>Solicitud de Pago</th>
+              <th>Dependencia</th>
+              <th>Descripción breve</th>
+              <th>Status</th>
+              <th>Proveedor</th>
+              <th>Unidad</th>
+              <th>Descripción de Unidad</th>
+              <th>Monto</th>
+              <th>Factura</th>
+              <th>Acuse</th>
+            </tr>
+          </thead>
+          <tbody id="dataTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // === CONFIG ===
+    const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
+    const sheetId = '1KCb4MGK__D8iKa1JPVE7eB03RTx-so0BUNKB966lq_Y';
+    const range   = 'Requis!A2:R';
+
+    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+
+    const statusLine = document.getElementById('statusLine');
+    const countPill  = document.ge
