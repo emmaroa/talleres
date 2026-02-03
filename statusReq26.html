@@ -182,12 +182,169 @@
   </main>
 
   <script>
-    // === CONFIG ===
-    const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
-    const sheetId = '1KCb4MGK__D8iKa1JPVE7eB03RTx-so0BUNKB966lq_Y';
-    const range   = 'Requis!A2:R';
+  // === CONFIG ===
+  const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
+  const sheetId = '1KCb4MGK__D8iKa1JPVE7eB03RTx-so0BUNKB966lq_Y';
+  const range   = 'Requis!A2:R';
 
-    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+  // OJO: aquí el range va codificado en el path
+  const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
 
-    const statusLine = document.getElementById('statusLine');
-    const countPill  = document.ge
+  const statusLine = document.getElementById('statusLine');
+  const countPill  = document.getElementById('countPill');
+  const errorBox   = document.getElementById('errorBox');
+
+  function setStatus(msg) {
+    statusLine.textContent = msg;
+  }
+  function showError(msg) {
+    errorBox.style.display = 'block';
+    errorBox.textContent = msg;
+  }
+  function clearError() {
+    errorBox.style.display = 'none';
+    errorBox.textContent = '';
+  }
+
+  function getVal(id) {
+    const el = document.getElementById(id);
+    return (el?.value || '').toLowerCase();
+  }
+
+  async function fetchData() {
+    clearError();
+    try {
+      setStatus('Cargando datos...');
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'origin' // <-- CLAVE para evitar referer <empty>
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        showError(
+          `ERROR HTTP ${response.status}\n\n` +
+          `origin: ${location.origin}\n` +
+          `referrer: ${(document.referrer || '<empty>')}\n\n` +
+          JSON.stringify(data, null, 2)
+        );
+        setStatus('Error al cargar.');
+        return [];
+      }
+
+      setStatus('Datos cargados.');
+      return data.values || [];
+    } catch (err) {
+      showError(`Error de red/JS:\n${err?.message || err}`);
+      setStatus('Error de red.');
+      return [];
+    }
+  }
+
+  function applyFilters(data) {
+    // Inputs existentes + los 2 que pediste
+    const fecha         = getVal('filtroFecha');          // A
+    const requisicion   = getVal('filtroRequisicion');    // B
+    const orden         = getVal('filtroOrden');          // D
+    const dependencia   = getVal('filtroDependencia');    // G
+    const proveedor     = getVal('filtroProveedor');      // K
+    const unidad        = getVal('filtroNumero');         // L
+    const descripcion   = getVal('filtroPedido');         // H
+    const factura       = getVal('filtroFactura');        // Q
+    const solicitudPago = getVal('filtroSolicitudPago');  // F
+    const acuse         = getVal('filtroAcuse');          // R
+
+    return data.filter(row =>
+      (row[0]  || '').toLowerCase().includes(fecha) &&         // A fecha
+      (row[1]  || '').toLowerCase().includes(requisicion) &&   // B requisición
+      (row[3]  || '').toLowerCase().includes(orden) &&         // D orden compra
+      (row[6]  || '').toLowerCase().includes(dependencia) &&   // G dependencia
+      (row[10] || '').toLowerCase().includes(proveedor) &&     // K proveedor
+      (row[11] || '').toLowerCase().includes(unidad) &&        // L unidad
+      (row[7]  || '').toLowerCase().includes(descripcion) &&   // H descripción breve
+      (row[16] || '').toLowerCase().includes(factura) &&       // Q factura
+      (row[5]  || '').toLowerCase().includes(solicitudPago) && // F solicitud pago
+      (row[17] || '').toLowerCase().includes(acuse)            // R acuse
+    );
+  }
+
+  function renderTable(data) {
+    const tbody = document.getElementById('dataTable');
+    tbody.innerHTML = '';
+
+    data.forEach(row => {
+      const tr = document.createElement('tr');
+
+      // Tu mapa de columnas:
+      // A0, B1, D3, F5, G6, H7, I8, K10, L11, M12, P15, Q16, R17
+      const selected = [
+        row[0],  // Fecha
+        row[1],  // Requisición
+        row[3],  // Orden de Compra
+        row[5],  // Solicitud de Pago
+        row[6],  // Dependencia
+        row[7],  // Descripción breve
+        row[8],  // Status
+        row[10], // Proveedor
+        row[11], // Unidad
+        row[12], // Descripción de unidad
+        row[15], // Monto
+        row[16], // Factura
+        row[17]  // Acuse
+      ];
+
+      selected.forEach(cell => {
+        const td = document.createElement('td');
+        td.textContent = cell || '';
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    });
+
+    countPill.textContent = `${data.length} resultados`;
+  }
+
+  function clearFilters() {
+    document.querySelectorAll('input.input').forEach(i => i.value = '');
+  }
+
+  let allData = [];
+
+  async function init(loadFresh = true) {
+    if (loadFresh) allData = await fetchData();
+    const filtered = applyFilters(allData);
+    renderTable(filtered);
+
+    if (!allData.length && errorBox.style.display === 'none') {
+      showError(
+        'No llegaron filas.\n\n' +
+        'Revisa:\n' +
+        '1) La hoja está "Cualquiera con el enlace: Lector"\n' +
+        '2) La pestaña se llama EXACTO: Requis\n' +
+        '3) Hay datos desde A2\n'
+      );
+    }
+  }
+
+  // Filtra al escribir (tiempo real)
+  document.querySelectorAll('input.input').forEach(inp => {
+    inp.addEventListener('input', () => init(false));
+  });
+
+  document.getElementById('btnLimpiar').addEventListener('click', () => {
+    clearFilters();
+    init(false);
+  });
+
+  document.getElementById('btnRecargar').addEventListener('click', () => {
+    init(true);
+  });
+
+  init(true);
+</script>
