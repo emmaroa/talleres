@@ -4,178 +4,255 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Consulta de Requisiciones 2026</title>
+
   <style>
-    body { font-family: Arial, sans-serif; background-color: #fdf6ec; color: #333; margin: 0; padding: 0; }
-    header { background-color: #f57c00; color: white; padding: 15px; text-align: center; }
-    .main-screen { padding: 20px; text-align: center; }
-    input[type="text"] { width: 180px; padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 5px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
-    th, td { border: 1px solid #ddd; padding: 8px; }
-    th { background-color: #ffe0b2; }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Consulta de Requisiciones y Compras 2026</h1>
-  </header>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
 
-  <div class="main-screen">
-    <h2>Filtrar Información</h2>
-    <input type="text" id="filtroFecha" placeholder="Fecha" />
-    <input type="text" id="filtroRequisicion" placeholder="Requisición" />
-    <input type="text" id="filtroOrden" placeholder="Orden de Compra" />
-    <input type="text" id="filtroDependencia" placeholder="Dependencia" />
-    <input type="text" id="filtroProveedor" placeholder="Proveedor" />
-    <input type="text" id="filtroNumero" placeholder="Número Económico" />
-    <input type="text" id="filtroPedido" placeholder="Pedido" />
-    <input type="text" id="filtroFactura" placeholder="Factura" />
+      --turq: #10c6d1;
+      --turq-2: #0ea5b0;
+      --orange: #ff7f11;
+      --orange-2: #f97316;
 
-    <table>
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Requisición</th>
-          <th>Orden de Compra</th>
-          <th>Solicitud de Pago</th>
-          <th>Dependencia</th>
-          <th>Descripcion del Pedido</th>
-          <th>Status</th>
-          <th>Proveedor</th>
-          <th>Unidad / Núm. Económico</th>
-          <th>Descripción de Unidad</th>
-          <th>Monto</th>
-          <th>Factura</th>
-          <th>Acuse de Envio</th>
-        </tr>
-      </thead>
-      <tbody id="dataTable"></tbody>
-    </table>
-  </div>
-
-  <script>
-    // 1) Pega tu API Key (restringida) o deja la misma si ya te funciona
-    const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
-
-    // 2) Pega el ID de TU HOJA NUEVA (lo que va entre /d/ y /edit)
-    const sheetId = '1KCb4MGK__D8iKa1JPVE7eB03RTx-so0BUNKB966lq_Y';
-
-    // 3) Nombre exacto de la pestaña
-    const range   = 'Requis!A2:R';
-
-    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
-
-    async function fetchData() {
-      try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        if (!response.ok) {
-          console.error('Error API:', data);
-          return [];
-        }
-        return data.values || [];
-      } catch (error) {
-        console.error('Error al obtener datos:', error);
-        return [];
-      }
+      --shadow: 0 12px 28px rgba(17, 24, 39, 0.08);
+      --shadow-soft: 0 8px 18px rgba(17, 24, 39, 0.06);
+      --radius: 16px;
     }
 
-    function renderTable(data) {
-      const table = document.getElementById('dataTable');
-      table.innerHTML = '';
-
-      data.forEach(row => {
-        const tr = document.createElement('tr');
-
-        // Índices por columna:
-        // A=0 Fecha
-        // B=1 Requisición
-        // D=3 Orden de Compra
-        // F=5 Solicitud de pago
-        // G=6 Dependencia
-        // H=7 Descripcion breve pedido
-        // I=8 Descripcion breve pedido
-        // J=9 Status
-        // K=10 Proveedor
-        // L=11 Unidad/Num. Economico
-        // M=12 Des. unidad
-        // P=15 Monto
-       // Q=16 Factura
-        // R=17 Acuse
-
-
-        
-        const selectedColumns = [
-          row[0],   // Fecha (A)
-          row[1],   // Requisición (B)
-          row[3],   // Orden (D)
-          row[5],   // Solicitud de pago(F)
-          row[6],   // Dependencia (G)
-          row[7],   // Descripcion pedido (H)
-          row[8],   // Estatus(J)
-          row[10],  // Proveedor (K)
-          row[11],  // unidad (L)
-          row[12],  // desc. unidad (M)
-          row[15]   // Monto (P)
-          row[16]   // Factura (Q)
-          row[17]   // Acuse (R)
-        ];
-
-        selectedColumns.forEach(cell => {
-          const td = document.createElement('td');
-          td.textContent = cell || '';
-          tr.appendChild(td);
-        });
-
-        table.appendChild(tr);
-      });
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(16,198,209,.18), transparent 50%),
+                  radial-gradient(900px 500px at 90% 0%, rgba(255,127,17,.14), transparent 55%),
+                  var(--bg);
+      color: var(--text);
     }
 
-    function applyFilters(data) {
-      const fecha      = document.getElementById('filtroFecha').value.toLowerCase();
-      const requisicion= document.getElementById('filtroRequisicion').value.toLowerCase();
-      const orden      = document.getElementById('filtroOrden').value.toLowerCase();
-      const solicitud= document.getElementById('filtroSolicitud').value.toLowerCase();
-      const dependencia  = document.getElementById('filtroDependencia').value.toLowerCase();
-      const descripcion     = document.getElementById('filtroDescripcion').value.toLowerCase();
-      const status     = document.getElementById('filtroStatus').value.toLowerCase();
-      const proveedor    = document.getElementById('filtroProveedor').value.toLowerCase();
-            const unidad    = document.getElementById('filtroUnidad').value.toLowerCase();
-            const des_unidad    = document.getElementById('filtroDes_Unidad').value.toLowerCase();
-      const monto    = document.getElementById('filtroMonto').value.toLowerCase();
-      const factura    = document.getElementById('filtroFactura').value.toLowerCase();
-      const acuse    = document.getElementById('filtroAcuse').value.toLowerCase();
-
-
-      return data.filter(row =>
-        (row[0]  || '').toLowerCase().includes(fecha) &&       // A Fecha
-        (row[1]  || '').toLowerCase().includes(requisicion) && // B REQUISICION
-        (row[3]  || '').toLowerCase().includes(orden) &&       // D ORDEN DE COMPRA
-        (row[5]  || '').toLowerCase().includes(solicitud) && // F SOLICITUD DE PAGO
-        (row[6]  || '').toLowerCase().includes(dependencia) &&      // G DEPENDENCIA
-        (row[7]  || '').toLowerCase().includes(descripcion) &&   // H DESCRIPCION PEDIDO
-        (row[8] || '').toLowerCase().includes(status) &&      // I ESTATUS
-        (row[10] || '').toLowerCase().includes(proveedor) &&       // K PROVEEDOR
-        (row[11] || '').toLowerCase().includes(unidad) &&       // L UNIDAD
-        (row[12] || '').toLowerCase().includes(des_unidad) &&       // M DESCP UNIDAD
-        (row[15] || '').toLowerCase().includes(monto) &&       // P MONTO
-        (row[16] || '').toLowerCase().includes(factura) &&       // Q FACTURA
-        (row[17] || '').toLowerCase().includes(acuse) &&       // R ACUSE DE ENVIO
-              
-      );
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.75);
+      border-bottom: 1px solid rgba(229,231,235,.7);
     }
 
-    async function init() {
-      const allData = await fetchData();
-      renderTable(allData);
-
-      document.querySelectorAll('input[type="text"]').forEach(input => {
-        input.addEventListener('input', () => {
-          renderTable(applyFilters(allData));
-        });
-      });
+    .header-inner{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
     }
 
-    init();
-  </script>
-</body>
-</html>
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 240px;
+    }
+
+    .logo{
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--turq), var(--orange));
+      box-shadow: var(--shadow-soft);
+    }
+
+    .title-wrap h1{
+      font-size: 16px;
+      margin:0;
+      line-height:1.2;
+      letter-spacing: .2px;
+    }
+    .title-wrap p{
+      margin:2px 0 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .badge{
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--muted);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      white-space: nowrap;
+    }
+    .dot{
+      width: 8px; height: 8px; border-radius: 999px;
+      background: var(--turq);
+      box-shadow: 0 0 0 4px rgba(16,198,209,.18);
+    }
+
+    main{
+      max-width: 1200px;
+      margin: 18px auto 36px;
+      padding: 0 16px;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(229,231,235,.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-head{
+      padding: 16px 16px 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .card-head h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: .2px;
+    }
+    .card-head span{
+      display:block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .filters{
+      padding: 14px 16px 16px;
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 12px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      text-align:left;
+    }
+    .field label{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .input{
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      outline: none;
+      transition: box-shadow .15s ease, border-color .15s ease;
+      font-size: 13px;
+    }
+    .input:focus{
+      border-color: rgba(16,198,209,.9);
+      box-shadow: 0 0 0 4px rgba(16,198,209,.16);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding: 0 16px 16px;
+    }
+
+    .btn{
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      transition: transform .08s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .btn:hover{
+      border-color: rgba(255,127,17,.55);
+      box-shadow: var(--shadow-soft);
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .btn.primary{
+      border: none;
+      color: #fff;
+      background: linear-gradient(135deg, var(--turq-2), var(--orange-2));
+      box-shadow: 0 10px 20px rgba(16,198,209,.16);
+    }
+    .btn.primary:hover{
+      box-shadow: 0 14px 24px rgba(255,127,17,.16);
+    }
+
+    .statusline{
+      margin-left:auto;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .table-wrap{
+      overflow: auto;
+      border-top: 1px solid var(--border);
+    }
+
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1050px;
+      font-size: 13px;
+    }
+
+    thead th{
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: linear-gradient(180deg, rgba(16,198,209,.10), rgba(255,255,255,1));
+      border-bottom: 1px solid var(--border);
+      color: #0f172a;
+      text-align:left;
+      padding: 12px 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    tbody td{
+      border-bottom: 1px solid rgba(229,231,235,.9);
+      padding: 10px 12px;
+      vertical-align: top;
+      color: #111827;
+    }
+
+    tbody tr:nth-child(2n){
+      background: rgba(243,244,246,.55);
+    }
+
+    tbody tr:hover{
+      background: rgba(16,198,209,.08);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 10px;
+      border-
