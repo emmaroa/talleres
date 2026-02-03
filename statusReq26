@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Consulta de Requisiciones 2026</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #fdf6ec; color: #333; margin: 0; padding: 0; }
+    header { background-color: #f57c00; color: white; padding: 15px; text-align: center; }
+    .main-screen { padding: 20px; text-align: center; }
+    input[type="text"] { width: 180px; padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 5px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background-color: #ffe0b2; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Consulta de Requisiciones y Compras 2026</h1>
+  </header>
+
+  <div class="main-screen">
+    <h2>Filtrar Información</h2>
+    <input type="text" id="filtroFecha" placeholder="Fecha" />
+    <input type="text" id="filtroRequisicion" placeholder="Requisición" />
+    <input type="text" id="filtroOrden" placeholder="Orden de Compra" />
+    <input type="text" id="filtroDependencia" placeholder="Dependencia" />
+    <input type="text" id="filtroProveedor" placeholder="Proveedor" />
+    <input type="text" id="filtroNumero" placeholder="Número Económico" />
+    <input type="text" id="filtroPedido" placeholder="Pedido" />
+    <input type="text" id="filtroFactura" placeholder="Factura" />
+
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Requisición</th>
+          <th>Orden de Compra</th>
+          <th>Solicitud de Pago</th>
+          <th>Dependencia</th>
+          <th>Descripcion del Pedido</th>
+          <th>Status</th>
+          <th>Proveedor</th>
+          <th>Unidad / Núm. Económico</th>
+          <th>Descripción de Unidad</th>
+          <th>Monto</th>
+          <th>Factura</th>
+          <th>Acuse de Envio</th>
+        </tr>
+      </thead>
+      <tbody id="dataTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    // 1) Pega tu API Key (restringida) o deja la misma si ya te funciona
+    const apiKey  = 'AIzaSyDM8m9-bZM2stDAt1V0i-H-iStD0Vi6Z7k';
+
+    // 2) Pega el ID de TU HOJA NUEVA (lo que va entre /d/ y /edit)
+    const sheetId = '1KCb4MGK__D8iKa1JPVE7eB03RTx-so0BUNKB966lq_Y';
+
+    // 3) Nombre exacto de la pestaña
+    const range   = 'Requis!A2:R';
+
+    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+
+    async function fetchData() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        if (!response.ok) {
+          console.error('Error API:', data);
+          return [];
+        }
+        return data.values || [];
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+        return [];
+      }
+    }
+
+    function renderTable(data) {
+      const table = document.getElementById('dataTable');
+      table.innerHTML = '';
+
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+
+        // Índices por columna:
+        // A=0 Fecha
+        // B=1 Requisición
+        // D=3 Orden de Compra
+        // F=5 Solicitud de pago
+        // G=6 Dependencia
+        // H=7 Descripcion breve pedido
+        // I=8 Descripcion breve pedido
+        // J=9 Status
+        // K=10 Proveedor
+        // L=11 Unidad/Num. Economico
+        // M=12 Des. unidad
+        // P=15 Monto
+       // Q=16 Factura
+        // R=17 Acuse
+
+
+        
+        const selectedColumns = [
+          row[0],   // Fecha (A)
+          row[1],   // Requisición (B)
+          row[3],   // Orden (D)
+          row[5],   // Solicitud de pago(F)
+          row[6],   // Dependencia (G)
+          row[7],   // Descripcion pedido (H)
+          row[8],   // Estatus(J)
+          row[10],  // Proveedor (K)
+          row[11],  // unidad (L)
+          row[12],  // desc. unidad (M)
+          row[15]   // Monto (P)
+          row[16]   // Factura (Q)
+          row[17]   // Acuse (R)
+        ];
+
+        selectedColumns.forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell || '';
+          tr.appendChild(td);
+        });
+
+        table.appendChild(tr);
+      });
+    }
+
+    function applyFilters(data) {
+      const fecha      = document.getElementById('filtroFecha').value.toLowerCase();
+      const requisicion= document.getElementById('filtroRequisicion').value.toLowerCase();
+      const orden      = document.getElementById('filtroOrden').value.toLowerCase();
+      const solicitud= document.getElementById('filtroSolicitud').value.toLowerCase();
+      const dependencia  = document.getElementById('filtroDependencia').value.toLowerCase();
+      const descripcion     = document.getElementById('filtroDescripcion').value.toLowerCase();
+      const status     = document.getElementById('filtroStatus').value.toLowerCase();
+      const proveedor    = document.getElementById('filtroProveedor').value.toLowerCase();
+            const unidad    = document.getElementById('filtroUnidad').value.toLowerCase();
+            const des_unidad    = document.getElementById('filtroDes_Unidad').value.toLowerCase();
+      const monto    = document.getElementById('filtroMonto').value.toLowerCase();
+      const factura    = document.getElementById('filtroFactura').value.toLowerCase();
+      const acuse    = document.getElementById('filtroAcuse').value.toLowerCase();
+
+
+      return data.filter(row =>
+        (row[0]  || '').toLowerCase().includes(fecha) &&       // A Fecha
+        (row[1]  || '').toLowerCase().includes(requisicion) && // B REQUISICION
+        (row[3]  || '').toLowerCase().includes(orden) &&       // D ORDEN DE COMPRA
+        (row[5]  || '').toLowerCase().includes(solicitud) && // F SOLICITUD DE PAGO
+        (row[6]  || '').toLowerCase().includes(dependencia) &&      // G DEPENDENCIA
+        (row[7]  || '').toLowerCase().includes(descripcion) &&   // H DESCRIPCION PEDIDO
+        (row[8] || '').toLowerCase().includes(status) &&      // I ESTATUS
+        (row[10] || '').toLowerCase().includes(proveedor) &&       // K PROVEEDOR
+        (row[11] || '').toLowerCase().includes(unidad) &&       // L UNIDAD
+        (row[12] || '').toLowerCase().includes(des_unidad) &&       // M DESCP UNIDAD
+        (row[15] || '').toLowerCase().includes(monto) &&       // P MONTO
+        (row[16] || '').toLowerCase().includes(factura) &&       // Q FACTURA
+        (row[17] || '').toLowerCase().includes(acuse) &&       // R ACUSE DE ENVIO
+              
+      );
+    }
+
+    async function init() {
+      const allData = await fetchData();
+      renderTable(allData);
+
+      document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener('input', () => {
+          renderTable(applyFilters(allData));
+        });
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
