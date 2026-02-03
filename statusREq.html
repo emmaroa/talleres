@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Consulta de Requisiciones 2025</title>
+
   <style>
     body{
       font-family: Arial, sans-serif;
@@ -34,10 +35,10 @@
       padding:8px;
       border:1px solid #ccc;
       border-radius:6px;
-      outline:none;
     }
     input[type="text"]:focus{
       border-color:#f57c00;
+      outline:none;
     }
     table{
       width:100%;
@@ -77,13 +78,11 @@
       <input type="text" id="filtroDependencia" placeholder="Dependencia" />
       <input type="text" id="filtroProveedor" placeholder="Proveedor" />
       <input type="text" id="filtroNumero" placeholder="Número Económico" />
-      <input type="text" id="filtroPedido" placeholder="Pedido" />
+      <input type="text" id="filtroPedido" placeholder="Pedido (Descripción breve)" />
       <input type="text" id="filtroFactura" placeholder="Factura" />
     </div>
 
-    <div class="hint">
-      Nota: el filtro <b>Pedido</b> está ligado a la columna <b>SOL PAGO</b> (E) en tu hoja, como lo acordamos.
-    </div>
+
 
     <table>
       <thead>
@@ -109,7 +108,7 @@
     /********* CONFIG *********/
     const apiKey  = 'AIzaSyDM8m9-bZM2stDAt1V0i-H-iStD0Vi6Z7k';
     const sheetId = '1L6EsYC_PNp7lxjqTgVaGEFuXsINWBUsxWYsMzBAQ55Y';
-    const range   = 'Requis!A2:P'; // A..P (0..15)
+    const range   = 'Requis!A2:P';
 
     const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
@@ -131,15 +130,13 @@
       data.forEach(row => {
         const tr = document.createElement('tr');
 
-        // Encabezados de tu hoja:
-        // A fecha | C REQ | D ORDEN | F DEPENDENCIA | E SOL PAGO (aquí lo llamas "Pedido")
-        // H STATUS SIFF | J PROOV | K UNIDAD | L DESC VEHICULO | O MONTO | P FACTURA
+        // Pedido = DESCRIPCIÓN BREVE (G)
         const selectedColumns = [
           row[0],   // Fecha (A)
           row[2],   // REQ (C)
           row[3],   // ORDEN (D)
           row[5],   // DEPENDENCIA (F)
-          row[6],   // SOL PAGO (E) -> mostrado como "Pedido"
+          row[6],   // DESCRIPCIÓN BREVE (G) -> Pedido
           row[7],   // STATUS SIFF (H)
           row[9],   // PROOV (J)
           row[10],  // UNIDAD (K)
@@ -164,19 +161,19 @@
       const orden       = document.getElementById('filtroOrden').value.toLowerCase();
       const dependencia = document.getElementById('filtroDependencia').value.toLowerCase();
       const proveedor   = document.getElementById('filtroProveedor').value.toLowerCase();
-      const numero      = document.getElementById('filtroNumero').value.toLowerCase();  // Número Económico -> UNIDAD (K)
-      const pedido      = document.getElementById('filtroPedido').value.toLowerCase();  // "Pedido" -> SOL PAGO (E)
+      const numero      = document.getElementById('filtroNumero').value.toLowerCase();
+      const pedido      = document.getElementById('filtroPedido').value.toLowerCase();
       const factura     = document.getElementById('filtroFactura').value.toLowerCase();
 
       return data.filter(row =>
-        ((row[0]  || '').toLowerCase().includes(fecha)) &&        // Fecha (A)
-        ((row[2]  || '').toLowerCase().includes(requisicion)) &&  // REQ (C)
-        ((row[3]  || '').toLowerCase().includes(orden)) &&        // ORDEN (D)
-        ((row[5]  || '').toLowerCase().includes(dependencia)) &&  // DEPENDENCIA (F)
-        ((row[9]  || '').toLowerCase().includes(proveedor)) &&    // PROOV (J)
-        ((row[10] || '').toLowerCase().includes(numero)) &&       // UNIDAD (K) (lo estás usando como Número Económico)
-        ((row[4]  || '').toLowerCase().includes(pedido)) &&       // SOL PAGO (E) mostrado como "Pedido"
-        ((row[15] || '').toLowerCase().includes(factura))         // FACTURA (P)
+        ((row[0]  || '').toLowerCase().includes(fecha)) &&
+        ((row[2]  || '').toLowerCase().includes(requisicion)) &&
+        ((row[3]  || '').toLowerCase().includes(orden)) &&
+        ((row[5]  || '').toLowerCase().includes(dependencia)) &&
+        ((row[9]  || '').toLowerCase().includes(proveedor)) &&
+        ((row[10] || '').toLowerCase().includes(numero)) &&
+        ((row[6]  || '').toLowerCase().includes(pedido)) &&   // DESCRIPCIÓN BREVE
+        ((row[15] || '').toLowerCase().includes(factura))
       );
     }
 
@@ -186,8 +183,7 @@
 
       document.querySelectorAll('input[type="text"]').forEach(input => {
         input.addEventListener('input', () => {
-          const filtered = applyFilters(allData);
-          renderTable(filtered);
+          renderTable(applyFilters(allData));
         });
       });
     }
@@ -196,7 +192,6 @@
   </script>
 </body>
 </html>
-
 
 
 
