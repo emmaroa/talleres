@@ -105,6 +105,44 @@
     tbody tr:hover{ background: rgba(16,198,209,.08); }
     @media (max-width:980px){ .filters{grid-template-columns: repeat(2, minmax(0,1fr));} }
     @media (max-width:520px){ .filters{grid-template-columns:1fr;} .statusline{width:100%; margin-left:0;} }
+
+    /* === ANCHO DE COLUMNAS === */
+table th:nth-child(1),
+table td:nth-child(1) { width: 90px; }   /* Fecha */
+
+table th:nth-child(2),
+table td:nth-child(2) { width: 110px; }  /* Requisición */
+
+table th:nth-child(3),
+table td:nth-child(3) { width: 130px; }  /* Orden de compra */
+
+table th:nth-child(4),
+table td:nth-child(4) { width: 140px; }  /* Solicitud de pago */
+
+table th:nth-child(6),
+table td:nth-child(6) { width: 360px; }  /* 👈 Descripción breve (Pedido) */
+
+table th:nth-child(8),
+table td:nth-child(8) { width: 220px; }  /* Proveedor */
+
+table th:nth-child(9),
+table td:nth-child(9) { width: 120px; }  /* Unidad */
+
+table th:nth-child(11),
+table td:nth-child(11) { width: 120px; } /* Monto */
+
+    table td:nth-child(6) {
+  white-space: normal;
+  line-height: 1.4;
+}
+    table td:nth-child(1),
+table td:nth-child(2),
+table td:nth-child(3) {
+  white-space: nowrap;
+}
+
+
+    
   </style>
 </head>
 
