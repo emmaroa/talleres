@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portal de Pedidos · Refacciones</title>
+
+  <style>
+    :root{
+      /* Base */
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+
+      /* Marca (lo que hemos usado) */
+      --turq:#10c6d1;
+      --turq-700:#0ea5b0;
+      --orange:#ff7f11;
+      --orange-700:#f97316;
+
+      --shadow: 0 14px 34px rgba(15,23,42,.08);
+      --shadow2: 0 18px 46px rgba(15,23,42,.12);
+      --radius:18px;
+
+      --ring: rgba(16,198,209,.28);
+      --ring2: rgba(255,127,17,.22);
+    }
+
+    *{ box-sizing:border-box; }
+    html, body { height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 110% -10%, rgba(16,198,209,.12), transparent 60%),
+        radial-gradient(900px 520px at -10% 110%, rgba(255,127,17,.12), transparent 60%),
+        var(--bg);
+    }
+
+    /* ===== Topbar ===== */
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(229,231,235,.9);
+    }
+    .topbar{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap: 12px;
+      min-width: 260px;
+    }
+    .brand .logo{
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(16,198,209,.18), rgba(255,127,17,.14));
+      display:grid; place-items:center;
+      border: 1px solid rgba(229,231,235,.85);
+      box-shadow: 0 10px 22px rgba(15,23,42,.08);
+      overflow:hidden;
+    }
+    .brand .logo img{ width: 34px; height:auto; }
+    .brand .titles{
+      display:flex; flex-direction:column;
+      line-height: 1.1;
+    }
+    .brand .titles strong{ font-size: .98rem; letter-spacing: .2px; }
+    .brand .titles span{ font-size: .84rem; color: var(--muted); }
+
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(229,231,235,.95);
+      background: rgba(255,255,255,.8);
+      color: #0b5560;
+      box-shadow: 0 10px 22px rgba(15,23,42,.05);
+      font-weight: 800;
+      font-size: .85rem;
+      white-space: nowrap;
+    }
+    .chip i{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--turq);
+      box-shadow: 0 0 0 4px rgba(16,198,209,.16);
+      display:inline-block;
+    }
+
+    /* ===== Layout ===== */
+    main{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 22px 16px 40px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+    }
+    @media (max-width: 980px){
+      main{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(229,231,235,.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: clip;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .card:hover{ transform: translateY(-2px); box-shadow: var(--shadow2); }
+
+    .card-head{
+      padding: 16px 18px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(229,231,235,.95);
+      background:
+        linear-gradient(180deg, rgba(16,198,209,.10), transparent 55%),
+        linear-gradient(90deg, rgba(255,127,17,.08), transparent 45%);
+    }
+    .card-head h2{
+      margin:0;
+      font-size: 1.02rem;
+      letter-spacing:.2px;
+    }
+    .card-head p{
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .tag{
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,127,17,.28);
+      background: rgba(255,127,17,.10);
+      color: #6d3b09;
+      font-weight: 900;
+      font-size: .78rem;
+      white-space: nowrap;
+      height: fit-content;
+    }
+
+    /* ===== Form ===== */
+    form{ padding: 18px; }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 620px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .full{ grid-column: 1 / -1; }
+
+    label{
+      display:flex; align-items:center; gap:8px;
+      font-weight: 900;
+      font-size: .9rem;
+      color:#0f172a;
+      margin-bottom: 6px;
+    }
+    .req::after{ content:" *"; color: var(--orange); font-weight: 1000; }
+
+    .control{ position:relative; }
+    .control input, .control select{
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease, transform .04s ease;
+    }
+    .control input:focus, .control select:focus{
+      border-color: var(--turq-700);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+    .control input:active, .control select:active{ transform: translateY(.5px); }
+
+    .control.select::after{
+      content:"▾";
+      position:absolute;
+      right: 12px;
+      top: 42px;
+      pointer-events:none;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .hint{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: .83rem;
+    }
+
+    .actions{
+      margin-top: 10px;
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn{
+      flex: 1 1 220px;
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 14px;
+      font-size: 1.02rem;
+      font-weight: 1000;
+      letter-spacing:.2px;
+      cursor:pointer;
+      color:#fff;
+      background: linear-gradient(135deg, var(--orange) 0%, var(--turq) 100%);
+      box-shadow: 0 10px 26px rgba(255,127,17,.18), 0 8px 22px rgba(16,198,209,.16);
+      transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover{ filter: brightness(1.03); box-shadow: 0 14px 34px rgba(255,127,17,.20), 0 12px 28px rgba(16,198,209,.18); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus-visible{ outline:0; box-shadow: 0 0 0 4px var(--ring2); }
+
+    .btn-secondary{
+      flex: 0 1 auto;
+      border: 1px solid rgba(229,231,235,.95);
+      background: #fff;
+      color: #0f172a;
+      border-radius: 16px;
+      padding: 13px 14px;
+      font-size: .98rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(15,23,42,.06);
+    }
+    .btn-secondary:hover{ border-color: rgba(16,198,209,.35); box-shadow: 0 14px 30px rgba(15,23,42,.08); }
+
+    /* ===== Message ===== */
+    #mensaje{
+      margin: 0 18px 18px;
+      display:none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 900;
+      border: 1px solid transparent;
+    }
+    #mensaje.ok{
+      display:block;
+      background: rgba(16,198,209,.10);
+      color:#0a5560;
+      border-color: rgba(16,198,209,.35);
+    }
+    #mensaje.err{
+      display:block;
+      background: rgba(255,127,17,.12);
+      color:#6d3b09;
+      border-color: rgba(255,127,17,.35);
+    }
+
+    /* ===== Latest orders panel ===== */
+    .panel{
+      padding: 16px 18px 18px;
+    }
+    .panel-top{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom: 10px;
+    }
+    .panel-top strong{ font-size: .95rem; }
+    .refresh{
+      border: 1px solid rgba(229,231,235,.95);
+      background:#fff;
+      border-radius: 12px;
+      padding: 9px 10px;
+      cursor:pointer;
+      font-weight: 900;
+      color:#0f172a;
+    }
+    .refresh:hover{ border-color: rgba(16,198,209,.35); }
+
+    .list{
+      display:grid;
+      gap: 10px;
+    }
+    .item{
+      border: 1px solid rgba(229,231,235,.95);
+      border-radius: 16px;
+      padding: 12px 12px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 10px 22px rgba(15,23,42,.05);
+    }
+    .item .row{
+      display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 1000;
+      font-size: .78rem;
+      border: 1px solid rgba(229,231,235,.95);
+      background: rgba(246,247,251,.8);
+      color:#0f172a;
+      white-space: nowrap;
+    }
+    .pill .dot{
+      width:8px; height:8px; border-radius:999px;
+      background: var(--turq);
+      box-shadow: 0 0 0 4px rgba(16,198,209,.12);
+      display:inline-block;
+    }
+
+    .item h3{
+      margin: 8px 0 6px;
+      font-size: .98rem;
+      letter-spacing:.1px;
+      color:#0b1220;
+    }
+    .meta{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .84rem;
+    }
+    .meta b{ color:#111827; }
+
+    .skeleton{
+      border: 1px dashed rgba(229,231,235,.95);
+      border-radius: 16px;
+      padding: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.7);
+    }
+
+    footer{
+      max-width:1120px;
+      margin: 0 auto 18px;
+      padding: 0 16px;
+      color: var(--muted);
+      font-size: .85rem;
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .footer-line{
+      height: 1px;
+      background: rgba(229,231,235,.95);
+      margin: 16px 0 10px;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Escudo_de_Hermosillo.svg/509px-Escudo_de_Hermosillo.svg.png" alt="Escudo de Hermosillo">
+        </div>
+        <div class="titles">
+          <strong>Portal de Pedidos · Refacciones</strong>
+          <span>Dirección de Talleres · Municipio de Hermosillo</span>
+        </div>
+      </div>
+
+      <div class="chip" title="Estatus del portal">
+        <i></i> Operación interna
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== Form Card ===== -->
+    <section class="card" aria-labelledby="form-title">
+      <div class="card-head">
+        <div>
+          <h2 id="form-title">Captura de pedido</h2>
+          <p>Registra una petición de refacciones con validación y confirmación inmediata.</p>
+        </div>
+        <span class="tag">Dirección de Talleres</span>
+      </div>
+
+      <form id="formulario_pet" novalidate>
+        <div class="grid">
+          <div class="control">
+            <label for="unidad" class="req">Unidad</label>
+            <input type="text" id="unidad" name="unidad" inputmode="numeric" pattern="\\d+" title="Solo números" placeholder="Ej. 01535" required />
+            <div class="hint">Solo números (ej. 01535)</div>
+          </div>
+
+          <div class="control select">
+            <label for="tipo_equipo" class="req">Área</label>
+            <select id="tipo_equipo" name="tipo_equipo" required>
+              <option value="">Seleccione…</option>
+              <option>Maquinaria Pesada</option>
+              <option>Gasolina</option>
+              <option>Eléctricas</option>
+              <option>Colectores</option>
+              <option>Soldadura</option>
+              <option>Motos</option>
+              <option>Infraestructura</option>
+              <option>Otros</option>
+            </select>
+          </div>
+
+          <div class="control full">
+            <label for="peticion" class="req">Petición</label>
+            <input type="text" id="peticion" name="peticion" placeholder="Ej. Filtro de aire #00000" required />
+          </div>
+
+          <div class="control">
+            <label for="solicita" class="req">¿Quién solicita?</label>
+            <input type="text" id="solicita" name="solicita" placeholder="Nombre del mecánico" required />
+          </div>
+
+          <div class="control">
+            <label for="motor" class="req">Tipo de motor</label>
+            <input type="text" id="motor" name="motor" placeholder="Ej. QSB 4.5, V6 4.3, etc." required />
+          </div>
+
+          <div class="control select">
+            <label for="muestra" class="req">¿Se deja muestra?</label>
+            <select id="muestra" name="muestra" required>
+              <option value="">Seleccione…</option>
+              <option>Sí</option>
+              <option>No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit" aria-label="Enviar Pedido">Enviar Pedido</button>
+          <button class="btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
+        </div>
+      </form>
+
+      <div id="mensaje" role="status" aria-live="polite"></div>
+    </section>
+
+    <!-- ===== Latest Orders Card ===== -->
+    <aside class="card" aria-labelledby="latest-title">
+      <div class="card-head">
+        <div>
+          <h2 id="latest-title">Últimos 3 pedidos</h2>
+          <p>Vista rápida para seguimiento inmediato.</p>
+        </div>
+        <span class="tag" style="border-color: rgba(16,198,209,.35); background: rgba(16,198,209,.10); color:#0a5560;">En vivo</span>
+      </div>
+
+      <div class="panel">
+        <div class="panel-top">
+          <strong id="latestStatus">Cargando…</strong>
+          <button class="refresh" id="btnRefrescar" type="button">Actualizar</button>
+        </div>
+
+        <div id="latestList" class="list">
+          <div class="skeleton">Consultando últimos pedidos…</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <div class="footer-line"></div>
+    <span>&copy; 2026 Dirección de Talleres · Municipio de Hermosillo</span>
+    <span>Portal interno · UI Turquesa / Gris / Naranja</span>
+  </footer>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyXiX0JL0piztXjxn20i76bY4emOGZ8CG8O6EwPpzh-O5wcySx_LOH0x_HTSxaklaKO/exec';
+
+    const form = document.getElementById('formulario_pet');
+    const mensaje = document.getElementById('mensaje');
+    const btnLimpiar = document.getElementById('btnLimpiar');
+
+    const latestList = document.getElementById('latestList');
+    const latestStatus = document.getElementById('latestStatus');
+    const btnRefrescar = document.getElementById('btnRefrescar');
+
+    function showMsg(type, text){
+      mensaje.className = type;
+      mensaje.textContent = text;
+      if(!text){
+        mensaje.className = '';
+        mensaje.textContent = '';
+      }
+    }
+
+    btnLimpiar.addEventListener('click', () => {
+      form.reset();
+      showMsg('', '');
+      document.getElementById('unidad').focus();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if(!form.checkValidity()){
+        showMsg('err', 'Revisa los campos obligatorios marcados con *');
+        return;
+      }
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(scriptURL, { method: 'POST', body: formData });
+        const result = await response.json();
+
+        showMsg('ok', result.message || 'Registro enviado correctamente.');
+        form.reset();
+
+        // Refresca panel de últimos pedidos
+        loadLatest();
+
+        setTimeout(() => showMsg('', ''), 5000);
+      } catch (error) {
+        showMsg('err', 'Ocurrió un problema al enviar los datos. Intenta nuevamente.');
+      }
+    });
+
+    function escapeHtml(str=''){
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function renderLatest(items){
+      if(!items || !items.length){
+        latestList.innerHTML = '<div class="skeleton">Aún no hay pedidos para mostrar.</div>';
+        latestStatus.textContent = 'Sin registros';
+        return;
+      }
+
+      latestStatus.textContent = 'Actualizado';
+      latestList.innerHTML = items.slice(0,3).map((it) => {
+        const unidad = escapeHtml(it.unidad ?? '');
+        const area = escapeHtml(it.tipo_equipo ?? it.area ?? '');
+        const peticion = escapeHtml(it.peticion ?? '');
+        const solicita = escapeHtml(it.solicita ?? '');
+        const motor = escapeHtml(it.motor ?? '');
+        const muestra = escapeHtml(it.muestra ?? '');
+        const fecha = escapeHtml(it.fecha ?? it.timestamp ?? '');
+
+        return `
+          <div class="item">
+            <div class="row">
+              <span class="pill"><span class="dot"></span> Unidad: ${unidad || '—'}</span>
+              <span class="pill" title="Área">${area || '—'}</span>
+            </div>
+            <h3>${peticion || 'Pedido sin descripción'}</h3>
+            <div class="meta">
+              <span><b>Solicita:</b> ${solicita || '—'}</span>
+              <span><b>Motor:</b> ${motor || '—'}</span>
+              <span><b>Muestra:</b> ${muestra || '—'}</span>
+              ${fecha ? `<span><b>Fecha:</b> ${fecha}</span>` : ``}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadLatest(){
+      latestStatus.textContent = 'Cargando…';
+      latestList.innerHTML = '<div class="skeleton">Consultando últimos pedidos…</div>';
+
+      try{
+        // Espera que Apps Script responda JSON cuando se llame con action=latest
+        const url = `${scriptURL}?action=latest&limit=3`;
+        const res = await fetch(url, { method: 'GET' });
+        const data = await res.json();
+
+        // Acepta: {items:[...]} o directamente [...]
+        const items = Array.isArray(data) ? data : (data.items || []);
+        renderLatest(items);
+
+      }catch(err){
+        latestStatus.textContent = 'No disponible';
+        latestList.innerHTML = '<div class="skeleton">No se pudo cargar la lista. Revisa que tu Apps Script soporte GET (action=latest).</div>';
+      }
+    }
+
+    btnRefrescar.addEventListener('click', loadLatest);
+
+    // Carga inicial
+    loadLatest();
+  </script>
+</body>
+</html>
