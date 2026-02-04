@@ -16,7 +16,6 @@
       --turq:#10c6d1;
       --turq-700:#0ea5b0;
       --orange:#ff7f11;
-      --orange-700:#f97316;
 
       --shadow: 0 14px 34px rgba(15,23,42,.08);
       --shadow2: 0 18px 46px rgba(15,23,42,.12);
@@ -174,11 +173,7 @@
       color:#fff;
       background: linear-gradient(135deg, var(--orange) 0%, var(--turq) 100%);
       box-shadow: 0 10px 26px rgba(255,127,17,.18), 0 8px 22px rgba(16,198,209,.16);
-      transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
     }
-    .btn:hover{ filter: brightness(1.03); box-shadow: 0 14px 34px rgba(255,127,17,.20), 0 12px 28px rgba(16,198,209,.18); }
-    .btn:active{ transform: translateY(1px); }
-
     .btn-secondary{
       flex: 0 1 auto;
       border: 1px solid rgba(229,231,235,.95);
@@ -191,7 +186,6 @@
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(15,23,42,.06);
     }
-    .btn-secondary:hover{ border-color: rgba(16,198,209,.35); box-shadow: 0 14px 30px rgba(15,23,42,.08); }
 
     #mensaje{
       margin: 0 18px 18px;
@@ -219,7 +213,6 @@
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       margin-bottom: 10px;
     }
-    .panel-top strong{ font-size: .95rem; }
     .refresh{
       border: 1px solid rgba(229,231,235,.95);
       background:#fff;
@@ -229,7 +222,6 @@
       font-weight: 900;
       color:#0f172a;
     }
-    .refresh:hover{ border-color: rgba(16,198,209,.35); }
 
     .list{ display:grid; gap: 10px; }
     .item{
@@ -239,7 +231,8 @@
       background: rgba(255,255,255,.9);
       box-shadow: 0 10px 22px rgba(15,23,42,.05);
     }
-    .row{ display:flex; gap:10px; align-items:flex-start; justify-content:space-between; }
+
+    .row{ display:flex; gap:10px; align-items:flex-start; justify-content:space-between; flex-wrap: wrap; }
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding: 6px 10px;
@@ -257,6 +250,7 @@
       box-shadow: 0 0 0 4px rgba(16,198,209,.12);
       display:inline-block;
     }
+
     .item h3{
       margin: 8px 0 6px;
       font-size: .98rem;
@@ -269,6 +263,23 @@
       font-size: .84rem;
     }
     .meta b{ color:#111827; }
+
+    .item-actions{
+      margin-top: 10px;
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .mini-btn{
+      border: 0;
+      color:#fff;
+      border-radius: 12px;
+      padding: 9px 10px;
+      cursor:pointer;
+      font-weight: 1000;
+      background: linear-gradient(135deg, var(--turq-700), var(--orange));
+      box-shadow: 0 10px 22px rgba(16,198,209,.18);
+    }
 
     .skeleton{
       border: 1px dashed rgba(229,231,235,.95);
@@ -309,12 +320,12 @@
   </header>
 
   <main>
-    <!-- Form -->
+    <!-- Form: mismos campos que antes -->
     <section class="card" aria-labelledby="form-title">
       <div class="card-head">
         <div>
           <h2 id="form-title">Captura de pedido</h2>
-          <p>Registro.</p>
+          <p>Unidad · Área · Petición · Solicita · Motor · Muestra</p>
         </div>
         <span class="tag">Dirección de Talleres</span>
       </div>
@@ -324,7 +335,7 @@
           <div class="control">
             <label for="unidad" class="req">Unidad</label>
             <input type="text" id="unidad" name="unidad" inputmode="numeric" pattern="\d+" title="Solo números" placeholder="Ej. 01535" required />
-            <div class="hint">Solo números (ej. 01535)</div>
+            <div class="hint">Se guarda en columna B</div>
           </div>
 
           <div class="control select">
@@ -340,21 +351,25 @@
               <option>Infraestructura</option>
               <option>Otros</option>
             </select>
+            <div class="hint">Se guarda en columna E</div>
           </div>
 
           <div class="control full">
             <label for="peticion" class="req">Petición</label>
             <input type="text" id="peticion" name="peticion" placeholder="Ej. Filtro de aire #00000" required />
+            <div class="hint">Se guarda en columna C</div>
           </div>
 
           <div class="control">
             <label for="solicita" class="req">¿Quién solicita?</label>
             <input type="text" id="solicita" name="solicita" placeholder="Nombre del mecánico" required />
+            <div class="hint">Se guarda en columna D</div>
           </div>
 
           <div class="control">
             <label for="motor" class="req">Tipo de motor</label>
             <input type="text" id="motor" name="motor" placeholder="Ej. QSB 4.5, V6 4.3, etc." required />
+            <div class="hint">Se guarda en columna F</div>
           </div>
 
           <div class="control select">
@@ -364,6 +379,7 @@
               <option>Sí</option>
               <option>No</option>
             </select>
+            <div class="hint">Se guarda en columna G</div>
           </div>
         </div>
 
@@ -376,12 +392,12 @@
       <div id="mensaje" role="status" aria-live="polite"></div>
     </section>
 
-    <!-- Últimos 3 -->
+    <!-- Últimos 5 (lo que quieres ver: B,C,D,H,J) -->
     <aside class="card" aria-labelledby="latest-title">
       <div class="card-head">
         <div>
-          <h2 id="latest-title">Últimos 3 pedidos</h2>
-          <p>Vista rápida.</p>
+          <h2 id="latest-title">Últimos 5 pedidos</h2>
+          <p>Col B Unidad · Col C Petición · Col D Solicita · Col H Dependencia · Col J Status</p>
         </div>
         <span class="tag" style="border-color: rgba(16,198,209,.35); background: rgba(16,198,209,.10); color:#0a5560;">En vivo</span>
       </div>
@@ -402,12 +418,12 @@
   <footer>
     <div class="footer-line"></div>
     <span>&copy; 2026 Dirección de Talleres · Municipio de Hermosillo</span>
-    <span>Portal interno · Talleres</span>
+    <span>Portal interno · UI Turquesa / Gris / Naranja</span>
   </footer>
 
   <script>
-    // ✅ Pega aquí la URL de tu Web App desplegada (termina en /exec)
-    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz-ofbTnuoG5xzFc4Ju6R7IG9ZvOMPh6Hdb3uzP3bazfoMhto0LV8y9fWoN2vjlU5L-/exec';
+    // ✅ pega aquí tu URL del Web App (termina en /exec)
+    const WEBAPP_URL = 'TU_URL_DEL_WEBAPP';
 
     const form = document.getElementById('formulario_pet');
     const mensaje = document.getElementById('mensaje');
@@ -432,6 +448,42 @@
         .replaceAll("'","&#039;");
     }
 
+    function buildCopyText(it){
+      const unidad = it.unidad || '—';
+      const peticion = it.peticion || '—';
+      const solicita = it.solicita || '—';
+      const dependencia = it.dependencia || '—';
+      const status = it.status || '—';
+      const fecha = it.timestamp || '';
+
+      return `PEDIDO REFACCIONES
+Unidad: ${unidad}
+Petición: ${peticion}
+Solicita: ${solicita}
+Dependencia: ${dependencia}
+Status: ${status}${fecha ? `\nFecha: ${fecha}` : ''}`;
+    }
+
+    async function copyToClipboard(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        return true;
+      }catch(e){
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try{
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          return true;
+        }catch(_){
+          document.body.removeChild(ta);
+          return false;
+        }
+      }
+    }
+
     btnLimpiar.addEventListener('click', () => {
       form.reset();
       showMsg('', '');
@@ -449,7 +501,6 @@
       const formData = new FormData(form);
 
       try {
-        // ✅ POST FormData → Apps Script
         const response = await fetch(WEBAPP_URL, { method: 'POST', body: formData });
         const result = await response.json();
 
@@ -462,7 +513,7 @@
         form.reset();
         loadLatest();
 
-        setTimeout(() => showMsg('', ''), 5000);
+        setTimeout(() => showMsg('', ''), 3500);
 
       } catch (error) {
         showMsg('err', 'Ocurrió un problema al enviar los datos. Intenta nuevamente.');
@@ -477,31 +528,46 @@
       }
 
       latestStatus.textContent = 'Actualizado';
-      latestList.innerHTML = items.slice(0,3).map((it) => {
+      latestList.innerHTML = items.slice(0,5).map((it, idx) => {
         const unidad = escapeHtml(it.unidad ?? '');
-        const area = escapeHtml(it.tipo_equipo ?? '');
         const peticion = escapeHtml(it.peticion ?? '');
         const solicita = escapeHtml(it.solicita ?? '');
-        const motor = escapeHtml(it.motor ?? '');
-        const muestra = escapeHtml(it.muestra ?? '');
-        const fecha = escapeHtml(it.fecha ?? it.timestamp ?? '');
+        const dependencia = escapeHtml(it.dependencia ?? '');
+        const status = escapeHtml(it.status ?? '');
+        const fecha = escapeHtml(it.timestamp ?? '');
 
         return `
           <div class="item">
             <div class="row">
               <span class="pill"><span class="dot"></span> Unidad: ${unidad || '—'}</span>
-              <span class="pill" title="Área">${area || '—'}</span>
+              <span class="pill" title="Status">${status || '—'}</span>
             </div>
+
             <h3>${peticion || 'Pedido sin descripción'}</h3>
+
             <div class="meta">
               <span><b>Solicita:</b> ${solicita || '—'}</span>
-              <span><b>Motor:</b> ${motor || '—'}</span>
-              <span><b>Muestra:</b> ${muestra || '—'}</span>
+              <span><b>Dependencia:</b> ${dependencia || '—'}</span>
               ${fecha ? `<span><b>Fecha:</b> ${fecha}</span>` : ``}
+            </div>
+
+            <div class="item-actions">
+              <button class="mini-btn" type="button" data-copy="${idx}">Copiar pedido</button>
             </div>
           </div>
         `;
       }).join('');
+
+      // bind copiar
+      latestList.querySelectorAll('button[data-copy]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const i = parseInt(btn.getAttribute('data-copy'), 10);
+          const it = items[i];
+          const ok = await copyToClipboard(buildCopyText(it));
+          showMsg(ok ? 'ok' : 'err', ok ? 'Pedido copiado ✅' : 'No se pudo copiar.');
+          setTimeout(() => showMsg('', ''), 2200);
+        });
+      });
     }
 
     async function loadLatest(){
@@ -509,8 +575,7 @@
       latestList.innerHTML = '<div class="skeleton">Consultando últimos pedidos…</div>';
 
       try{
-        // ✅ GET últimos pedidos
-        const url = `${WEBAPP_URL}?action=latest_pedidos&limit=3`;
+        const url = `${WEBAPP_URL}?action=latest_pedidos&limit=5`;
         const res = await fetch(url);
         const data = await res.json();
 
@@ -523,15 +588,12 @@
         renderLatest(data.items || []);
       }catch(err){
         latestStatus.textContent = 'No disponible';
-        latestList.innerHTML = '<div class="skeleton">No se pudo cargar la lista. Revisa permisos y despliegue de tu Web App.</div>';
+        latestList.innerHTML = '<div class="skeleton">No se pudo cargar la lista. Revisa despliegue/permiso del Web App.</div>';
       }
     }
 
     btnRefrescar.addEventListener('click', loadLatest);
-
-    // Carga inicial
     loadLatest();
   </script>
 </body>
 </html>
-
