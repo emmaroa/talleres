@@ -1,285 +1,293 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pedidos Almacén — Consulta</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consulta de Peticiones a Almacen</title>
   <style>
+    /* ===== Estética Naranja + Turquesa (UI kit) ===== */
     :root{
-      --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --border:#e5e7eb;
-      --turq:#10c6d1; --turq2:#0ea5b0; --orange:#ff7f11; --orange2:#f97316;
-      --shadow: 0 12px 28px rgba(17,24,39,.08);
-      --radius:16px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
-    header{
-      background:linear-gradient(90deg,var(--orange),var(--turq));
-      color:#fff;padding:18px 16px;
-    }
-    header h1{margin:0;font-size:18px}
-    header p{margin:6px 0 0;opacity:.9;font-size:13px}
-    .wrap{max-width:1250px;margin:0 auto;padding:16px}
-    .card{
-      background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-      box-shadow:var(--shadow);padding:14px
-    }
-    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    @media (max-width: 980px){ .grid{grid-template-columns:repeat(2,1fr)} }
-    @media (max-width: 520px){ .grid{grid-template-columns:1fr} }
-    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
-    input{
-      width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:12px;
-      outline:none;font-size:14px;background:#fff
-    }
-    input:focus{border-color:rgba(16,198,209,.6);box-shadow:0 0 0 4px rgba(16,198,209,.12)}
-    .actions{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
-    button{
-      border:0;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;font-size:14px
-    }
-    .btn-primary{background:var(--turq);color:#fff}
-    .btn-primary:hover{background:var(--turq2)}
-    .btn-orange{background:var(--orange);color:#fff}
-    .btn-orange:hover{background:var(--orange2)}
-    .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--text)}
-    .btn-ghost:hover{border-color:#cbd5e1}
-    .meta{margin-left:auto;color:var(--muted);font-size:13px}
-    .loading{display:none;margin-top:10px;color:var(--muted);font-size:13px}
+      --bg: #f8f6f2;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
 
-    .table-wrap{margin-top:14px;overflow:auto;border:1px solid var(--border);border-radius:14px}
-    table{border-collapse:separate;border-spacing:0;width:100%;min-width:1350px;background:#fff}
+      --brand: #ff7f11;        /* Naranja institucional */
+      --brand-600: #e66e0a;
+      --accent: #10c6d1;       /* Turquesa acento */
+      --accent-700: #0ea5b0;
+
+      --ring: rgba(16,198,209,.45);
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --shadow-strong: 0 16px 40px rgba(0,0,0,.12);
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height: 100%; }
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 110% -10%, rgba(16,198,209,.10), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(255,127,17,.10), transparent 60%),
+        var(--bg);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+      color: white; box-shadow: var(--shadow);
+    }
+    .hero{
+      max-width: 1100px; margin: 0 auto; padding: 24px 16px;
+      display:flex; align-items:center; gap:16px; flex-wrap: wrap;
+    }
+    .logo{
+      width:56px; height:56px; border-radius:12px; background: rgba(255,255,255,.15);
+      display:grid; place-items:center; box-shadow: inset 0 0 0 1px rgba(255,255,255,.25); overflow:hidden;
+    }
+    .logo img{ width: 44px; height:auto; filter: drop-shadow(0 2px 2px rgba(0,0,0,.15)); }
+    .titles h1{ margin:0; font-weight: 900; letter-spacing:.3px; font-size: clamp(1.1rem, 3vw, 1.6rem); }
+    .titles p{ margin:.25rem 0 0; opacity:.95; }
+
+    /* ===== Main / Card ===== */
+    main{ display:grid; place-items:center; padding: 26px 16px 36px; }
+    .card{
+      width: 100%; max-width: 1100px;
+      background: color-mix(in srgb, var(--card) 85%, #fff 15%);
+      border: 1px solid rgba(16,198,209,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: saturate(1.05) blur(2px);
+      overflow: clip;
+    }
+    .card-head{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      padding: 16px 18px; border-bottom:1px solid rgba(16,198,209,.12);
+      background: linear-gradient(180deg, rgba(16,198,209,.10), transparent);
+    }
+    .card-head h2{ margin:0; font-size:1.05rem; color:#0f172a; }
+    .meta{ color: var(--muted); font-size:.9rem; }
+
+    .controls{
+      padding: 14px 18px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    }
+    .control{
+      position: relative; flex: 1 1 340px; min-width: 220px;
+    }
+    .control input{
+      width: 100%; border:1px solid #e5e7eb; border-radius:12px; padding: 12px 14px 12px 40px; font-size:1rem; background:#fff;
+      outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .control input:focus{ border-color: var(--accent-700); box-shadow: 0 0 0 4px var(--ring); }
+    .control .icon{
+      position:absolute; left:12px; top:50%; translate: 0 -50%; font-size:1rem; color: var(--muted);
+    }
+
+    /* ===== Table ===== */
+    .table-wrap{ padding: 0 18px 18px; }
+    .scroller{
+      border:1px solid #e5e7eb; border-radius:12px; overflow: auto; background:#fff;
+      max-height: 60vh;
+    }
+    table{ width:100%; border-collapse: separate; border-spacing: 0; }
     thead th{
-      position:sticky;top:0;background:#fafafa;border-bottom:1px solid var(--border);
-      text-align:left;font-size:12px;color:#374151;padding:10px 12px;white-space:nowrap
+      position: sticky; top: 0; z-index: 1;
+      background: linear-gradient(180deg, rgba(16,198,209,.10), #fff);
+      border-bottom:1px solid #e5e7eb;
+      text-align:left; padding:10px 12px; font-size:.92rem; color:#0f172a; font-weight:800;
     }
-    tbody td{border-bottom:1px solid var(--border);padding:10px 12px;font-size:13px;vertical-align:top}
-    tbody tr:hover{background:#fcfcff}
-    .pill{
-      display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
-      border:1px solid var(--border);font-size:12px;font-weight:900
+    tbody td{
+      border-bottom:1px solid #f1f5f9; padding:10px 12px; font-size:.95rem;
     }
-    .pill.orange{background:rgba(255,127,17,.10);border-color:rgba(255,127,17,.25)}
-    .pill.turq{background:rgba(16,198,209,.10);border-color:rgba(16,198,209,.25)}
-    .small{font-size:12px;color:var(--muted)}
+    tbody tr:hover{ background: rgba(16,198,209,.04); }
+    tbody tr:last-child td{ border-bottom:0; }
+
+    .hl{ background: linear-gradient(transparent 30%, rgba(16,198,209,.35) 30%, rgba(16,198,209,.35) 70%, transparent 70%); }
+
+    /* ===== States ===== */
+    .state{ padding: 10px 18px; color: var(--muted); }
+    .badge{
+      display:inline-block; padding:4px 10px; border-radius:999px; font-weight:800; font-size:.78rem;
+      background: rgba(255,127,17,.12); color:#4a2a06; border:1px solid rgba(255,127,17,.35);
+    }
+
+    /* Footer */
+    footer{ text-align:center; padding: 22px 16px; color:#fff; background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%); }
+    footer small{ opacity:.95; }
+
+    @media (prefers-reduced-motion: reduce){
+      .control input, .tile, .card{ transition: none; }
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Pedidos de Almacén — Consulta</h1>
-    <p>Filtra por unidad, petición, quién solicita y área. Estatus vacío = “Pendiente”.</p>
+    <div class="hero">
+      <div class="logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Escudo_de_Hermosillo.svg/509px-Escudo_de_Hermosillo.svg.png" alt="Escudo de Hermosillo">
+      </div>
+      <div class="titles">
+        <h1>Consulta de Peticiones</h1>
+        <p>Dirección de Talleres · Municipio de Hermosillo</p>
+      </div>
+    </div>
   </header>
 
-  <div class="wrap">
-    <div class="card">
-      <div class="grid">
-        <div>
-          <label>Unidad</label>
-          <input id="unidad" placeholder="Ej. 1-1, 3529, 3310..." />
-        </div>
-        <div>
-          <label>Petición</label>
-          <input id="peticion" placeholder="Ej. balatas, batería..." />
-        </div>
-        <div>
-          <label>Quién solicita</label>
-          <input id="solicita" placeholder="Ej. Christian, Víctor..." />
-        </div>
-        <div>
-          <label>Área</label>
-          <input id="area" placeholder="Ej. STOCK, TALLERES..." />
+  <main>
+    <section class="card" aria-labelledby="title">
+      <div class="card-head">
+        <h2 id="title">Búsqueda rápida</h2>
+        <div class="meta">
+          <span id="totalBadge" class="badge">Cargando…</span>
         </div>
       </div>
 
-      <div class="actions">
-        <button class="btn-primary" onclick="buscar()">Buscar</button>
-        <button class="btn-ghost" onclick="limpiar()">Limpiar</button>
-        <button class="btn-orange" onclick="ultimos5()">Últimos 5</button>
-        <button class="btn-ghost" onclick="copiarWhats()">Copiar WhatsApp</button>
-
-        <div class="meta" id="meta">Listo.</div>
+      <div class="controls">
+        <div class="control">
+          <span class="icon">🔎</span>
+          <input id="searchBox" type="text" placeholder="Escribe Núm. Económico, descripción, o mecanico" autocomplete="off" />
+        </div>
       </div>
 
-      <div class="loading" id="loading">Cargando…</div>
-      <div class="small" style="margin-top:8px;">Tip: puedes presionar <b>Enter</b> en cualquier campo para buscar.</div>
-    </div>
-
-    <div class="card" style="margin-top:14px;">
       <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>A Timestamp</th>
-              <th>B Unidad</th>
-              <th>C Petición</th>
-              <th>D Quién solicita</th>
-              <th>G Área</th>
-              <th>H Dependencia</th>
-              <th>J Estatus</th>
-              <th>L Recibido</th>
-              <th>M Descripción</th>
-            </tr>
-          </thead>
-          <tbody id="tbody">
-            <tr><td colspan="9" style="color:#6b7280;padding:14px;">Haz una búsqueda para ver resultados.</td></tr>
-          </tbody>
-        </table>
+        <div class="scroller" id="scroller">
+          <table role="table" aria-describedby="title">
+            <thead>
+              <tr>
+                <th style="width: 180px;">Número Económico</th>
+                <th>Descripción</th>
+                <th style="width: 260px;">Dependencia</th>
+              </tr>
+            </thead>
+            <tbody id="dataTable">
+              <tr><td colspan="3" class="state">Cargando datos…</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  </div>
 
-<script>
-  // 🔧 Pega aquí tu URL de Apps Script (termina en /exec)
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTpnJwFKYWU1PIHefJM2bRzeQqN9iseK_xiK_KYswRgn2YmSIeqLjWU6FvSPCZ50cw/exec";
+      <div class="state" id="statusText"></div>
+    </section>
+  </main>
 
-  let lastRows = [];
+  <footer>
+    <small>&copy; 2024 Dirección de Talleres · Municipio de Hermosillo</small>
+  </footer>
 
-  function qs(id){ return document.getElementById(id); }
-  function val(id){ return (qs(id).value || '').trim(); }
+  <script>
+    // ====== Config (misma hoja) ======
+    const apiKey = 'AIzaSyDM8m9-bZM2stDAt1V0i-H-iStD0Vi6Z7k';
+    const sheetId = '1jjWtlbLhO4BGqGJKWyXneb4r2WbcFBqDDcb9rEh8J8c';
+    const range = 'A1:C';
+    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
-  function setLoading(on){
-    qs('loading').style.display = on ? 'block' : 'none';
-    qs('meta').textContent = on ? 'Cargando…' : 'Listo.';
-  }
+    // ====== Helpers ======
+    const $ = (id) => document.getElementById(id);
+    const table = $('dataTable');
+    const badge = $('totalBadge');
+    const statusText = $('statusText');
+    const searchBox = $('searchBox');
 
-  function escapeHtml(s){
-    return String(s ?? '')
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'","&#039;");
-  }
+    // Quitar tildes y normalizar
+    const norm = (s) => (s || '')
+      .toString()
+      .normalize('NFD').replace(/\p{Diacritic}/gu,'')
+      .toLowerCase().trim();
 
-  function pillEstatus(text){
-    const t = (text || '').toLowerCase();
-    const cls = (t.includes('pend') || t.includes('proc')) ? 'orange' : 'turq';
-    return `<span class="pill ${cls}">${escapeHtml(text)}</span>`;
-  }
-
-  function render(rows){
-    lastRows = Array.isArray(rows) ? rows : [];
-    const tb = qs('tbody');
-
-    if (!lastRows.length){
-      tb.innerHTML = `<tr><td colspan="9" style="color:#6b7280;padding:14px;">Sin resultados.</td></tr>`;
-      qs('meta').textContent = 'Resultados: 0';
-      return;
+    // Resaltar coincidencias simples
+    function highlight(text, query){
+      if(!query) return text;
+      const nText = norm(text);
+      const nQuery = norm(query);
+      const idx = nText.indexOf(nQuery);
+      if(idx < 0) return text;
+      // Reconstruir conservando el texto original
+      const start = [...text].slice(0, [...nText].slice(0, idx).join('').length).join('');
+      const match = text.substr(start.length, query.length);
+      const end = text.substr(start.length + match.length);
+      return `${start}<span class="hl">${match}</span>${end}`;
     }
 
-    tb.innerHTML = lastRows.map(r => `
-      <tr>
-        <td>${escapeHtml(r.timestamp || '')}</td>
-        <td>${escapeHtml(r.unidad || '')}</td>
-        <td>${escapeHtml(r.peticion || '')}</td>
-        <td>${escapeHtml(r.solicita || '')}</td>
-        <td>${escapeHtml(r.area || '')}</td>
-        <td>${escapeHtml(r.dependencia || '')}</td>
-        <td>${pillEstatus(r.status || 'Pendiente')}</td>
-        <td>${escapeHtml(r.recibido || '')}</td>
-        <td>${escapeHtml(r.descripcion || '')}</td>
-      </tr>
-    `).join('');
-
-    qs('meta').textContent = `Resultados: ${lastRows.length}`;
-  }
-
-  async function fetchJson(url){
-    const res = await fetch(url, { method:'GET' });
-    const txt = await res.text();
-    try { return JSON.parse(txt); } catch { throw new Error('Respuesta no es JSON: ' + txt.slice(0,200)); }
-  }
-
-  async function buscar(){
-    setLoading(true);
-
-    const params = new URLSearchParams({
-      action: 'search_pedidos',
-      unidad: val('unidad'),
-      peticion: val('peticion'),
-      solicita: val('solicita'),
-      area: val('area'),
-      limit: '300'
-    });
-
-    try{
-      const data = await fetchJson(`${SCRIPT_URL}?${params.toString()}`);
-      if(!data.ok) throw new Error(data.error || 'Error desconocido');
-      render(data.rows || []);
-      setLoading(false);
-    }catch(err){
-      setLoading(false);
-      qs('meta').textContent = 'Error';
-      qs('tbody').innerHTML = `<tr><td colspan="9" style="color:#b91c1c;padding:14px;">${escapeHtml(err.message || err)}</td></tr>`;
-    }
-  }
-
-  async function ultimos5(){
-    setLoading(true);
-    try{
-      const data = await fetchJson(`${SCRIPT_URL}?action=latest_pedidos&limit=5`);
-      if(!data.ok) throw new Error(data.error || 'Error desconocido');
-
-      // Adaptamos al formato de tabla completa
-      const rows = (data.items || []).map(x => ({
-        timestamp: x.timestamp || '',
-        unidad: x.unidad || '',
-        peticion: x.peticion || '',
-        solicita: x.solicita || '',
-        area: '',              // latest no trae area (si quieres lo sumamos en tu script)
-        dependencia: x.dependencia || '',
-        status: x.status || 'Pendiente',
-        recibido: '',
-        descripcion: ''
-      }));
-
-      render(rows);
-      setLoading(false);
-    }catch(err){
-      setLoading(false);
-      qs('meta').textContent = 'Error';
-      qs('tbody').innerHTML = `<tr><td colspan="9" style="color:#b91c1c;padding:14px;">${escapeHtml(err.message || err)}</td></tr>`;
-    }
-  }
-
-  function limpiar(){
-    ['unidad','peticion','solicita','area'].forEach(id => qs(id).value = '');
-    lastRows = [];
-    qs('tbody').innerHTML = `<tr><td colspan="9" style="color:#6b7280;padding:14px;">Haz una búsqueda para ver resultados.</td></tr>`;
-    qs('meta').textContent = 'Listo.';
-  }
-
-  async function copiarWhats(){
-    if(!lastRows.length){
-      alert('No hay resultados para copiar.');
-      return;
+    // Renderiza filas
+    function renderTable(rows, query=''){
+      table.innerHTML = '';
+      if(!rows.length){
+        table.innerHTML = `<tr><td colspan="3" class="state">Sin resultados para “${query}”.</td></tr>`;
+        return;
+      }
+      const frag = document.createDocumentFragment();
+      rows.forEach(r => {
+        const [econ, desc, dep] = [r[0] || '', r[1] || '', r[2] || ''];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${highlight(econ, query)}</td>
+          <td>${highlight(desc, query)}</td>
+          <td>${highlight(dep, query)}</td>
+        `;
+        frag.appendChild(tr);
+      });
+      table.appendChild(frag);
     }
 
-    const lines = [];
-    lines.push('📦 *PEDIDOS ALMACÉN*');
-    lines.push(`🕒 ${new Date().toLocaleString('es-MX')}`);
-    lines.push('--------------------------');
+    // Filtra sobre 3 columnas
+    function filterRows(allRows, query){
+      if(!query) return allRows;
+      const q = norm(query);
+      return allRows.filter(r => {
+        const econ = norm(r[0] || '');
+        const desc = norm(r[1] || '');
+        const dep  = norm(r[2] || '');
+        return econ.includes(q) || desc.includes(q) || dep.includes(q);
+      });
+    }
 
-    lastRows.slice(0, 20).forEach((r, i) => {
-      lines.push(
-        `${i+1}) *${(r.unidad || '').trim()}* — ${(r.peticion || '').trim()}\n` +
-        `Solicita: ${(r.solicita || '').trim()} | Área: ${(r.area || '').trim()}\n` +
-        `Estatus: ${(r.status || 'Pendiente').trim()} | Recibido: ${(r.recibido || '').trim()}`
-      );
-      lines.push('---');
-    });
+    // Debounce
+    function debounce(fn, ms=200){
+      let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+    }
 
-    const text = lines.join('\n');
-    await navigator.clipboard.writeText(text);
-    alert('✅ Copiado. Pégalo en WhatsApp.');
-  }
+    // ====== Datos en memoria ======
+    let ALL = []; // sin encabezados
 
-  // Enter para buscar
-  ['unidad','peticion','solicita','area'].forEach(id => {
-    qs(id).addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') buscar();
-    });
-  });
-</script>
+    async function fetchData(){
+      try{
+        badge.textContent = 'Cargando…';
+        statusText.textContent = '';
+        const resp = await fetch(apiUrl);
+        const json = await resp.json();
+        const values = json.values || [];
+        if(values.length <= 1){
+          badge.textContent = '0 registros';
+          renderTable([]);
+          statusText.textContent = 'Hoja sin datos o rango fuera de A1:C.';
+          return;
+        }
+        ALL = values.slice(1); // quitar encabezados
+        badge.textContent = `${ALL.length} registros`;
+        renderTable(ALL);
+      }catch(e){
+        console.error(e);
+        badge.textContent = 'Error';
+        table.innerHTML = `<tr><td colspan="3" class="state">Error al cargar la hoja.</td></tr>`;
+        statusText.textContent = 'Verifica API key, Sheet ID y permisos públicos de lectura.';
+      }
+    }
+
+    const handleSearch = debounce(() => {
+      const q = searchBox.value;
+      const filtered = filterRows(ALL, q);
+      badge.textContent = `${filtered.length} de ${ALL.length}`;
+      renderTable(filtered, q);
+      statusText.textContent = q ? `Filtrado por “${q}”` : '';
+    }, 220);
+
+    searchBox.addEventListener('input', handleSearch);
+
+    // Init
+    fetchData();
+  </script>
 </body>
 </html>
 
