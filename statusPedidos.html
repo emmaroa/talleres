@@ -161,7 +161,7 @@
 
     const SHEET_NAME = 'PETICIONES'; // cambia si tu hoja se llama distinto
     // Necesitamos hasta L para leer Recepción (L)
-    const range = `${SHEET_NAME}!A1:L`;
+    const range = `${SHEET_NAME}!A:L`;
 
     const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
 
@@ -261,40 +261,44 @@
 
     let ALL = [];
 
-    async function fetchData(){
-      try{
-        badge.textContent = 'Cargando…';
-        statusText.textContent = '';
+  async function fetchData(){
+  try{
+    badge.textContent = 'Cargando…';
+    statusText.textContent = '';
 
-        const resp = await fetch(apiUrl);
-        const json = await resp.json();
-        const values = json.values || [];
+    const resp = await fetch(apiUrl);
+    const json = await resp.json();
 
-        if(values.length <= 1){
-          badge.textContent = '0 registros';
-          renderTable([]);
-          statusText.textContent = 'Hoja sin datos o rango incorrecto.';
-          return;
-        }
-
-        ALL = values.slice(1); // sin encabezados
-        badge.textContent = `${ALL.length} registros`;
-        renderTable(ALL);
-      }catch(e){
-        console.error(e);
-        badge.textContent = 'Error';
-        table.innerHTML = `<tr><td colspan="7" class="state">Error al cargar la hoja.</td></tr>`;
-        statusText.textContent = 'Verifica API key, Sheet ID y permisos públicos de lectura.';
-      }
+    // ✅ Si Google devuelve error, muéstralo
+    if (!resp.ok || json.error) {
+      const msg = json?.error?.message || `HTTP ${resp.status}`;
+      throw new Error(msg);
     }
 
-    const handleSearch = debounce(() => {
-      const q = searchBox.value;
-      const filtered = filterRows(ALL, q);
-      badge.textContent = `${filtered.length} de ${ALL.length}`;
-      renderTable(filtered, q);
-      statusText.textContent = q ? `Filtrado por “${escHTML(q)}”` : '';
-    }, 220);
+    const values = json.values || [];
+
+    // ✅ Si tu encabezado NO está en la fila 1, aquí se nota
+    if(values.length <= 1){
+      badge.textContent = '0 registros';
+      renderTable([]);
+      statusText.textContent =
+        `No se encontraron filas en el rango: ${range}. ` +
+        `Revisa nombre exacto de la hoja y que haya datos desde la fila 1.`;
+      return;
+    }
+
+    ALL = values.slice(1);
+    badge.textContent = `${ALL.length} registros`;
+    renderTable(ALL);
+
+  }catch(e){
+    console.error(e);
+    badge.textContent = 'Error';
+    table.innerHTML = `<tr><td colspan="7" class="state">Error al cargar la hoja.</td></tr>`;
+    statusText.textContent = `Detalle: ${e.message}`;
+  }
+}
+
 
     searchBox.addEventListener('input', handleSearch);
 
