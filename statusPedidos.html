@@ -217,49 +217,34 @@ function highlight(text, query){
 
 /* ================= FECHA: parse + formato bonito ================= */
 
-// Intenta parsear fechas comunes: ISO, dd/mm/yyyy, mm/dd/yyyy, con o sin hora
 function parseDateSmart(v){
   if(!v) return null;
 
-  // Si viene como número (serial o timestamp)
+  // Si viene como número (timestamp)
   if(typeof v === 'number'){
-    // Si parece timestamp (ms)
-    if(v > 1e12) return new Date(v);
-    // Si parece timestamp (s)
-    if(v > 1e9) return new Date(v * 1000);
+    if(v > 1e12) return new Date(v);        // ms
+    if(v > 1e9)  return new Date(v * 1000); // s
   }
 
   const s = v.toString().trim();
   if(!s) return null;
 
-  // ISO directo
-  const iso = new Date(s);
-  if(!isNaN(iso)) return iso;
-
-  // dd/mm/yyyy o dd/mm/yyyy hh:mm(:ss)
-  const m1 = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
-  if(m1){
-    let dd = parseInt(m1[1],10);
-    let mm = parseInt(m1[2],10) - 1;
-    let yy = parseInt(m1[3],10); if(yy < 100) yy += 2000;
-    const hh = parseInt(m1[4] || '0',10);
-    const mi = parseInt(m1[5] || '0',10);
-    const ss = parseInt(m1[6] || '0',10);
+  // ✅ PRIORIDAD: dd/mm/yyyy hh:mm:ss (tu formato)
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+  if(m){
+    const dd = parseInt(m[1],10);
+    const mm = parseInt(m[2],10) - 1;
+    const yy = parseInt(m[3],10);
+    const hh = parseInt(m[4] || '0',10);
+    const mi = parseInt(m[5] || '0',10);
+    const ss = parseInt(m[6] || '0',10);
     const d = new Date(yy, mm, dd, hh, mi, ss);
-    if(!isNaN(d)) return d;
+    return isNaN(d) ? null : d;
   }
 
-  // dd-mm-yyyy
-  const m2 = s.match(/^(\d{1,2})-(\d{1,2})-(\d{2,4})$/);
-  if(m2){
-    let dd = parseInt(m2[1],10);
-    let mm = parseInt(m2[2],10) - 1;
-    let yy = parseInt(m2[3],10); if(yy < 100) yy += 2000;
-    const d = new Date(yy, mm, dd);
-    if(!isNaN(d)) return d;
-  }
-
-  return null;
+  // ISO (2026-02-05T15:40:57) u otros parseables seguros
+  const d2 = new Date(s);
+  return isNaN(d2) ? null : d2;
 }
 
 function formatDateNice(v){
