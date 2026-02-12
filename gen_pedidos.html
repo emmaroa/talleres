@@ -410,10 +410,12 @@
     }
 
     const msg =
-` _*(${tipoVal})*_
+` _*${tipoVal}*_
 
 ${lineUnidad}
-*(${p})* `;
+___________________
+*${p}* `;
+___________________
 
     return { ok:true, msg, meta:{ tipoVal, u, unitFinal, ...info, count: CATALOG_COUNT } };
   }
