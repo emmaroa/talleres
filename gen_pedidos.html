@@ -166,7 +166,7 @@
           <div style="font-size:12px; opacity:.92; font-weight:700">Generador de texto WhatsApp</div>
         </div>
       </div>
-      <span class="pill">CSV (Unidad | Descripción | Dependencia)</span>
+      <span class="pill">Para pedidos a proveedores</span>
     </div>
   </div>
 </header>
@@ -279,14 +279,14 @@
 
   const $ = (id)=>document.getElementById(id);
 
-  const tipo     = $("tipo");
-  const unidad   = $("unidad");
-  const peticion = $("peticion");
-  const preview  = $("preview");
-  const debug    = $("debug");
+  const tipo     = $"tipo";
+  const unidad   = $"unidad";
+  const peticion = $"peticion";
+  const preview  = $"preview";
+  const debug    = $"debug";
 
-  const badgeCatalog = $("badgeCatalog");
-  const statusText   = $("statusText");
+  const badgeCatalog = $"badgeCatalog";
+  const statusText   = $"statusText";
 
   function setBadge(state, text){
     badgeCatalog.classList.remove("ok","warn");
