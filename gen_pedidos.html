@@ -408,16 +408,13 @@
 
 ${lineUnidad}
 ___________________
-*${p}* `;
-___________________
+*${p}* 
+___________________ `;
 
     return { ok:true, msg, meta:{ tipoVal, u, unitFinal, ...info, count: CATALOG_COUNT } };
   }
 
-  function updateWhatsLink(text){
-    const encoded = encodeURIComponent(text || "");
-    $("btnWhats").href = `https://wa.me/?text=${encoded}`;
-  }
+
 
   async function copyToClipboard(text){
     try{
