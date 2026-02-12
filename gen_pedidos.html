@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Generador WhatsApp — Talleres</title>
   <meta name="referrer" content="strict-origin">
+
   <style>
     :root{
       --bg:#f6f7fb; --card:#ffffff; --text:#111827; --muted:#6b7280; --border:#e5e7eb;
@@ -36,11 +37,13 @@
       font-size:12px; font-weight:700;
       backdrop-filter: blur(8px);
     }
+
     main .grid{
       display:grid; grid-template-columns: 1.05fr .95fr;
       gap:16px; padding:18px;
     }
     @media (max-width: 900px){ main .grid{grid-template-columns:1fr} }
+
     .card{
       background:var(--card);
       border:1px solid var(--border);
@@ -56,6 +59,7 @@
     .card .hd h2{margin:0; font-size:15px}
     .card .bd{padding:14px 16px}
     .muted{color:var(--muted); font-size:12px; line-height:1.35}
+
     label{display:block; font-size:12px; color:var(--muted); font-weight:700; margin-bottom:6px}
     input, select, textarea{
       width:100%;
@@ -72,8 +76,10 @@
       box-shadow: 0 0 0 4px rgba(16,198,209,.14);
     }
     textarea{min-height:110px; resize:vertical}
+
     .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
     @media (max-width:520px){ .row{grid-template-columns:1fr} }
+
     .hint{
       display:flex; gap:8px; align-items:flex-start;
       background: rgba(16,198,209,.10);
@@ -88,6 +94,7 @@
       box-shadow: 0 0 0 6px rgba(16,198,209,.12);
       flex:0 0 auto;
     }
+
     .actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;}
     button, .btn{
       border:none; cursor:pointer;
@@ -117,6 +124,7 @@
       background: rgba(255,255,255,.16);
       color:#fff;
     }
+
     .status{margin-top:10px; font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center;}
     .badge{
       display:inline-flex; align-items:center; gap:6px;
@@ -128,6 +136,7 @@
     }
     .ok{ border-color: rgba(16,198,209,.35); background: rgba(16,198,209,.10) }
     .warn{ border-color: rgba(255,127,17,.35); background: rgba(255,127,17,.10) }
+
     .preview{
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       white-space:pre-wrap;
@@ -140,4 +149,353 @@
     }
     .small{font-size:12px}
     footer{padding:0 18px 22px; color:var(--muted); font-size:12px}
-   
+    .sep{height:1px; background:var(--border); margin:10px 0}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div style="width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.18);display:grid;place-items:center;border:1px solid rgba(255,255,255,.28)">
+          <span style="font-weight:900">T</span>
+        </div>
+        <div>
+          <div style="font-size:14px; line-height:1.1">Talleres</div>
+          <div style="font-size:12px; opacity:.92; font-weight:700">Generador de texto WhatsApp</div>
+        </div>
+      </div>
+      <span class="pill">CSV (Unidad | Descripción | Dependencia)</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <!-- FORM -->
+    <section class="card">
+      <div class="hd">
+        <h2>Formulario</h2>
+        <button id="btnReloadCatalog" class="mini" type="button" title="Recargar catálogo desde Sheets CSV">Recargar catálogo</button>
+      </div>
+
+      <div class="bd">
+        <div class="row">
+          <div>
+            <label for="tipo">Tipo</label>
+            <select id="tipo">
+              <option value="COTIZACION">COTIZACIÓN</option>
+              <option value="COMPRA DIRECTA">COMPRA DIRECTA</option>
+            </select>
+          </div>
+          <div>
+            <label for="unidad">Unidad (0 = STOCK)</label>
+            <input id="unidad" inputmode="numeric" placeholder="Ej. 2314 o 0" />
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label for="peticion">Petición</label>
+          <textarea id="peticion" placeholder="Ej. 2 baterías LTH 600, 4 focos LED, etc."></textarea>
+        </div>
+
+        <div class="hint">
+          <div class="dot"></div>
+          <div class="muted">
+            La descripción y dependencia se obtienen del CSV. Si no existe la unidad, se pone <b>(SIN DESCRIPCIÓN)</b> y <b>(SIN DEPENDENCIA)</b>.
+            Si pones <b>0</b>, se usa <b>STOCK</b>.
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="btnGenerar" type="button">Generar texto</button>
+          <button class="secondary" id="btnCopiar" type="button">Copiar</button>
+          <a class="ghost btn" id="btnWhats" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
+          <button class="ghost" id="btnLimpiar" type="button">Limpiar</button>
+        </div>
+
+        <div class="status">
+          <span class="badge warn" id="badgeCatalog">Catálogo: no cargado</span>
+          <span class="muted" id="statusText">Pega tu URL CSV en el código.</span>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="muted">
+          <b>Salida:</b><br/>
+          <span class="small">
+            _*(TIPO)*_ <br/>
+            (UNIDAD) (DESCRIPCIÓN) — (DEPENDENCIA) <br/>
+            *(PETICIÓN)*
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUTPUT -->
+    <section class="card">
+      <div class="hd">
+        <h2>Vista previa</h2>
+        <span class="pill" style="background:rgba(16,198,209,.16);border-color:rgba(16,198,209,.32)">Listo para WhatsApp</span>
+      </div>
+      <div class="bd">
+        <div class="preview" id="preview">(Aquí se mostrará tu texto.)</div>
+        <div class="muted" style="margin-top:10px">
+          Tip: Usa <b>Copiar</b> o <b>Abrir WhatsApp</b>.
+        </div>
+        <div class="sep"></div>
+        <div class="muted">
+          <b>Debug:</b>
+          <div class="small" id="debug"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="wrap">
+    <div class="muted">
+      Requiere que la hoja esté publicada como CSV y que tenga 3 columnas: A=Unidad, B=Descripción, C=Dependencia.
+    </div>
+  </footer>
+</main>
+
+<script>
+  /************************************************************
+   * ✅ CONFIG: PEGA AQUÍ TU CSV PUBLICADO
+   *
+   * Debe ser CSV de 3 columnas:
+   *  Col A: UNIDAD
+   *  Col B: DESCRIPCION
+   *  Col C: DEPENDENCIA
+   *
+   * Nota: Publicar en la web > CSV de la pestaña correcta.
+   ************************************************************/
+  const SHEETS_CSV_URL = "PEGA_AQUI_TU_URL_CSV";
+
+  // Catálogo activo: unidad -> { desc, dep }
+  let UNIT_CATALOG = {};
+  let CATALOG_COUNT = 0;
+
+  const $ = (id)=>document.getElementById(id);
+
+  const tipo     = $("tipo");
+  const unidad   = $("unidad");
+  const peticion = $("peticion");
+  const preview  = $("preview");
+  const debug    = $("debug");
+
+  const badgeCatalog = $("badgeCatalog");
+  const statusText   = $("statusText");
+
+  function setBadge(state, text){
+    badgeCatalog.classList.remove("ok","warn");
+    badgeCatalog.classList.add(state);
+    badgeCatalog.textContent = text;
+  }
+
+  function normUnit(v){
+    const s = String(v ?? "").trim();
+    if(!s) return "";
+    if(s === "0") return "0";
+    const m = s.match(/\d+/);
+    return m ? m[0] : "";
+  }
+
+  function splitCSVLine(line){
+    const out = [];
+    let cur = "";
+    let inQ = false;
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+      if(ch === '"'){
+        if(inQ && line[i+1] === '"'){ cur += '"'; i++; }
+        else inQ = !inQ;
+      } else if(ch === "," && !inQ){
+        out.push(cur); cur = "";
+      } else {
+        cur += ch;
+      }
+    }
+    out.push(cur);
+    return out;
+  }
+
+  function parseCatalogCSV_3cols(csvText){
+    const lines = csvText.split(/\r?\n/).filter(l => l.trim().length);
+    if(lines.length < 1) return { cat:{}, count:0 };
+
+    // Si tu CSV trae encabezado, lo toleramos:
+    // Detecta si primera fila parece header (no empieza con número)
+    const first = splitCSVLine(lines[0]);
+    const firstCol = String(first[0] ?? "").trim();
+    let startIndex = 0;
+    const looksHeader = !/^\d+$/.test(firstCol) && firstCol.toLowerCase().includes("unidad");
+    if(looksHeader) startIndex = 1;
+
+    const cat = {};
+    let count = 0;
+
+    for(let i=startIndex;i<lines.length;i++){
+      const cols = splitCSVLine(lines[i]);
+      const u = String(cols[0] ?? "").trim();
+      const d = String(cols[1] ?? "").trim();
+      const dep = String(cols[2] ?? "").trim();
+
+      if(!u) continue;
+      // Normaliza unidad (solo dígitos)
+      const uu = normUnit(u);
+      if(!uu || uu === "0") continue;
+
+      cat[uu] = { desc: d || "(SIN DESCRIPCIÓN)", dep: dep || "(SIN DEPENDENCIA)" };
+      count++;
+    }
+    return { cat, count };
+  }
+
+  async function loadCatalog(){
+    if(!SHEETS_CSV_URL || SHEETS_CSV_URL.includes("PEGA_AQUI")){
+      UNIT_CATALOG = {};
+      CATALOG_COUNT = 0;
+      setBadge("warn", "Catálogo: falta URL CSV");
+      statusText.textContent = "Pega tu URL CSV en SHEETS_CSV_URL.";
+      return;
+    }
+
+    try{
+      statusText.textContent = "Cargando catálogo desde Google Sheets (CSV)…";
+      const resp = await fetch(SHEETS_CSV_URL, { cache:"no-store" });
+      const csv  = await resp.text();
+
+      const parsed = parseCatalogCSV_3cols(csv);
+      UNIT_CATALOG = parsed.cat;
+      CATALOG_COUNT = parsed.count;
+
+      setBadge("ok", `Catálogo: cargado (${CATALOG_COUNT})`);
+      statusText.textContent = "Catálogo listo.";
+    }catch(err){
+      console.error(err);
+      UNIT_CATALOG = {};
+      CATALOG_COUNT = 0;
+      setBadge("warn", "Catálogo: error al cargar");
+      statusText.textContent = "No se pudo cargar el CSV (revisa que esté publicado y el link sea CSV).";
+    }
+  }
+
+  function getUnitInfo(unit){
+    if(!unit || unit === "0") return { desc:"", dep:"" };
+    const info = UNIT_CATALOG[unit];
+    if(info) return info;
+    return { desc:"(SIN DESCRIPCIÓN)", dep:"(SIN DEPENDENCIA)" };
+  }
+
+  function buildMessage(){
+    const tipoVal = (tipo.value || "").trim();
+    const u = normUnit(unidad.value);
+    const p = (peticion.value || "").trim();
+
+    if(!tipoVal) return { ok:false, error:"Selecciona el tipo." };
+    if(!u) return { ok:false, error:"Captura la unidad (o 0 para STOCK)." };
+    if(!p) return { ok:false, error:"Captura la petición." };
+
+    const isStock = (u === "0");
+    const unitFinal = isStock ? "STOCK" : u;
+
+    let lineUnidad = "STOCK";
+    let info = { desc:"", dep:"" };
+
+    if(!isStock){
+      info = getUnitInfo(u);
+      lineUnidad = `${u} ${info.desc} — ${info.dep}`;
+    }
+
+    const msg =
+` _*(${tipoVal})*_
+
+${lineUnidad}
+*(${p})* `;
+
+    return { ok:true, msg, meta:{ tipoVal, u, unitFinal, ...info, count: CATALOG_COUNT } };
+  }
+
+  function updateWhatsLink(text){
+    const encoded = encodeURIComponent(text || "");
+    $("btnWhats").href = `https://wa.me/?text=${encoded}`;
+  }
+
+  async function copyToClipboard(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      statusText.textContent = "Copiado al portapapeles.";
+    }catch(e){
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      statusText.textContent = "Copiado (modo compatibilidad).";
+    }
+  }
+
+  $("btnGenerar").addEventListener("click", ()=>{
+    const res = buildMessage();
+    if(!res.ok){
+      preview.textContent = `⚠️ ${res.error}`;
+      updateWhatsLink(res.error);
+      debug.textContent = "";
+      return;
+    }
+    preview.textContent = res.msg;
+    updateWhatsLink(res.msg);
+    debug.innerHTML = `
+      <div><b>Unidad:</b> ${res.meta.unitFinal}</div>
+      <div><b>Descripción:</b> ${res.meta.desc || "(vacío)"}</div>
+      <div><b>Dependencia:</b> ${res.meta.dep || "(vacío)"}</div>
+      <div><b>Catálogo cargado:</b> ${res.meta.count}</div>
+    `;
+    statusText.textContent = "Texto generado.";
+  });
+
+  $("btnCopiar").addEventListener("click", async ()=>{
+    const text = preview.textContent || "";
+    if(!text || text.includes("Aquí se mostrará")){
+      statusText.textContent = "Primero genera el texto.";
+      return;
+    }
+    await copyToClipboard(text);
+  });
+
+  $("btnLimpiar").addEventListener("click", ()=>{
+    tipo.value = "COTIZACION";
+    unidad.value = "";
+    peticion.value = "";
+    preview.textContent = "(Aquí se mostrará tu texto.)";
+    debug.textContent = "";
+    updateWhatsLink("");
+    statusText.textContent = "Listo.";
+  });
+
+  $("btnReloadCatalog").addEventListener("click", loadCatalog);
+
+  let t;
+  function softAuto(){
+    clearTimeout(t);
+    t = setTimeout(()=> {
+      const res = buildMessage();
+      if(res.ok){
+        preview.textContent = res.msg;
+        updateWhatsLink(res.msg);
+      }
+    }, 250);
+  }
+  unidad.addEventListener("input", softAuto);
+  peticion.addEventListener("input", softAuto);
+  tipo.addEventListener("change", softAuto);
+
+  // Init
+  loadCatalog();
+  updateWhatsLink("");
+</script>
+</body>
+</html>
