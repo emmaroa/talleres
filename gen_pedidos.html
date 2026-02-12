@@ -273,14 +273,14 @@
 
   const $ = (id)=>document.getElementById(id);
 
-  const tipo     = $"tipo";
-  const unidad   = $"unidad";
-  const peticion = $"peticion";
-  const preview  = $"preview";
-  const debug    = $"debug";
+  const tipo     = $("tipo");
+  const unidad   = $("unidad");
+  const peticion = $("peticion");
+  const preview  = $("preview");
+  const debug    = $("debug");
 
-  const badgeCatalog = $"badgeCatalog";
-  const statusText   = $"statusText";
+  const badgeCatalog = $("badgeCatalog");
+  const statusText   = $("statusText");
 
   function setBadge(state, text){
     badgeCatalog.classList.remove("ok","warn");
