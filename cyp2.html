@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Copiables — Talleres</title>
+  <meta name="referrer" content="strict-origin" />
+
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+
+      --turq:#10c6d1;
+      --turq2:#0ea5b0;
+
+      --orange:#ff7f11;
+      --orange2:#f97316;
+
+      --shadow: 0 14px 34px rgba(17,24,39,.10);
+      --radius:18px;
+      --radius2:14px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(16,198,209,.10), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(255,127,17,.12), transparent 55%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    .wrap{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px;
+    }
+
+    .panel{
+      width:min(980px, 100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .header{
+      padding:20px 22px;
+      background: linear-gradient(90deg, rgba(255,127,17,.13), rgba(16,198,209,.12));
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 0;
+    }
+
+    .mark{
+      width:44px; height:44px;
+      border-radius:14px;
+      background: conic-gradient(from 220deg, var(--turq), var(--orange), var(--turq2));
+      box-shadow: 0 10px 18px rgba(17,24,39,.12);
+      flex:0 0 auto;
+    }
+
+    .title{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .title h1{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .title p{
+      margin:0;
+      font-size:12.5px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .top-actions{
+      display:flex; gap:10px; flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:600;
+      font-size:13px;
+      cursor:pointer;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: 0 8px 18px rgba(17,24,39,.06);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+    }
+    .btn:hover{ border-color: rgba(255,127,17,.45); box-shadow: 0 12px 22px rgba(17,24,39,.10); }
+    .btn:active{ transform: translateY(1px); }
+
+    .btn.primary{
+      border-color: rgba(16,198,209,.55);
+      background: linear-gradient(180deg, rgba(16,198,209,.18), rgba(16,198,209,.10));
+    }
+    .btn.orange{
+      border-color: rgba(255,127,17,.55);
+      background: linear-gradient(180deg, rgba(255,127,17,.18), rgba(255,127,17,.10));
+    }
+
+    .content{
+      padding:18px 22px 22px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: 1fr; }
+      textarea{ min-height: 120px; }
+    }
+
+    .card{
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:14px 14px 12px;
+      background: #fff;
+      box-shadow: 0 10px 22px rgba(17,24,39,.06);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(500px 160px at 10% 0%, rgba(16,198,209,.10), transparent 55%),
+        radial-gradient(500px 160px at 90% 0%, rgba(255,127,17,.10), transparent 55%);
+      pointer-events:none;
+    }
+
+    .card > *{ position:relative; }
+
+    .sec-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+      padding-bottom:10px;
+      border-bottom:1px dashed rgba(17,24,39,.10);
+    }
+
+    .sec-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:0;
+      font-size:13px;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+      color: var(--text);
+    }
+
+    .pill{
+      font-size:12px;
+      padding:5px 10px;
+      border-radius:999px;
+      border:1px solid rgba(17,24,39,.10);
+      background: rgba(17,24,39,.03);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    .field{
+      display:flex;
+      gap:10px;
+      align-items:stretch;
+      margin:10px 0;
+    }
+
+    .input, .textarea{
+      flex:1 1 auto;
+      width:100%;
+      border:1px solid var(--border);
+      border-radius: var(--radius2);
+      padding:10px 12px;
+      font-size:14px;
+      background:#fff;
+      color:var(--text);
+      transition: border-color .2s ease, box-shadow .2s ease;
+      outline:none;
+    }
+
+    .input:focus, .textarea:focus{
+      border-color: rgba(16,198,209,.70);
+      box-shadow: 0 0 0 4px rgba(16,198,209,.18);
+    }
+
+    .copy{
+      flex:0 0 auto;
+      padding:10px 12px;
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,127,17,.45);
+      background: linear-gradient(180deg, rgba(255,127,17,.20), rgba(255,127,17,.10));
+      cursor:pointer;
+      font-weight:800;
+      font-size:13px;
+      color:#7a2f00;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: 0 10px 18px rgba(17,24,39,.08);
+      user-select:none;
+    }
+    .copy:hover{ border-color: rgba(255,127,17,.75); box-shadow: 0 14px 24px rgba(17,24,39,.12); }
+    .copy:active{ transform: translateY(1px); }
+
+    .hint{
+      margin:10px 0 0;
+      font-size:12.5px;
+      color:var(--muted);
+    }
+
+    .footer{
+      padding:14px 22px 18px;
+      border-top:1px solid var(--border);
+      background: linear-gradient(90deg, rgba(16,198,209,.06), rgba(255,127,17,.06));
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:12px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-bottom-width:2px;
+      padding:2px 6px;
+      border-radius:8px;
+      color:var(--muted);
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      background: rgba(17,24,39,.92);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      box-shadow: 0 14px 30px rgba(17,24,39,.25);
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="panel" role="application" aria-label="Copiables Talleres">
+      <div class="header">
+        <div class="brand">
+          <div class="mark" aria-hidden="true"></div>
+          <div class="title">
+            <h1>Copiables  — Talleres</h1>
+            <p>Clic en “Copiar” o selecciona y presiona <span class="kbd">Ctrl</span> + <span class="kbd">C</span></p>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <button class="btn primary" type="button" onclick="copyAll()">
+            📋 Copiar TODO (Pagos multilínea)
+          </button>
+          <button class="btn orange" type="button" onclick="scrollTopSmooth()">
+            ⬆️ Ir arriba
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="grid">
+
+          <!-- REQUISICIONES -->
+          <section class="card">
+            <div class="sec-head">
+              <h2 class="sec-title">Para requisiciones</h2>
+              <span class="pill">Campos rápidos</span>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="TALLERES, REFACCIONES PARA UNIDAD " />
+              <button class="copy" type="button" data-copy="TALLERES, REFACCIONES PARA UNIDAD ">Copiar</button>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="ALMACEN DE TALLERES" />
+              <button class="copy" type="button" data-copy="ALMACEN DE TALLERES">Copiar</button>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="CHRISTIAN DOLORES MENDOZA MARQUEZ" />
+              <button class="copy" type="button" data-copy="CHRISTIAN DOLORES MENDOZA MARQUEZ">Copiar</button>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="6625110233" />
+              <button class="copy" type="button" data-copy="6625110233">Copiar</button>
+            </div>
+
+            <p class="hint">. </p>
+          </section>
+
+          <!-- SEGUIMIENTO -->
+          <section class="card">
+            <div class="sec-head">
+              <h2 class="sec-title">Seguimiento</h2>
+              <span class="pill">Texto estándar</span>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="SEGUIMIENTO DE PROCEDIMIENTO" />
+              <button class="copy" type="button" data-copy="SEGUIMIENTO DE PROCEDIMIENTO">Copiar</button>
+            </div>
+
+            <p class="hint">Úsalo para canalizar estatus.</p>
+          </section>
+
+          <!-- ORDENES DE COMPRA -->
+          <section class="card">
+            <div class="sec-head">
+              <h2 class="sec-title">Órdenes de compra</h2>
+              <span class="pill">Firmas / cargos</span>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="SUBDIRECTOR ADMINISTRATIVO TALLERES" />
+              <button class="copy" type="button" data-copy="SUBDIRECTOR ADMINISTRATIVO TALLERES">Copiar</button>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="ING. VICTOR EMMANUEL ZARATE IBARRA" />
+              <button class="copy" type="button" data-copy="ING. VICTOR EMMANUEL ZARATE IBARRA">Copiar</button>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="DIRECTOR DE TALLERES" />
+              <button class="copy" type="button" data-copy="DIRECTOR DE TALLERES">Copiar</button>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="ING. HECTOR MANUEL DIAZ YOUNG" />
+              <button class="copy" type="button" data-copy="ING. HECTOR MANUEL DIAZ YOUNG">Copiar</button>
+            </div>
+          </section>
+
+          <!-- PORTAL WEB -->
+          <section class="card">
+            <div class="sec-head">
+              <h2 class="sec-title">Portal web</h2>
+              <span class="pill">Ubicación</span>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="HERMOSILLO, SONORA." />
+              <button class="copy" type="button" data-copy="HERMOSILLO, SONORA.">Copiar</button>
+            </div>
+          </section>
+
+          <!-- SOLICITUDES DE PAGO -->
+          <section class="card">
+            <div class="sec-head">
+              <h2 class="sec-title">Solicitudes de pago</h2>
+              <span class="pill">Plantillas rápidas</span>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="XXXX: PAGO DE FACTURA XXX POR ADQUISICION DE XXX PARA UNIDAD XXX DE XXX" />
+              <button class="copy" type="button" data-copy="XXXX: PAGO DE FACTURA XXX POR ADQUISICION DE XXX PARA UNIDAD XXX DE XXX">Copiar</button>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="OC XXX REQ XXX E XXXXX" />
+              <button class="copy" type="button" data-copy="OC XXX REQ XXX E XXXXX">Copiar</button>
+            </div>
+
+            <div class="field">
+              <input class="input" readonly value="PROCEDIMIENTO EN PORTAL WEB DE COMPRAS: T26-" />
+              <button class="copy" type="button" data-copy="PROCEDIMIENTO EN PORTAL WEB DE COMPRAS: T26-">Copiar</button>
+            </div>
+          </section>
+
+          <!-- SOLICITUDES DE PAGO MULTILÍNEA -->
+          <section class="card">
+            <div class="sec-head">
+              <h2 class="sec-title">Solicitudes de pago (multilínea)</h2>
+              <span class="pill">completo</span>
+            </div>
+
+            <div class="field" style="align-items:flex-start">
+              <textarea class="textarea" id="multilinea" readonly rows="5">XXXX : PAGO DE FACTURA XXX  POR ADQUISICION DE XXX  PARA UNIDAD XXX DE XXX
+OC XXX REQ XXX E XXXXX
+PROCEDIMIENTO EN PORTAL WEB DE COMPRAS: T26-</textarea>
+              <button class="copy" type="button" id="copy-multi">Copiar</button>
+            </div>
+
+            <p class="hint">.</p>
+          </section>
+
+        </div>
+      </div>
+
+      <div class="footer">
+        <div style="color:var(--muted); font-size:12.5px">
+         ....
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+          <span class="kbd">Ctrl</span><span class="kbd">C</span>
+          <span style="color:var(--muted); font-size:12.5px">....</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Copiado ✅</div>
+
+  <script>
+    // Copiar con Clipboard API (moderna) + fallback
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Copiado ✅");
+        return true;
+      }catch(err){
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.top = "-1000px";
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast(ok ? "Copiado ✅" : "No se pudo copiar");
+        return ok;
+      }
+    }
+
+    // Botones Copiar por data-copy
+    document.querySelectorAll(".copy[data-copy]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const text = btn.getAttribute("data-copy") || "";
+        await copyText(text);
+      });
+    });
+
+    // Copiar multilínea
+    document.getElementById("copy-multi").addEventListener("click", async ()=>{
+      const text = document.getElementById("multilinea").value;
+      await copyText(text);
+    });
+
+    // Click en inputs/textarea: seleccionar todo + copiar si doble clic (opcional)
+    document.querySelectorAll(".input, .textarea").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        el.select?.();
+      });
+      el.addEventListener("keydown", (e)=>{
+        // Enter copia (en readonly input)
+        if(e.key === "Enter"){
+          e.preventDefault();
+          copyText(el.value);
+        }
+      });
+    });
+
+    // Copiar TODO (la multilínea es lo más útil)
+    function copyAll(){
+      const text = document.getElementById("multilinea").value;
+      copyText(text);
+    }
+
+    function scrollTopSmooth(){
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Toast
+    let toastTimer = null;
+    function showToast(msg){
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> t.classList.remove("show"), 1600);
+    }
+  </script>
+</body>
+</html>
