@@ -43,36 +43,93 @@
     /* ====== impresion doble, (2 por hoja) ====== */
     .print-area{display:none}
     @media print{
-      body{background:#fff}
-      .wrap, .card, .top, .status{display:none !important}
-      .print-area{display:block}
-      .sheet{
-        width: 210mm; height: 297mm; padding: 10mm;
-        display:grid; grid-template-rows: 1fr 1fr; gap: 8mm;
-      }
-      .ticket{
-        border:1px solid #111827; border-radius:12px; padding:10mm;
-        position:relative;
-      }
-      .hdr{
-        display:flex; align-items:center; justify-content:space-between; gap:10mm; margin-bottom:6mm;
-      }
-      .t-title{font-weight:800;font-size:15pt; letter-spacing:.5px}
-      .t-sub{font-size:10.5pt; color:#374151; margin-top:2mm}
-      .copy{
-        font-weight:800; font-size:10pt; padding:4px 10px; border-radius:999px;
-        border:1px solid #111827; display:inline-block;
-      }
-      .info{font-size:11pt; margin-top:2mm}
-      .line{margin:3mm 0; height:1px; background:#111827; opacity:.15}
-      .kv{display:grid; grid-template-columns: 42mm 1fr; gap:3mm; margin:3mm 0; font-size:11pt}
-      .k{color:#374151}
-      .v{font-weight:700}
-      .sign{display:grid; grid-template-columns: 1fr 1fr; gap:10mm; margin-top:12mm; align-items:end}
-      .sigline{border-top:1px solid #111827; padding-top:2mm; font-size:10pt; color:#374151}
-      .small{font-size:9.5pt;color:#374151}
-      .foot{position:absolute; right:10mm; bottom:8mm; font-size:9.5pt; color:#6b7280}
-    }
+  @page{
+    size: letter;
+    margin: 10mm;
+  }
+
+  body{
+    background:#fff;
+  }
+
+  .wrap, .card, .top, .status{
+    display:none !important;
+  }
+
+  .print-area{
+    display:block;
+  }
+
+  .sheet{
+    width: 100%;
+    height: 100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+
+  .ticket{
+    height: 48%;
+    border:1px solid #111827;
+    border-radius:12px;
+    padding:12mm;
+    box-sizing:border-box;
+    page-break-inside: avoid;
+  }
+
+  .hdr{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6mm;
+  }
+
+  .t-title{
+    font-weight:800;
+    font-size:14pt;
+  }
+
+  .t-sub{
+    font-size:10pt;
+    color:#374151;
+  }
+
+  .copy{
+    font-weight:800;
+    font-size:10pt;
+    border:1px solid #111827;
+    padding:4px 10px;
+    border-radius:999px;
+  }
+
+  .kv{
+    display:grid;
+    grid-template-columns: 45mm 1fr;
+    gap:3mm;
+    margin:3mm 0;
+    font-size:10.5pt;
+  }
+
+  .sign{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10mm;
+    margin-top:10mm;
+  }
+
+  .sigline{
+    border-top:1px solid #111827;
+    padding-top:2mm;
+    font-size:9.5pt;
+  }
+
+  .foot{
+    font-size:9pt;
+    color:#6b7280;
+    margin-top:6mm;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -104,7 +161,7 @@
         </div>
         <div>
           <label>Recibí (nombre completo)</label>
-          <input id="recibio" placeholder="Ej. Emma Figueroa" />
+          <input id="recibio" placeholder="Ej. Emma Figueroa." />
         </div>
         <div style="grid-column:1 / -1">
           <label>Observaciones (opcional)</label>
@@ -113,7 +170,7 @@
       </div>
 
       <div class="row">
-        <button class="btn2" id="btnSave">Guardar</button>
+    
         <button class="btn3" id="btnSavePrint">Guardar e imprimir (2 por hoja)</button>
         <button id="btnPreview">Vista previa de impresión</button>
       </div>
@@ -131,7 +188,6 @@
   </div>
 
   <script>
-    // ✅ Pega aquí tu URL del Web App (Apps Script Deploy)
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGEw_Z9HT-4kblSpgGhS5H6bkxofrfb2YWsWUQu7F2k8Dc6Ld-88lRy38I-c4EbDHg/exec";
 
     const $ = (id)=>document.getElementById(id);
@@ -181,7 +237,7 @@
 
       <div class="line"></div>
 
-      <div class="info"><b>Datos fijos para facturación</b></div>
+      <div class="info"><b>Datos para facturación</b></div>
       <div class="kv"><div class="k">RFC a facturar:</div><div class="v">MHE570101FI1</div></div>
       <div class="kv"><div class="k">Razón social:</div><div class="v">MUNICIPIO DE HERMOSILLO</div></div>
       <div class="kv"><div class="k">Uso de CFDI:</div><div class="v">Gastos en general</div></div>
@@ -204,7 +260,7 @@
         </div>
         <div>
           <div class="sigline">Entrega</div>
-          <div class="small">Nombre: _______________________</div>
+          <div class="small">_______________________</div>
         </div>
       </div>
 
