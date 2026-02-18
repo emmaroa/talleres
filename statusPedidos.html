@@ -352,8 +352,8 @@ function renderTable(rows, query=''){
       <td>${highlight(solicita, query)}</td>
       <td>${highlight(area, query)}</td>
       <td>${renderStatusBadge(estatus)}</td>
-      <td>${highlight(proveedor, query)}</td>
       <td>${escHTML(recep)}</td>
+      <td>${highlight(proveedor, query)}</td>
     `;
     frag.appendChild(tr);
   });
