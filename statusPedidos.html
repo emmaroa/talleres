@@ -309,7 +309,7 @@ function filterRows(allRows, query){
     const peticion = norm(r[2] || ''); 
     const solicita = norm(r[3] || ''); 
     const area     = norm(r[6] || ''); 
-    const proveedor = norm(r[8] || ''); 
+    const proveedor = norm(r[10] || ''); 
     return unidad.includes(q) || peticion.includes(q) || solicita.includes(q) || area.includes(q) || proveedor.includes(q);
   });
 }
@@ -341,7 +341,7 @@ function renderTable(rows, query=''){
     const solicita = r[3] || '';
     const area = r[6] || '';
     const estatus = r[9] || '';
-    const proveedor = r[8] || '';
+    const proveedor = r[10] || '';
     const recep = r[11] || '';
 
     const tr = document.createElement('tr');
