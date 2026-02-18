@@ -42,63 +42,145 @@
 
     /* ====== impresion doble, (2 por hoja) ====== */
     .print-area{display:none}
-  @media print{
-  /* Tamaño carta fijo */
-  @page{
-    size: Letter;
-    margin: 0.5in;
-  }
+@media print{
+  @page{ size: Letter; margin: 0.5in; }
 
-  html, body{
-    height: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-  }
+  html, body{ margin:0 !important; padding:0 !important; background:#fff !important; }
+  .wrap, .card, .top, .status{ display:none !important; }
+  .print-area{ display:block !important; }
 
-  /* Oculta UI normal */
-  .wrap, .card, .top, .status{
-    display:none !important;
-  }
-
-  .print-area{
-    display:block !important;
-  }
-
-  /* Contenedor de hoja: 11in de alto - márgenes (0.5in arriba + 0.5in abajo) = 10in */
   .sheet{
-    height: 10in !important;
-    width: 7.5in !important; /* 8.5in - 0.5in - 0.5in */
+    height: 10in !important; /* 11 - 0.5 - 0.5 */
+    width: 7.5in !important; /* 8.5 - 0.5 - 0.5 */
     display:flex !important;
     flex-direction:column !important;
     justify-content:space-between !important;
     gap: 0.25in !important;
   }
 
-  /* Cada ticket: (10in - gap 0.25in) / 2 = 4.875in */
   .ticket{
-    height: 4.875in !important;
+    height: 4.875in !important; /* (10 - .25)/2 */
     border:1px solid #111827 !important;
-    border-radius:12px !important;
-    padding: 0.35in !important; /* baja padding para que quepa */
+    border-radius:14px !important;
+    padding: 0.34in !important;
     box-sizing:border-box !important;
-
-    /* Clave para que no empuje a otra hoja */
-    overflow: hidden !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    overflow:hidden !important;
+    break-inside:avoid !important;
+    position:relative !important;
   }
 
-  /* Reduce un poquito tipografías en print para evitar desbordes */
-  .t-title{ font-size: 13pt !important; }
-  .t-sub{ font-size: 9.5pt !important; }
-  .kv{ font-size: 9.8pt !important; }
-  .info{ font-size: 9.8pt !important; }
-  .small{ font-size: 9pt !important; }
-  .foot{ font-size: 8.8pt !important; }
+  /* Header más institucional */
+  .hdr{
+    display:flex !important;
+    align-items:flex-start !important;
+    justify-content:space-between !important;
+    gap: 10mm !important;
+    margin-bottom: 10px !important;
+  }
+
+  .t-title{
+    font-weight:900 !important;
+    font-size: 13.5pt !important;
+    letter-spacing:.2px !important;
+    margin:0 !important;
+  }
+  .t-sub{
+    font-size: 9.5pt !important;
+    color:#374151 !important;
+    margin-top:2px !important;
+  }
+
+  .copy{
+    font-weight:800 !important;
+    font-size: 9.5pt !important;
+    padding: 4px 10px !important;
+    border-radius:999px !important;
+    border:1px solid #111827 !important;
+    white-space:nowrap !important;
+  }
+
+  .line{ height:1px !important; background:#111827 !important; opacity:.12 !important; margin: 8px 0 !important; }
+
+  /* Grid ordenada: izquierda datos de movimiento, derecha facturación */
+  .ticket-grid{
+    display:grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px 14px !important;
+  }
+
+  .block{
+    border:1px solid rgba(17,24,39,.10) !important;
+    border-radius:12px !important;
+    padding: 10px 10px !important;
+  }
+
+  .btitle{
+    font-size: 9pt !important;
+    font-weight:900 !important;
+    letter-spacing:.2px !important;
+    color:#111827 !important;
+    margin:0 0 6px 0 !important;
+    text-transform:uppercase !important;
+  }
+
+  .kv{
+    display:grid !important;
+    grid-template-columns: 40mm 1fr !important;
+    gap: 6px !important;
+    margin: 4px 0 !important;
+    font-size: 9.7pt !important;
+    line-height:1.2 !important;
+  }
+  .k{ color:#374151 !important; }
+  .v{ font-weight:800 !important; color:#111827 !important; }
+
+  /* Importante: resaltado sin desbordar */
+  .important{
+    margin-top: 6px !important;
+    padding: 8px 10px !important;
+    border-radius:12px !important;
+    border:1px solid rgba(127,29,29,.25) !important;
+    background: rgba(254,242,242,.8) !important;
+    font-size: 9.6pt !important;
+    line-height:1.2 !important;
+  }
+  .important b{ font-weight:900 !important; }
+
+  /* Observaciones: máximo 2 líneas */
+  .obs{
+    display:-webkit-box !important;
+    -webkit-line-clamp:2 !important;
+    -webkit-box-orient:vertical !important;
+    overflow:hidden !important;
+  }
+
+  /* Firmas compactas */
+  .sign{
+    display:grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10mm !important;
+    margin-top: 10px !important;
+    align-items:end !important;
+  }
+  .sigline{
+    border-top:1px solid #111827 !important;
+    padding-top:3px !important;
+    font-size: 9.2pt !important;
+    color:#374151 !important;
+  }
+  .small{ font-size: 9.2pt !important; color:#374151 !important; }
+
+  .foot{
+    position:absolute !important;
+    right: 0.34in !important;
+    bottom: 0.22in !important;
+    font-size: 8.8pt !important;
+    color:#6b7280 !important;
+  }
 }
 
-}
+
+
 
   </style>
 </head>
@@ -183,60 +265,66 @@
       if(!y||!m||!d) return yyyy_mm_dd;
       return `${d}/${m}/${y}`;
     }
+function buildTicketHTML({copyLabel, folio, unidad, monto, fecha, recibio, obs}){
+  const f = fmtFecha(fecha);
+  const m = money(monto);
+  const safeObs = (obs||'').trim() ? obs : '—';
 
-    function buildTicketHTML({copyLabel, folio, unidad, monto, fecha, recibio, obs}){
-    const f = fmtFecha(fecha);
-    const m = money(monto);
-    const safeObs = (obs||'').trim() ? obs : '—';
+  return `
+    <div class="hdr">
+      <div>
+        <div class="t-title">DIRECCIÓN DE TALLERES</div>
+        <div class="t-sub">Municipio de Hermosillo</div>
+      </div>
+      <div class="copy">${copyLabel}</div>
+    </div>
 
-    return `
-      <div class="hdr">
-        <div>
-          <div class="t-title">DIRECCIÓN DE TALLERES</div>
-          <div class="t-sub">Municipio de Hermosillo</div>
-        </div>
-        <div class="copy">${copyLabel}</div>
+    <div class="line"></div>
+
+    <div class="ticket-grid">
+
+      <div class="block">
+        <div class="btitle">Movimiento</div>
+        <div class="kv"><div class="k">Folio:</div><div class="v">${folio||'—'}</div></div>
+        <div class="kv"><div class="k">Fecha:</div><div class="v">${f}</div></div>
+        <div class="kv"><div class="k">Unidad:</div><div class="v">${unidad}</div></div>
+        <div class="kv"><div class="k">Monto entregado:</div><div class="v">${m}</div></div>
+
+        <div class="line"></div>
+        <div class="kv"><div class="k">Observaciones:</div><div class="v obs">${safeObs}</div></div>
       </div>
 
-      <div class="line"></div>
+      <div class="block">
+        <div class="btitle">Datos para facturación</div>
+        <div class="kv"><div class="k">RFC a facturar:</div><div class="v">MHE570101FI1</div></div>
+        <div class="kv"><div class="k">Razón social:</div><div class="v">MUNICIPIO DE HERMOSILLO</div></div>
+        <div class="kv"><div class="k">Uso de CFDI:</div><div class="v">Gastos en general</div></div>
+        <div class="kv"><div class="k">Código postal:</div><div class="v">83260</div></div>
+        <div class="kv"><div class="k">Régimen fiscal:</div><div class="v">Personas Morales con Fines no Lucrativos</div></div>
 
-      <div class="kv"><div class="k">Folio:</div><div class="v">${folio||'—'}</div></div>
-      <div class="kv"><div class="k">Fecha:</div><div class="v">${f}</div></div>
-      <div class="kv"><div class="k">Unidad:</div><div class="v">${unidad}</div></div>
-      <div class="kv"><div class="k">Monto entregado:</div><div class="v">${m}</div></div>
-
-      <div class="line"></div>
-
-      <div class="info"><b>Datos para facturación</b></div>
-      <div class="kv"><div class="k">RFC a facturar:</div><div class="v">MHE570101FI1</div></div>
-      <div class="kv"><div class="k">Razón social:</div><div class="v">MUNICIPIO DE HERMOSILLO</div></div>
-      <div class="kv"><div class="k">Uso de CFDI:</div><div class="v">Gastos en general</div></div>
-      <div class="kv"><div class="k">Código postal:</div><div class="v">83260</div></div>
-      <div class="kv"><div class="k">Régimen fiscal:</div><div class="v">Personas Morales con Fines no Lucrativos</div></div>
-
-      <div class="line"></div>
-
-      <div class="info"><b>MUY IMPORTANTE:</b> Enviar archivos electrónicos <b>PDF y XML</b></div>
-      <div class="kv"><div class="k">Correo:</div><div class="v">talleres.hermosillo@gmail.com</div></div>
-
-      <div class="line"></div>
-
-      <div class="info"><b>Observaciones:</b> ${safeObs}</div>
-
-      <div class="sign">
-        <div>
-          <div class="sigline">Firma de recibido</div>
-          <div class="small">Nombre: <b>${recibio}</b></div>
-        </div>
-        <div>
-          <div class="sigline">Entrega</div>
-          <div class="small">_______________________</div>
+        <div class="important">
+          <b>MUY IMPORTANTE:</b> Enviar archivos electrónicos <b>PDF y XML</b><br>
+          <b>Correo:</b> talleres.hermosillo@gmail.com
         </div>
       </div>
 
-      <div class="foot">Documento para control de caja chica</div>
-    `;
-  }
+    </div>
+
+    <div class="sign">
+      <div>
+        <div class="sigline">Firma de recibido</div>
+        <div class="small">Nombre: <b>${recibio}</b></div>
+      </div>
+      <div>
+        <div class="sigline">Entrega</div>
+        <div class="small">_______________________</div>
+      </div>
+    </div>
+
+    <div class="foot">Documento para control de caja chica</div>
+  `;
+}
+
 
 
     function getForm(){
