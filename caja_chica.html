@@ -42,92 +42,62 @@
 
     /* ====== impresion doble, (2 por hoja) ====== */
     .print-area{display:none}
-    @media print{
+  @media print{
+  /* Tamaño carta fijo */
   @page{
-    size: letter;
-    margin: 10mm;
+    size: Letter;
+    margin: 0.5in;
   }
 
-  body{
-    background:#fff;
+  html, body{
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
   }
 
+  /* Oculta UI normal */
   .wrap, .card, .top, .status{
     display:none !important;
   }
 
   .print-area{
-    display:block;
+    display:block !important;
   }
 
+  /* Contenedor de hoja: 11in de alto - márgenes (0.5in arriba + 0.5in abajo) = 10in */
   .sheet{
-    width: 100%;
-    height: 100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+    height: 10in !important;
+    width: 7.5in !important; /* 8.5in - 0.5in - 0.5in */
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:space-between !important;
+    gap: 0.25in !important;
   }
 
+  /* Cada ticket: (10in - gap 0.25in) / 2 = 4.875in */
   .ticket{
-    height: 48%;
-    border:1px solid #111827;
-    border-radius:12px;
-    padding:12mm;
-    box-sizing:border-box;
-    page-break-inside: avoid;
+    height: 4.875in !important;
+    border:1px solid #111827 !important;
+    border-radius:12px !important;
+    padding: 0.35in !important; /* baja padding para que quepa */
+    box-sizing:border-box !important;
+
+    /* Clave para que no empuje a otra hoja */
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
-  .hdr{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:6mm;
-  }
+  /* Reduce un poquito tipografías en print para evitar desbordes */
+  .t-title{ font-size: 13pt !important; }
+  .t-sub{ font-size: 9.5pt !important; }
+  .kv{ font-size: 9.8pt !important; }
+  .info{ font-size: 9.8pt !important; }
+  .small{ font-size: 9pt !important; }
+  .foot{ font-size: 8.8pt !important; }
+}
 
-  .t-title{
-    font-weight:800;
-    font-size:14pt;
-  }
-
-  .t-sub{
-    font-size:10pt;
-    color:#374151;
-  }
-
-  .copy{
-    font-weight:800;
-    font-size:10pt;
-    border:1px solid #111827;
-    padding:4px 10px;
-    border-radius:999px;
-  }
-
-  .kv{
-    display:grid;
-    grid-template-columns: 45mm 1fr;
-    gap:3mm;
-    margin:3mm 0;
-    font-size:10.5pt;
-  }
-
-  .sign{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10mm;
-    margin-top:10mm;
-  }
-
-  .sigline{
-    border-top:1px solid #111827;
-    padding-top:2mm;
-    font-size:9.5pt;
-  }
-
-  .foot{
-    font-size:9pt;
-    color:#6b7280;
-    margin-top:6mm;
-  }
 }
 
   </style>
@@ -161,7 +131,7 @@
         </div>
         <div>
           <label>Recibí (nombre completo)</label>
-          <input id="recibio" placeholder="Ej. Emma Figueroa" />
+          <input id="recibio" placeholder="Ej. Emma Figueroa♥" />
         </div>
         <div style="grid-column:1 / -1">
           <label>Observaciones (opcional)</label>
