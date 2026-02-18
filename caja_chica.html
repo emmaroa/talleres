@@ -159,44 +159,59 @@
     }
 
     function buildTicketHTML({copyLabel, folio, unidad, monto, fecha, recibio, obs}){
-      const f = fmtFecha(fecha);
-      const m = money(monto);
-      const safeObs = (obs||'').trim() ? obs : '—';
+    const f = fmtFecha(fecha);
+    const m = money(monto);
+    const safeObs = (obs||'').trim() ? obs : '—';
 
-      return `
-        <div class="hdr">
-          <div>
-            <div class="t-title">DIRECCIÓN DE TALLERES</div>
-            <div class="t-sub">Municipio de Hermosillo</div>
-          </div>
-          <div class="copy">${copyLabel}</div>
+    return `
+      <div class="hdr">
+        <div>
+          <div class="t-title">DIRECCIÓN DE TALLERES</div>
+          <div class="t-sub">Municipio de Hermosillo</div>
         </div>
+        <div class="copy">${copyLabel}</div>
+      </div>
 
-        <div class="line"></div>
+      <div class="line"></div>
 
-        <div class="kv"><div class="k">Folio:</div><div class="v">${folio||'—'}</div></div>
-        <div class="kv"><div class="k">Fecha:</div><div class="v">${f}</div></div>
-        <div class="kv"><div class="k">Unidad:</div><div class="v">${unidad}</div></div>
-        <div class="kv"><div class="k">Monto entregado:</div><div class="v">${m}</div></div>
+      <div class="kv"><div class="k">Folio:</div><div class="v">${folio||'—'}</div></div>
+      <div class="kv"><div class="k">Fecha:</div><div class="v">${f}</div></div>
+      <div class="kv"><div class="k">Unidad:</div><div class="v">${unidad}</div></div>
+      <div class="kv"><div class="k">Monto entregado:</div><div class="v">${m}</div></div>
 
-        <div class="line"></div>
+      <div class="line"></div>
 
-        <div class="info"><b>Observaciones:</b> ${safeObs}</div>
+      <div class="info"><b>Datos fijos para facturación</b></div>
+      <div class="kv"><div class="k">RFC a facturar:</div><div class="v">MHE570101FI1</div></div>
+      <div class="kv"><div class="k">Razón social:</div><div class="v">MUNICIPIO DE HERMOSILLO</div></div>
+      <div class="kv"><div class="k">Uso de CFDI:</div><div class="v">Gastos en general</div></div>
+      <div class="kv"><div class="k">Código postal:</div><div class="v">83260</div></div>
+      <div class="kv"><div class="k">Régimen fiscal:</div><div class="v">Personas Morales con Fines no Lucrativos</div></div>
 
-        <div class="sign">
-          <div>
-            <div class="sigline">Firma de recibido</div>
-            <div class="small">Nombre: <b>${recibio}</b></div>
-          </div>
-          <div>
-            <div class="sigline">Entrega</div>
-            <div class="small">Nombre: _______________________</div>
-          </div>
+      <div class="line"></div>
+
+      <div class="info"><b>MUY IMPORTANTE:</b> Enviar archivos electrónicos <b>PDF y XML</b></div>
+      <div class="kv"><div class="k">Correo:</div><div class="v">talleres.hermosillo@gmail.com</div></div>
+
+      <div class="line"></div>
+
+      <div class="info"><b>Observaciones:</b> ${safeObs}</div>
+
+      <div class="sign">
+        <div>
+          <div class="sigline">Firma de recibido</div>
+          <div class="small">Nombre: <b>${recibio}</b></div>
         </div>
+        <div>
+          <div class="sigline">Entrega</div>
+          <div class="small">Nombre: _______________________</div>
+        </div>
+      </div>
 
-        <div class="foot">Documento para control de caja chica</div>
-      `;
-    }
+      <div class="foot">Documento para control de caja chica</div>
+    `;
+  }
+
 
     function getForm(){
       const unidad = $("unidad").value.trim();
