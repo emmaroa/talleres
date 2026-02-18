@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Caja Chica — Talleres</title>
+
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --text:#111827; --muted:#6b7280; --border:#e5e7eb;
+      --turq:#10c6d1; --turq2:#0ea5b0; --orange:#ff7f11; --orange2:#f97316;
+      --shadow: 0 14px 34px rgba(17,24,39,.10); --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:980px;margin:0 auto;padding:22px}
+    .top{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .badge{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--orange),var(--turq));box-shadow:var(--shadow)}
+    h1{font-size:18px;margin:0}
+    .hint{color:var(--muted);font-size:13px;margin:2px 0 0}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:18px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+    input,textarea{
+      width:100%;padding:12px 12px;border:1px solid var(--border);border-radius:14px;
+      outline:none;background:#fff;font-size:14px
+    }
+    input:focus,textarea:focus{border-color:rgba(16,198,209,.55);box-shadow:0 0 0 4px rgba(16,198,209,.12)}
+    textarea{min-height:92px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    button{
+      border:0;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;
+      background:var(--text);color:#fff
+    }
+    .btn2{background:linear-gradient(135deg,var(--orange),var(--orange2))}
+    .btn3{background:linear-gradient(135deg,var(--turq),var(--turq2))}
+    .status{margin-top:10px;font-size:13px;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:#f3f4f6;border:1px solid var(--border)}
+    .ok{color:#065f46;background:#ecfdf5;border-color:#a7f3d0}
+    .err{color:#7f1d1d;background:#fef2f2;border-color:#fecaca}
+
+    /* ====== impresion doble, (2 por hoja) ====== */
+    .print-area{display:none}
+    @media print{
+      body{background:#fff}
+      .wrap, .card, .top, .status{display:none !important}
+      .print-area{display:block}
+      .sheet{
+        width: 210mm; height: 297mm; padding: 10mm;
+        display:grid; grid-template-rows: 1fr 1fr; gap: 8mm;
+      }
+      .ticket{
+        border:1px solid #111827; border-radius:12px; padding:10mm;
+        position:relative;
+      }
+      .hdr{
+        display:flex; align-items:center; justify-content:space-between; gap:10mm; margin-bottom:6mm;
+      }
+      .t-title{font-weight:800;font-size:15pt; letter-spacing:.5px}
+      .t-sub{font-size:10.5pt; color:#374151; margin-top:2mm}
+      .copy{
+        font-weight:800; font-size:10pt; padding:4px 10px; border-radius:999px;
+        border:1px solid #111827; display:inline-block;
+      }
+      .info{font-size:11pt; margin-top:2mm}
+      .line{margin:3mm 0; height:1px; background:#111827; opacity:.15}
+      .kv{display:grid; grid-template-columns: 42mm 1fr; gap:3mm; margin:3mm 0; font-size:11pt}
+      .k{color:#374151}
+      .v{font-weight:700}
+      .sign{display:grid; grid-template-columns: 1fr 1fr; gap:10mm; margin-top:12mm; align-items:end}
+      .sigline{border-top:1px solid #111827; padding-top:2mm; font-size:10pt; color:#374151}
+      .small{font-size:9.5pt;color:#374151}
+      .foot{position:absolute; right:10mm; bottom:8mm; font-size:9.5pt; color:#6b7280}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="badge"></div>
+        <div>
+          <h1>Caja Chica — Comprobante</h1>
+          <div class="hint">Entrega de efectivo para compra de refacciones</div>
+        </div>
+      </div>
+      <div class="pill" id="pill">Listo</div>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label>Unidad</label>
+          <input id="unidad" placeholder="Ej. 2314 / 0 / PTE" />
+        </div>
+        <div>
+          <label>Monto entregado</label>
+          <input id="monto" type="number" step="0.01" placeholder="Ej. 500.00" />
+        </div>
+        <div>
+          <label>Fecha</label>
+          <input id="fecha" type="date" />
+        </div>
+        <div>
+          <label>Recibí (nombre completo)</label>
+          <input id="recibio" placeholder="Ej. Juan Garcia" />
+        </div>
+        <div style="grid-column:1 / -1">
+          <label>Observaciones (opcional)</label>
+          <textarea id="obs" placeholder="Ej. Caja chica para compra directa / refacción urgente..."></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn2" id="btnSave">Guardar</button>
+        <button class="btn3" id="btnSavePrint">Guardar e imprimir (2 por hoja)</button>
+        <button id="btnPreview">Vista previa de impresión</button>
+      </div>
+
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <!-- PRINT AREA -->
+  <div class="print-area" id="printArea">
+    <div class="sheet">
+      <div class="ticket" id="t1"></div>
+      <div class="ticket" id="t2"></div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ Pega aquí tu URL del Web App (Apps Script Deploy)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGEw_Z9HT-4kblSpgGhS5H6bkxofrfb2YWsWUQu7F2k8Dc6Ld-88lRy38I-c4EbDHg/exec";
+
+    const $ = (id)=>document.getElementById(id);
+    const pill = $("pill");
+    const status = $("status");
+
+    // Default fecha = hoy
+    const today = new Date();
+    const pad = (n)=>String(n).padStart(2,'0');
+    $("fecha").value = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+
+    function setPill(type, msg){
+      pill.textContent = msg;
+      pill.className = "pill " + (type === "ok" ? "ok" : type === "err" ? "err" : "");
+    }
+    function money(n){
+      const v = Number(n||0);
+      return v.toLocaleString('es-MX',{style:'currency',currency:'MXN'});
+    }
+    function fmtFecha(yyyy_mm_dd){
+      // 2026-02-18 -> 18/02/2026
+      const [y,m,d] = (yyyy_mm_dd||'').split('-');
+      if(!y||!m||!d) return yyyy_mm_dd;
+      return `${d}/${m}/${y}`;
+    }
+
+    function buildTicketHTML({copyLabel, folio, unidad, monto, fecha, recibio, obs}){
+      const f = fmtFecha(fecha);
+      const m = money(monto);
+      const safeObs = (obs||'').trim() ? obs : '—';
+
+      return `
+        <div class="hdr">
+          <div>
+            <div class="t-title">DIRECCIÓN DE TALLERES</div>
+            <div class="t-sub">Municipio de Hermosillo</div>
+          </div>
+          <div class="copy">${copyLabel}</div>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="kv"><div class="k">Folio:</div><div class="v">${folio||'—'}</div></div>
+        <div class="kv"><div class="k">Fecha:</div><div class="v">${f}</div></div>
+        <div class="kv"><div class="k">Unidad:</div><div class="v">${unidad}</div></div>
+        <div class="kv"><div class="k">Monto entregado:</div><div class="v">${m}</div></div>
+
+        <div class="line"></div>
+
+        <div class="info"><b>Observaciones:</b> ${safeObs}</div>
+
+        <div class="sign">
+          <div>
+            <div class="sigline">Firma de recibido</div>
+            <div class="small">Nombre: <b>${recibio}</b></div>
+          </div>
+          <div>
+            <div class="sigline">Entrega</div>
+            <div class="small">Nombre: _______________________</div>
+          </div>
+        </div>
+
+        <div class="foot">Documento para control de caja chica</div>
+      `;
+    }
+
+    function getForm(){
+      const unidad = $("unidad").value.trim();
+      const monto = $("monto").value;
+      const fecha = $("fecha").value;
+      const recibio = $("recibio").value.trim();
+      const obs = $("obs").value.trim();
+      return { unidad, monto, fecha, recibio, obs };
+    }
+
+    function validate({unidad,monto,fecha,recibio}){
+      if(!unidad) return "Falta Unidad.";
+      if(!monto || Number(monto) <= 0) return "Monto inválido.";
+      if(!fecha) return "Falta Fecha.";
+      if(!recibio) return "Falta nombre de Recibí.";
+      return "";
+    }
+
+    async function saveToSheets(data){
+      const resp = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify(data),
+      });
+      const json = await resp.json();
+      if(!json.ok) throw new Error(json.error || "Error al guardar.");
+      return json; // {ok:true, folio}
+    }
+
+    function renderPrint(folio, data){
+      $("t1").innerHTML = buildTicketHTML({
+        copyLabel: "COPIA EXTERNA",
+        folio, ...data
+      });
+      $("t2").innerHTML = buildTicketHTML({
+        copyLabel: "COPIA INTERNA",
+        folio, ...data
+      });
+    }
+
+    $("btnPreview").addEventListener("click", ()=>{
+      const data = getForm();
+      const err = validate(data);
+      if(err){ setPill("err", err); status.textContent = ""; return; }
+      setPill("", "Vista previa lista");
+      status.textContent = "Vista previa generada (sin folio).";
+      renderPrint("—", data);
+      window.print();
+    });
+
+    $("btnSave").addEventListener("click", async ()=>{
+      const data = getForm();
+      const err = validate(data);
+      if(err){ setPill("err", err); status.textContent = ""; return; }
+
+      try{
+        setPill("", "Guardando…");
+        status.textContent = "";
+        const res = await saveToSheets(data);
+        setPill("ok", "Guardado");
+        status.textContent = `Guardado en Sheets. Folio: ${res.folio}`;
+      }catch(e){
+        setPill("err", "Error");
+        status.textContent = e.message;
+      }
+    });
+
+    $("btnSavePrint").addEventListener("click", async ()=>{
+      const data = getForm();
+      const err = validate(data);
+      if(err){ setPill("err", err); status.textContent = ""; return; }
+
+      try{
+        setPill("", "Guardando…");
+        status.textContent = "";
+        const res = await saveToSheets(data);
+        renderPrint(res.folio, data);
+        setPill("ok", "Listo para imprimir");
+        status.textContent = `Folio: ${res.folio}. Imprimiendo 2 por hoja…`;
+        window.print();
+      }catch(e){
+        setPill("err", "Error");
+        status.textContent = e.message;
+      }
+    });
+  </script>
+</body>
+</html>
