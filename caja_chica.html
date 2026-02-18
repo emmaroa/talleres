@@ -161,7 +161,7 @@
         </div>
         <div>
           <label>Recibí (nombre completo)</label>
-          <input id="recibio" placeholder="Ej. Emma Figueroa." />
+          <input id="recibio" placeholder="Ej. Emma Figueroa" />
         </div>
         <div style="grid-column:1 / -1">
           <label>Observaciones (opcional)</label>
@@ -318,23 +318,7 @@
       window.print();
     });
 
-    $("btnSave").addEventListener("click", async ()=>{
-      const data = getForm();
-      const err = validate(data);
-      if(err){ setPill("err", err); status.textContent = ""; return; }
-
-      try{
-        setPill("", "Guardando…");
-        status.textContent = "";
-        const res = await saveToSheets(data);
-        setPill("ok", "Guardado");
-        status.textContent = `Guardado en Sheets. Folio: ${res.folio}`;
-      }catch(e){
-        setPill("err", "Error");
-        status.textContent = e.message;
-      }
-    });
-
+  
     $("btnSavePrint").addEventListener("click", async ()=>{
       const data = getForm();
       const err = validate(data);
