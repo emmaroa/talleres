@@ -243,7 +243,7 @@ const sheetId = '1NSpI6iWqYbXmJvSFrZ5bPKIPTlIQ8V0wlqhUXUxPN2w';
 const range = `PEDIDOS!A:J`;
 const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
 
-const ONLY_AREA = "infraestructura";
+const ONLY_AREA = "Infraestructura";
 const LIMIT = 100;
 
 function norm(s){return (s||"").toString().trim().toLowerCase();}
