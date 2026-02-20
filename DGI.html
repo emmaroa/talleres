@@ -289,8 +289,8 @@ function nowFmt(){
 }
 
 function isInfraRow(r){
-  // H = dependencia
-  return norm(r[7]).includes(ONLY_DEP);
+  return norm(r[7]).includes(norm(ONLY_DEP));
+
 }
 
 function esc(s){
