@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pedidos — Infraestructura (Últimos 100)</title>
+  <meta name="referrer" content="strict-origin" />
+  <style>
+    :root{
+      --bg:#f8f6f2; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --brand:#ff7f11; --accent:#10c6d1;
+      --accent-700:#0ea5b0; --ring:rgba(16,198,209,.45);
+      --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.08);
+      --border:#e5e7eb;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 110% -10%, rgba(16,198,209,.10), transparent 60%),
+        radial-gradient(900px 500px at -10% 10%, rgba(255,127,17,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:1200px; margin:28px auto; padding:0 16px;}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      background:rgba(255,255,255,.8); border:1px solid var(--border);
+      border-radius:22px; padding:16px 18px; box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .brand{display:flex; align-items:center; gap:14px;}
+    .logo{
+      width:46px; height:46px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(255,127,17,.15), rgba(16,198,209,.15));
+      display:grid; place-items:center; border:1px solid rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .logo img{width:42px; height:42px; object-fit:contain}
+    .titles h1{margin:0; font-size:18px; letter-spacing:.2px}
+    .titles p{margin:2px 0 0; color:var(--muted); font-size:13px}
+    .chips{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid var(--border); background:#fff;
+      font-size:12px; color:var(--muted);
+    }
+    .dot{width:9px; height:9px; border-radius:999px; background:var(--accent);}
+    .dot.orange{background:var(--brand);}
+    .card{
+      margin-top:14px; background:#fff; border:1px solid var(--border);
+      border-radius:22px; box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cardHead{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 16px; border-bottom:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,127,17,.06), rgba(16,198,209,.04));
+    }
+    .cardHead .left{display:flex; flex-direction:column; gap:2px}
+    .cardHead h2{margin:0; font-size:15px}
+    .cardHead small{color:var(--muted)}
+    .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    button{
+      border:1px solid var(--border);
+      background:#fff; color:var(--text);
+      padding:9px 12px; border-radius:12px;
+      cursor:pointer; font-weight:600; font-size:13px;
+    }
+    button:hover{border-color: rgba(16,198,209,.45); box-shadow:0 0 0 3px var(--ring)}
+    .statusLine{padding:10px 16px; color:var(--muted); font-size:13px}
+    .tableWrap{overflow:auto}
+    table{width:100%; border-collapse:separate; border-spacing:0; min-width:980px}
+    thead th{
+      position:sticky; top:0; z-index:2;
+      background:#fff; border-bottom:1px solid var(--border);
+      text-align:left; font-size:12px; color:var(--muted);
+      padding:10px 12px;
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:10px 12px; border-bottom:1px solid #f1f5f9;
+      font-size:13px; vertical-align:top;
+    }
+    tbody tr:hover{background: rgba(16,198,209,.05)}
+    .muted{color:var(--muted)}
+    .badge{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px; border-radius:999px;
+      font-size:12px; font-weight:700;
+      border:1px solid rgba(0,0,0,.06);
+      background:#f8fafc; color:#334155;
+      white-space:nowrap;
+    }
+    .b-ok{background:rgba(34,197,94,.12); color:#166534; border-color:rgba(34,197,94,.25)}
+    .b-warn{background:rgba(245,158,11,.14); color:#92400e; border-color:rgba(245,158,11,.25)}
+    .b-info{background:rgba(59,130,246,.12); color:#1e40af; border-color:rgba(59,130,246,.25)}
+    .b-bad{background:rgba(239,68,68,.12); color:#7f1d1d; border-color:rgba(239,68,68,.25)}
+    .b-muted{background:#f1f5f9; color:#475569; border-color:#e2e8f0}
+
+    footer{padding:14px; text-align:center; color:var(--muted); font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <!-- Si ya tienes el escudo en tu repo, ajusta la ruta -->
+          <img src="escudo.png" alt="">
+        </div>
+        <div class="titles">
+          <h1>Pedidos — Infraestructura</h1>
+          <p>Dirección de Talleres · Municipio de Hermosillo</p>
+        </div>
+      </div>
+      <div class="chips">
+        <div class="chip"><span class="dot"></span>Filtro: Área = Infraestructura</div>
+        <div class="chip"><span class="dot orange"></span>Últimos 100 registros</div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="cardHead">
+        <div class="left">
+          <h2>Listado</h2>
+          <small id="subtitle">Cargando…</small>
+        </div>
+        <div class="actions">
+          <button id="btnRefresh" type="button">Actualizar</button>
+          <button id="btnCopy" type="button">Copiar tabla</button>
+        </div>
+      </div>
+
+      <div class="statusLine" id="statusLine">Preparando…</div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Unidad</th>
+              <th>Petición</th>
+              <th>Quién solicita</th>
+              <th>Área</th>
+              <th>Estatus</th>
+              <th>Recepción</th>
+              <th>Proveedor</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td class="muted" colspan="8">Cargando datos…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <footer>© 2026 Dirección de Talleres · Municipio de Hermosillo</footer>
+    </section>
+  </div>
+
+  <script>
+    /* ================= CONFIG ================= */
+const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
+const sheetId = '1NSpI6iWqYbXmJvSFrZ5bPKIPTlIQ8V0wlqhUXUxPN2w';
+const SHEET_NAME = 'PEDIDOS';
+    
+    const apiUrl = "https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}";
+
+    const ONLY_AREA = "infraestructura";
+    const LIMIT = 100;
+
+    const elTbody = document.getElementById("tbody");
+    const elStatus = document.getElementById("statusLine");
+    const elSub = document.getElementById("subtitle");
+    const btnRefresh = document.getElementById("btnRefresh");
+    const btnCopy = document.getElementById("btnCopy");
+
+    const norm = (s) => (s ?? "").toString().trim().toLowerCase();
+
+    function tryParseDate(v){
+      if (!v) return null;
+
+      // Caso: ya viene como Date ISO
+      const d1 = new Date(v);
+      if (!Number.isNaN(d1.getTime())) return d1;
+
+      // Caso: "5/02/2026 15:40:57" (d/M/yyyy HH:mm:ss)
+      const s = v.toString().trim();
+      const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+      if (m){
+        const dd = Number(m[1]), MM = Number(m[2]) - 1, yyyy = Number(m[3]);
+        const hh = Number(m[4]), mm = Number(m[5]), ss = Number(m[6] || 0);
+        const d2 = new Date(yyyy, MM, dd, hh, mm, ss);
+        if (!Number.isNaN(d2.getTime())) return d2;
+      }
+      return null;
+    }
+
+    function fmtDate(v){
+      const d = tryParseDate(v);
+      if (!d) return (v ?? "").toString();
+      const pad = (n) => String(n).padStart(2,"0");
+      return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function badgeForStatus(raw){
+      const s = (raw ?? "").toString().trim();
+      const n = norm(s);
+
+      // Ajusta si tus estatus manejan otras palabras
+      if (!n) return `<span class="badge b-muted">SIN ESTATUS</span>`;
+      if (n.includes("recib") || n.includes("entreg") || n.includes("ok")) return `<span class="badge b-ok">${escapeHtml(s)}</span>`;
+      if (n.includes("pend") || n.includes("esper") || n.includes("revision") || n.includes("revisión")) return `<span class="badge b-warn">${escapeHtml(s)}</span>`;
+      if (n.includes("pedido") || n.includes("enviado") || n.includes("captur")) return `<span class="badge b-info">${escapeHtml(s)}</span>`;
+      if (n.includes("rechaz") || n.includes("cancel") || n.includes("error")) return `<span class="badge b-bad">${escapeHtml(s)}</span>`;
+      return `<span class="badge b-muted">${escapeHtml(s)}</span>`;
+    }
+
+    function escapeHtml(str){
+      return (str ?? "").toString()
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    /**
+     * Soporta dos formatos comunes:
+     * A) { rows: [ [A,B,C,...], ... ] }
+     * B) [ [A,B,C,...], ... ]
+     * C) { data: [...] }
+     */
+    function pickRows(json){
+      if (Array.isArray(json)) return json;
+      if (json && Array.isArray(json.rows)) return json.rows;
+      if (json && Array.isArray(json.data)) return json.data;
+      return [];
+    }
+
+    /**
+     * Mapea a columnas visibles:
+     * 0 fecha/timestamp
+     * 1 unidad
+     * 2 peticion
+     * 3 solicita
+     * 4 area
+     * 5 status
+     * 6 recepcion
+     * 7 proveedor
+     *
+     * Si tu API trae más columnas, no pasa nada; usamos índices seguros.
+     */
+    function projectRow(r){
+      const a = Array.isArray(r) ? r : [];
+      return {
+        fecha: a[0] ?? "",
+        unidad: a[1] ?? "",
+        peticion: a[2] ?? "",
+        solicita: a[3] ?? "",
+        area: a[4] ?? "",
+        status: a[9] ?? a[5] ?? "",        // por si status viene en J (índice 9) como en tu script
+        recepcion: a[10] ?? a[6] ?? "",
+        proveedor: a[11] ?? a[7] ?? ""
+      };
+    }
+
+    function areaIsInfra(area){
+      const v = norm(area);
+      // “infraestructura”, “INFRAESTRUCTURA”, “Infraestructura - ...”
+      return v === ONLY_AREA || v.startsWith(ONLY_AREA) || v.includes("infraestructura");
+    }
+
+    function sortDescByFecha(a,b){
+      const da = tryParseDate(a.fecha);
+      const db = tryParseDate(b.fecha);
+      const ta = da ? da.getTime() : 0;
+      const tb = db ? db.getTime() : 0;
+      return tb - ta;
+    }
+
+    function render(rows){
+      if (!rows.length){
+        elTbody.innerHTML = `<tr><td class="muted" colspan="8">No hay registros de Infraestructura.</td></tr>`;
+        return;
+      }
+
+      elTbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${escapeHtml(fmtDate(r.fecha))}</td>
+          <td><b>${escapeHtml(r.unidad)}</b></td>
+          <td>${escapeHtml(r.peticion)}</td>
+          <td>${escapeHtml(r.solicita)}</td>
+          <td>${escapeHtml(r.area)}</td>
+          <td>${badgeForStatus(r.status)}</td>
+          <td class="muted">${escapeHtml(r.recepcion)}</td>
+          <td class="muted">${escapeHtml(r.proveedor)}</td>
+        </tr>
+      `).join("");
+    }
+
+    async function fetchData(){
+      if (!apiUrl || apiUrl.includes("PEGA_AQUI")){
+        elStatus.textContent = "⚠️ Falta configurar apiUrl (pon la misma URL que usas en statusPedidos.html).";
+        elSub.textContent = "Sin conexión";
+        elTbody.innerHTML = `<tr><td class="muted" colspan="8">Configura apiUrl para cargar datos.</td></tr>`;
+        return;
+      }
+
+      elStatus.textContent = "Cargando…";
+      elSub.textContent = "Conectando a la base…";
+      btnRefresh.disabled = true;
+
+      try{
+        const resp = await fetch(apiUrl, { cache: "no-store" });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const json = await resp.json();
+        const rows = pickRows(json).map(projectRow);
+
+        const infra = rows
+          .filter(r => areaIsInfra(r.area))
+          .sort(sortDescByFecha)
+          .slice(0, LIMIT);
+
+        const total = infra.length;
+        const newest = infra[0]?.fecha ? fmtDate(infra[0].fecha) : "—";
+
+        elSub.textContent = `Mostrando ${total} registros · Más reciente: ${newest}`;
+        elStatus.textContent = `OK · Área Infraestructura · Últimos ${LIMIT}`;
+        render(infra);
+
+      }catch(err){
+        console.error(err);
+        elSub.textContent = "Error de carga";
+        elStatus.textContent = `Error: ${err.message || err}`;
+        elTbody.innerHTML = `<tr><td class="muted" colspan="8">No se pudo cargar la información. Revisa apiUrl y permisos del endpoint.</td></tr>`;
+      }finally{
+        btnRefresh.disabled = false;
+      }
+    }
+
+    btnRefresh.addEventListener("click", fetchData);
+
+    btnCopy.addEventListener("click", async () => {
+      // Copia tabla como texto tabulado (pega directo en Excel)
+      const rows = [...document.querySelectorAll("tbody tr")].map(tr =>
+        [...tr.querySelectorAll("td")].map(td => td.innerText.replace(/\s+/g," ").trim()).join("\t")
+      ).join("\n");
+
+      try{
+        await navigator.clipboard.writeText(rows);
+        elStatus.textContent = "Copiado al portapapeles (formato Excel).";
+        setTimeout(()=> elStatus.textContent = `OK · Área Infraestructura · Últimos ${LIMIT}`, 1600);
+      }catch(e){
+        elStatus.textContent = "No se pudo copiar (permiso del navegador).";
+      }
+    });
+
+    fetchData();
+  </script>
+</body>
+</html>
