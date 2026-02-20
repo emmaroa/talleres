@@ -1,565 +1,309 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pedidos — Infraestructura</title>
-  <meta name="referrer" content="strict-origin" />
-  <style>
-    :root{
-      --bg:#f8f6f2;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --border:#e5e7eb;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pedidos — Infraestructura</title>
 
-      /* Talleres */
-      --orange:#ff7f11;
-      --orange2:#f97316;
-      --turq:#10c6d1;
-      --turq2:#0ea5b0;
+<style>
+:root{
+  --bg:#f8f6f2;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
 
-      --shadow: 0 16px 40px rgba(17,24,39,.10);
-      --shadow2: 0 10px 22px rgba(17,24,39,.08);
-      --radius: 18px;
+  --orange:#ff7f11;
+  --turq:#10c6d1;
 
-      --ring: rgba(16,198,209,.35);
-      --ring2: rgba(255,127,17,.30);
-    }
+  --shadow:0 18px 45px rgba(17,24,39,.08);
+  --radius:22px;
+  --ring:rgba(16,198,209,.35);
+}
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 700px at 110% -10%, rgba(16,198,209,.14), transparent 60%),
-        radial-gradient(900px 600px at -10% 10%, rgba(255,127,17,.14), transparent 60%),
-        linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0)),
-        var(--bg);
-    }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(900px 500px at 100% -10%, rgba(16,198,209,.12), transparent 60%),
+    radial-gradient(800px 500px at -10% 0%, rgba(255,127,17,.12), transparent 60%),
+    var(--bg);
+}
 
-    .wrap{max-width:1240px; margin:28px auto; padding:0 16px;}
+/* ===== Top Header ===== */
+.container{max-width:1200px;margin:32px auto;padding:0 18px;}
 
-    /* ===== Topbar ===== */
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between; gap:14px;
-      padding:16px 18px;
-      border:1px solid rgba(229,231,235,.9);
-      border-radius:24px;
-      background: rgba(255,255,255,.82);
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
-      position: sticky; top: 12px; z-index: 20;
-    }
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:18px 22px;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(8px);
+  border-radius:28px;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+}
 
-    .brand{display:flex; align-items:center; gap:14px; min-width: 280px;}
-    .logo{
-      width:48px; height:48px; border-radius:16px;
-      display:grid; place-items:center;
-      border:1px solid rgba(17,24,39,.08);
-      background:
-        radial-gradient(18px 18px at 30% 20%, rgba(255,127,17,.35), transparent 60%),
-        radial-gradient(22px 22px at 70% 80%, rgba(16,198,209,.28), transparent 60%),
-        #fff;
-      overflow:hidden;
-      box-shadow: var(--shadow2);
-      flex: 0 0 auto;
-    }
-    .logo img{width:42px; height:42px; object-fit:contain}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
 
-    .titles{display:flex; flex-direction:column; gap:2px}
-    .titles h1{
-      margin:0; font-size:16px; letter-spacing:.2px; line-height:1.1;
-    }
-    .titles p{margin:0; color:var(--muted); font-size:12.5px}
+.logo{
+  width:50px;height:50px;
+  border-radius:18px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg, rgba(255,127,17,.2), rgba(16,198,209,.2));
+  border:1px solid rgba(0,0,0,.06);
+}
 
-    .toolbar{
-      display:flex; gap:10px; align-items:center; justify-content:flex-end;
-      flex-wrap:wrap;
-    }
+.logo img{width:44px;height:44px;object-fit:contain}
 
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border-radius:999px;
-      border:1px solid var(--border);
-      background:#fff;
-      font-size:12px; color:var(--muted);
-      box-shadow: 0 6px 16px rgba(17,24,39,.05);
-    }
-    .dot{width:9px; height:9px; border-radius:999px; background:var(--turq)}
-    .dot.orange{background:var(--orange)}
+.title h1{margin:0;font-size:18px}
+.title p{margin:2px 0 0;color:var(--muted);font-size:13px}
 
-    .btn{
-      border:1px solid rgba(229,231,235,.95);
-      background: #fff;
-      color:var(--text);
-      padding:9px 12px;
-      border-radius:14px;
-      cursor:pointer;
-      font-weight:700;
-      font-size:13px;
-      transition: .15s ease;
-      box-shadow: 0 8px 20px rgba(17,24,39,.06);
-    }
-    .btn:hover{
-      border-color: rgba(16,198,209,.50);
-      box-shadow: 0 0 0 3px var(--ring), 0 12px 26px rgba(17,24,39,.08);
-      transform: translateY(-1px);
-    }
-    .btn:active{transform: translateY(0)}
-    .btn.primary{
-      border-color: rgba(255,127,17,.45);
-      background: linear-gradient(180deg, rgba(255,127,17,.14), rgba(255,127,17,.06));
-    }
-    .btn:disabled{opacity:.55; cursor:not-allowed; transform:none}
+.toolbar{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
 
-    /* ===== Card ===== */
-    .grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns: 1fr}
-      .brand{min-width:auto}
-    }
+.pill{
+  font-size:12px;
+  padding:7px 12px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--muted);
+}
 
-    .card{
-      background:#fff;
-      border:1px solid rgba(229,231,235,.95);
-      border-radius:24px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
+.btn{
+  padding:8px 14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#fff;
+  cursor:pointer;
+  font-weight:600;
+  font-size:13px;
+  transition:.15s ease;
+}
+.btn:hover{
+  border-color:var(--turq);
+  box-shadow:0 0 0 3px var(--ring);
+}
+.btn.primary{
+  border-color:rgba(255,127,17,.4);
+  background:linear-gradient(180deg, rgba(255,127,17,.15), rgba(255,127,17,.05));
+}
 
-    .cardHead{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      padding:16px 16px 12px;
-      border-bottom:1px solid rgba(229,231,235,.9);
-      background:
-        radial-gradient(520px 180px at 10% 0%, rgba(255,127,17,.14), transparent 60%),
-        radial-gradient(520px 200px at 90% 0%, rgba(16,198,209,.14), transparent 60%),
-        #fff;
-    }
-    .cardHead h2{margin:0; font-size:15px}
-    .meta{
-      margin-top:4px;
-      display:flex; gap:10px; flex-wrap:wrap;
-      color:var(--muted);
-      font-size:12.5px;
-    }
+/* ===== Card Table ===== */
+.card{
+  margin-top:18px;
+  background:#fff;
+  border-radius:28px;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    .kpis{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:12px;
-      padding:16px;
-    }
-    .kpi{
-      border:1px solid rgba(229,231,235,.95);
-      border-radius:18px;
-      padding:14px 14px;
-      background:
-        radial-gradient(240px 120px at 20% 0%, rgba(16,198,209,.10), transparent 65%),
-        radial-gradient(240px 120px at 80% 0%, rgba(255,127,17,.10), transparent 65%),
-        #fff;
-      box-shadow: 0 10px 24px rgba(17,24,39,.06);
-    }
-    .kpi .label{color:var(--muted); font-size:12px}
-    .kpi .value{font-size:20px; font-weight:900; margin-top:6px}
-    .kpi .sub{color:var(--muted); font-size:12px; margin-top:4px}
+.card-header{
+  padding:18px 22px 10px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(255,127,17,.08), rgba(16,198,209,.05));
+}
 
-    /* ===== Table ===== */
-    .tableWrap{overflow:auto}
-    table{width:100%; border-collapse:separate; border-spacing:0; min-width:1040px}
-    thead th{
-      position:sticky; top:0; z-index:5;
-      background: rgba(255,255,255,.95);
-      backdrop-filter: blur(6px);
-      border-bottom:1px solid rgba(229,231,235,.95);
-      text-align:left; font-size:12px; color:var(--muted);
-      padding:12px 12px;
-      white-space:nowrap;
-    }
-    tbody td{
-      padding:12px 12px;
-      border-bottom:1px solid #f1f5f9;
-      font-size:13px;
-      vertical-align:top;
-    }
-    tbody tr:hover{background: rgba(16,198,209,.06)}
+.card-header h2{margin:0;font-size:15px}
+.card-header small{color:var(--muted)}
 
-    .muted{color:var(--muted)}
-    .mono{font-variant-numeric: tabular-nums}
+.status-line{
+  padding:10px 22px;
+  font-size:13px;
+  color:var(--muted);
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
 
-    .badge{
-      display:inline-flex; align-items:center; gap:6px;
-      padding:6px 10px; border-radius:999px;
-      font-size:12px; font-weight:900;
-      border:1px solid rgba(0,0,0,.06);
-      background:#f8fafc; color:#334155;
-      white-space:nowrap;
-    }
-    .b-ok{background:rgba(34,197,94,.12); color:#166534; border-color:rgba(34,197,94,.25)}
-    .b-warn{background:rgba(245,158,11,.14); color:#92400e; border-color:rgba(245,158,11,.25)}
-    .b-info{background:rgba(59,130,246,.12); color:#1e40af; border-color:rgba(59,130,246,.25)}
-    .b-bad{background:rgba(239,68,68,.12); color:#7f1d1d; border-color:rgba(239,68,68,.25)}
-    .b-muted{background:#f1f5f9; color:#475569; border-color:#e2e8f0}
+.table-wrap{overflow:auto}
 
-    .statusLine{
-      padding:10px 16px 0;
-      color:var(--muted);
-      font-size:13px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      flex-wrap:wrap;
-    }
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  min-width:1000px;
+}
 
-    .loading{
-      display:inline-flex; align-items:center; gap:10px;
-    }
-    .spinner{
-      width:16px; height:16px;
-      border-radius:999px;
-      border:2px solid rgba(16,198,209,.25);
-      border-top-color: var(--turq2);
-      animation: spin .8s linear infinite;
-    }
-    @keyframes spin{to{transform: rotate(360deg)}}
+thead th{
+  position:sticky;
+  top:0;
+  background:#fff;
+  padding:12px;
+  font-size:12px;
+  text-align:left;
+  color:var(--muted);
+  border-bottom:1px solid var(--border);
+}
 
-    footer{
-      padding:14px 16px;
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-      border-top:1px solid rgba(229,231,235,.9);
-      background:#fff;
-    }
-  </style>
+tbody td{
+  padding:12px;
+  font-size:13px;
+  border-bottom:1px solid #f1f5f9;
+}
+
+tbody tr:hover{
+  background:rgba(16,198,209,.06);
+}
+
+.badge{
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  display:inline-block;
+}
+
+.b-ok{background:rgba(34,197,94,.12);color:#166534}
+.b-warn{background:rgba(245,158,11,.15);color:#92400e}
+.b-info{background:rgba(59,130,246,.15);color:#1e40af}
+.b-bad{background:rgba(239,68,68,.15);color:#7f1d1d}
+.b-muted{background:#f1f5f9;color:#475569}
+
+footer{
+  padding:14px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <img src="escudo.png" alt="" onerror="this.style.display='none'">
-        </div>
-        <div class="titles">
-          <h1>Pedidos — Infraestructura</h1>
-          <p>Dirección de Talleres · Municipio de Hermosillo</p>
-        </div>
-      </div>
 
-      <div class="toolbar">
-        <div class="pill"><span class="dot"></span>Área: Infraestructura</div>
-        <div class="pill"><span class="dot orange"></span><span id="pillLimit">Últimos 100</span></div>
-        <button id="btnRefresh" class="btn primary" type="button">Actualizar</button>
-        <button id="btnCopy" class="btn" type="button">Copiar tabla</button>
+<div class="container">
+
+  <div class="header">
+    <div class="brand">
+      <div class="logo">
+        <img src="escudo.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="title">
+        <h1>Pedidos — Infraestructura</h1>
+        <p>Dirección de Talleres · Municipio de Hermosillo</p>
       </div>
     </div>
 
-    <div class="grid">
-      <section class="card">
-        <div class="cardHead">
-          <div>
-            <h2>Listado</h2>
-            <div class="meta">
-              <span class="mono" id="subtitle">Cargando…</span>
-              <span>·</span>
-              <span class="mono" id="lastUpdate">—</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="statusLine">
-          <div id="statusLine" class="loading"><span class="spinner"></span>Preparando…</div>
-          <div class="muted mono" id="countLine">—</div>
-        </div>
-
-        <div class="tableWrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Unidad</th>
-                <th>Petición</th>
-                <th>Quién solicita</th>
-                <th>Área</th>
-                <th>Estatus</th>
-                <th>Recepción</th>
-                <th>Proveedor</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-              <tr><td class="muted" colspan="8">Cargando datos…</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <footer>© 2026 Dirección de Talleres · Municipio de Hermosillo</footer>
-      </section>
-
-      <aside class="card">
-        <div class="cardHead">
-          <div>
-            <h2>Resumen</h2>
-            <div class="meta">
-              <span class="muted">Vista rápida del filtro aplicado</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="kpis">
-          <div class="kpi">
-            <div class="label">Registros mostrados</div>
-            <div class="value mono" id="kpiTotal">—</div>
-            <div class="sub">Límite: <span class="mono" id="kpiLimit">100</span></div>
-          </div>
-          <div class="kpi">
-            <div class="label">Más reciente</div>
-            <div class="value mono" style="font-size:16px" id="kpiNewest">—</div>
-            <div class="sub">Ordenado por fecha</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Con estatus “Recibido”</div>
-            <div class="value mono" id="kpiRecibido">—</div>
-            <div class="sub">Detecta “recib” en estatus</div>
-          </div>
-          <div class="kpi">
-            <div class="label">Pendientes</div>
-            <div class="value mono" id="kpiPend">—</div>
-            <div class="sub">Detecta “pend/esper/revisión”</div>
-          </div>
-        </div>
-      </aside>
+    <div class="toolbar">
+      <div class="pill">Área: Infraestructura</div>
+      <div class="pill">Últimos 100</div>
+      <button class="btn primary" onclick="fetchData()">Actualizar</button>
+      <button class="btn" onclick="copyTable()">Copiar</button>
     </div>
   </div>
 
-  <script>
-    /* ================= CONFIG (CORREGIDO) ================= */
-    const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
-    const sheetId = '1NSpI6iWqYbXmJvSFrZ5bPKIPTlIQ8V0wlqhUXUxPN2w';
-    const SHEET_NAME = 'PEDIDOS';
+  <div class="card">
+    <div class="card-header">
+      <h2>Listado de Registros</h2>
+      <small id="subtitle">Cargando…</small>
+    </div>
 
-    const ONLY_AREA = "infraestructura";
-    const LIMIT = 100;
+    <div class="status-line">
+      <span id="statusLine">Preparando…</span>
+      <span id="lastUpdate"></span>
+    </div>
 
-    // Ajusta si ocupas más columnas
-    const range = `${SHEET_NAME}!A:L`;
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Unidad</th>
+            <th>Petición</th>
+            <th>Solicita</th>
+            <th>Estatus</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="5">Cargando datos…</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-    // ✅ backticks
-    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+    <footer>© 2026 Dirección de Talleres</footer>
+  </div>
 
-    /* ================= ELEMENTOS ================= */
-    const elTbody     = document.getElementById("tbody");
-    const elStatus    = document.getElementById("statusLine");
-    const elSub       = document.getElementById("subtitle");
-    const elLastUpd   = document.getElementById("lastUpdate");
-    const elCountLine = document.getElementById("countLine");
-    const btnRefresh  = document.getElementById("btnRefresh");
-    const btnCopy     = document.getElementById("btnCopy");
+</div>
 
-    const elKpiTotal   = document.getElementById("kpiTotal");
-    const elKpiLimit   = document.getElementById("kpiLimit");
-    const elKpiNewest  = document.getElementById("kpiNewest");
-    const elKpiRecib   = document.getElementById("kpiRecibido");
-    const elKpiPend    = document.getElementById("kpiPend");
-    document.getElementById("pillLimit").textContent = `Últimos ${LIMIT}`;
-    elKpiLimit.textContent = `${LIMIT}`;
+<script>
+const apiKey  = 'TU_API_KEY';
+const sheetId = 'TU_SHEET_ID';
+const range = `PEDIDOS!A:J`;
+const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
 
-    const norm = (s) => (s ?? "").toString().trim().toLowerCase();
+const ONLY_AREA = "infraestructura";
+const LIMIT = 100;
 
-    function nowFmt(){
-      const d = new Date();
-      const pad = (n)=> String(n).padStart(2,"0");
-      return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
+function norm(s){return (s||"").toString().trim().toLowerCase();}
 
-    function tryParseDate(v){
-      if (!v) return null;
+function fmtDate(v){
+  const d = new Date(v);
+  if(isNaN(d)) return v;
+  return d.toLocaleString("es-MX",{hour12:false});
+}
 
-      const d1 = new Date(v);
-      if (!Number.isNaN(d1.getTime())) return d1;
+function badge(status){
+  const s = norm(status);
+  if(s.includes("recib")) return `<span class="badge b-ok">${status}</span>`;
+  if(s.includes("pend")) return `<span class="badge b-warn">${status}</span>`;
+  if(s.includes("pedido")) return `<span class="badge b-info">${status}</span>`;
+  if(s.includes("cancel")) return `<span class="badge b-bad">${status}</span>`;
+  return `<span class="badge b-muted">${status||'—'}</span>`;
+}
 
-      const s = v.toString().trim();
-      const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
-      if (m){
-        const dd = Number(m[1]), MM = Number(m[2]) - 1, yyyy = Number(m[3]);
-        const hh = Number(m[4]), mm = Number(m[5]), ss = Number(m[6] || 0);
-        const d2 = new Date(yyyy, MM, dd, hh, mm, ss);
-        if (!Number.isNaN(d2.getTime())) return d2;
-      }
-      return null;
-    }
+async function fetchData(){
+  document.getElementById("statusLine").textContent="Cargando...";
+  try{
+    const resp = await fetch(apiUrl);
+    if(!resp.ok) throw new Error(resp.status);
+    const json = await resp.json();
+    const rows = (json.values||[]).slice(1);
 
-    function fmtDate(v){
-      const d = tryParseDate(v);
-      if (!d) return (v ?? "").toString();
-      const pad = (n) => String(n).padStart(2,"0");
-      return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
+    const filtered = rows
+      .filter(r=>norm(r[4]).includes(ONLY_AREA))
+      .sort((a,b)=> new Date(b[0]) - new Date(a[0]))
+      .slice(0,LIMIT);
 
-    function escapeHtml(str){
-      return (str ?? "").toString()
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = filtered.map(r=>`
+      <tr>
+        <td>${fmtDate(r[0])}</td>
+        <td><b>${r[1]}</b></td>
+        <td>${r[2]}</td>
+        <td>${r[3]}</td>
+        <td>${badge(r[9])}</td>
+      </tr>
+    `).join("");
 
-    function badgeForStatus(raw){
-      const s = (raw ?? "").toString().trim();
-      const n = norm(s);
+    document.getElementById("subtitle").textContent=`Mostrando ${filtered.length} registros`;
+    document.getElementById("lastUpdate").textContent=`Actualizado: ${new Date().toLocaleString("es-MX")}`;
+    document.getElementById("statusLine").textContent="OK";
+  }catch(e){
+    document.getElementById("statusLine").textContent="Error de carga";
+  }
+}
 
-      if (!n) return `<span class="badge b-muted">SIN ESTATUS</span>`;
-      if (n.includes("recib") || n.includes("entreg") || n.includes("ok")) return `<span class="badge b-ok">${escapeHtml(s)}</span>`;
-      if (n.includes("pend") || n.includes("esper") || n.includes("revision") || n.includes("revisión")) return `<span class="badge b-warn">${escapeHtml(s)}</span>`;
-      if (n.includes("pedido") || n.includes("enviado") || n.includes("captur")) return `<span class="badge b-info">${escapeHtml(s)}</span>`;
-      if (n.includes("rechaz") || n.includes("cancel") || n.includes("error")) return `<span class="badge b-bad">${escapeHtml(s)}</span>`;
-      return `<span class="badge b-muted">${escapeHtml(s)}</span>`;
-    }
+function copyTable(){
+  const rows=[...document.querySelectorAll("tbody tr")].map(tr=>
+    [...tr.querySelectorAll("td")].map(td=>td.innerText).join("\t")
+  ).join("\n");
+  navigator.clipboard.writeText(rows);
+}
 
-    function areaIsInfra(area){
-      const v = norm(area);
-      return v === ONLY_AREA || v.startsWith(ONLY_AREA) || v.includes("infraestructura");
-    }
+fetchData();
+</script>
 
-    function sortDescByFecha(a,b){
-      const da = tryParseDate(a.fecha);
-      const db = tryParseDate(b.fecha);
-      const ta = da ? da.getTime() : 0;
-      const tb = db ? db.getTime() : 0;
-      return tb - ta;
-    }
-
-   
-    function pickValues(json){
-      return (json && Array.isArray(json.values)) ? json.values : [];
-    }
-
-    function projectRow(r){
-      const a = Array.isArray(r) ? r : [];
-      return {
-        fecha: a[0] ?? "",
-        unidad: a[1] ?? "",
-        peticion: a[2] ?? "",
-        solicita: a[3] ?? "",
-        area: a[4] ?? "",
-        status: a[9] ?? "",
-        // Ajusta si recepción/proveedor están en otras columnas
-        recepcion: a[6] ?? "",
-        proveedor: a[7] ?? ""
-      };
-    }
-
-    function render(rows){
-      if (!rows.length){
-        elTbody.innerHTML = `<tr><td class="muted" colspan="8">No hay registros de Infraestructura.</td></tr>`;
-        return;
-      }
-      elTbody.innerHTML = rows.map(r => `
-        <tr>
-          <td class="mono">${escapeHtml(fmtDate(r.fecha))}</td>
-          <td><b>${escapeHtml(r.unidad)}</b></td>
-          <td>${escapeHtml(r.peticion)}</td>
-          <td>${escapeHtml(r.solicita)}</td>
-          <td class="muted">${escapeHtml(r.area)}</td>
-          <td>${badgeForStatus(r.status)}</td>
-          <td class="muted">${escapeHtml(r.recepcion)}</td>
-          <td class="muted">${escapeHtml(r.proveedor)}</td>
-        </tr>
-      `).join("");
-    }
-
-    function setLoading(msg){
-      elStatus.innerHTML = `<span class="spinner"></span>${escapeHtml(msg)}`;
-    }
-
-    async function fetchData(){
-      if (!apiKey || !sheetId || !SHEET_NAME){
-        elSub.textContent = "Sin conexión";
-        elLastUpd.textContent = "—";
-        elStatus.textContent = "⚠️ Comunicate con Emma.";
-        elTbody.innerHTML = `<tr><td class="muted" colspan="8">Configura credenciales para cargar datos.</td></tr>`;
-        return;
-      }
-
-      setLoading("Cargando…");
-      elSub.textContent = "Leyendo base de datos…";
-      btnRefresh.disabled = true;
-
-      try{
-        const resp = await fetch(apiUrl, { cache: "no-store" });
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
-        const json = await resp.json();
-
-        const values = pickValues(json);
-        const dataRows = values.length ? values.slice(1) : [];
-
-        const rows = dataRows.map(projectRow);
-
-        const infra = rows
-          .filter(r => areaIsInfra(r.area))
-          .sort(sortDescByFecha)
-          .slice(0, LIMIT);
-
-        const total = infra.length;
-        const newest = infra[0]?.fecha ? fmtDate(infra[0].fecha) : "—";
-
-        // KPIs
-        elKpiTotal.textContent = `${total}`;
-        elKpiNewest.textContent = newest;
-
-        const recib = infra.filter(r => norm(r.status).includes("recib")).length;
-        const pend  = infra.filter(r => {
-          const s = norm(r.status);
-          return s.includes("pend") || s.includes("esper") || s.includes("revision") || s.includes("revisión");
-        }).length;
-
-        elKpiRecib.textContent = `${recib}`;
-        elKpiPend.textContent  = `${pend}`;
-
-        elSub.textContent = `Mostrando ${total} registros`;
-        elLastUpd.textContent = `Actualizado: ${nowFmt()}`;
-        elCountLine.textContent = `Filtro: Infraestructura · Límite: ${LIMIT}`;
-
-        elStatus.textContent = `OK · Infraestructura · Últimos ${LIMIT}`;
-        render(infra);
-
-      }catch(err){
-        console.error(err);
-        elSub.textContent = "Error de carga";
-        elLastUpd.textContent = `Intento: ${nowFmt()}`;
-        elStatus.textContent = `Error: ${err.message || err}`;
-        elTbody.innerHTML = `<tr><td class="muted" colspan="8">
-          No se pudo cargar. Si ves 403/400: Comunicate con Emma Figueroa.
-        </td></tr>`;
-      }finally{
-        btnRefresh.disabled = false;
-      }
-    }
-
-    btnRefresh.addEventListener("click", fetchData);
-
-    btnCopy.addEventListener("click", async () => {
-      const rows = [...document.querySelectorAll("tbody tr")].map(tr =>
-        [...tr.querySelectorAll("td")].map(td => td.innerText.replace(/\s+/g," ").trim()).join("\t")
-      ).join("\n");
-
-      try{
-        await navigator.clipboard.writeText(rows);
-        elStatus.textContent = "Copiado al portapapeles (Excel).";
-        setTimeout(()=> elStatus.textContent = `OK · Infraestructura · Últimos ${LIMIT}`, 1400);
-      }catch(e){
-        elStatus.textContent = "No se pudo copiar (permiso del navegador).";
-      }
-    });
-
-    fetchData();
-  </script>
 </body>
 </html>
