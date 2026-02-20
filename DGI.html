@@ -246,7 +246,7 @@ const range = `${SHEET_NAME}!A:L`;
 const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
 
 // Columna H (índice 7) contiene "Infraestructura"
-const ONLY_DEP = "Infraestructura";
+const ONLY_DEP = "INFRAESTRUCTURA";
 
 function norm(s){ return (s ?? "").toString().trim().toLowerCase(); }
 
