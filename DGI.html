@@ -222,8 +222,8 @@ footer{
             <th>Fecha</th>
             <th>Unidad</th>
             <th>Petición</th>
-            <th>Solicita</th>
             <th>Estatus</th>
+            <th>Recepcion</th>
           </tr>
         </thead>
         <tbody id="tbody">
@@ -236,74 +236,139 @@ footer{
   </div>
 
 </div>
-
 <script>
 const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
 const sheetId = '1NSpI6iWqYbXmJvSFrZ5bPKIPTlIQ8V0wlqhUXUxPN2w';
-const range = `PEDIDOS!A:J`;
+
+const SHEET_NAME = 'PEDIDOS';
+const LIMIT = 100;
+const range = `${SHEET_NAME}!A:L`;
 const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
 
-const ONLY_AREA = "Infraestructura";
-const LIMIT = 100;
+// Columna H (índice 7) contiene "Infraestructura"
+const ONLY_DEP = "Infraestructura";
 
-function norm(s){return (s||"").toString().trim().toLowerCase();}
+function norm(s){ return (s ?? "").toString().trim().toLowerCase(); }
 
-function fmtDate(v){
-  const d = new Date(v);
-  if(isNaN(d)) return v;
-  return d.toLocaleString("es-MX",{hour12:false});
+function tryParseDate(v){
+  if (!v) return null;
+  const s = v.toString().trim();
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if (m){
+    const dd = +m[1], MM = +m[2]-1, yyyy = +m[3];
+    const hh = +m[4], mm = +m[5], ss = +(m[6]||0);
+    const d = new Date(yyyy, MM, dd, hh, mm, ss);
+    if (!Number.isNaN(d.getTime())) return d;
+  }
+  const d2 = new Date(v);
+  if (!Number.isNaN(d2.getTime())) return d2;
+  return null;
 }
 
-function badge(status){
+function fmtDate(v){
+  const d = tryParseDate(v);
+  if (!d) return (v ?? "").toString();
+  const pad = (n)=> String(n).padStart(2,"0");
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function badge(statusRaw){
+  const status = (statusRaw ?? "").toString().trim();
   const s = norm(status);
-  if(s.includes("recib")) return `<span class="badge b-ok">${status}</span>`;
-  if(s.includes("pend")) return `<span class="badge b-warn">${status}</span>`;
-  if(s.includes("pedido")) return `<span class="badge b-info">${status}</span>`;
-  if(s.includes("cancel")) return `<span class="badge b-bad">${status}</span>`;
-  return `<span class="badge b-muted">${status||'—'}</span>`;
+
+  if (!s) return `<span class="badge b-muted">—</span>`;
+  if (s.includes("recib") || s.includes("entreg")) return `<span class="badge b-ok">${status}</span>`;
+  if (s.includes("pend") || s.includes("esper") || s.includes("revision") || s.includes("revisión")) return `<span class="badge b-warn">${status}</span>`;
+  if (s.includes("pedido") || s.includes("enviado") || s.includes("captur")) return `<span class="badge b-info">${status}</span>`;
+  if (s.includes("cancel") || s.includes("rechaz") || s.includes("error")) return `<span class="badge b-bad">${status}</span>`;
+  return `<span class="badge b-muted">${status}</span>`;
+}
+
+function nowFmt(){
+  return new Date().toLocaleString("es-MX", { hour12:false });
+}
+
+function isInfraRow(r){
+  // H = dependencia
+  return norm(r[7]).includes(ONLY_DEP);
+}
+
+function esc(s){
+  return (s ?? "").toString()
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
 
 async function fetchData(){
-  document.getElementById("statusLine").textContent="Cargando...";
+  const statusLine = document.getElementById("statusLine");
+  const subtitle   = document.getElementById("subtitle");
+  const lastUpdate = document.getElementById("lastUpdate");
+  const tbody      = document.getElementById("tbody");
+  const btnRefresh = document.getElementById("btnRefresh");
+
+  statusLine.textContent = "Cargando…";
+  subtitle.textContent = "Leyendo base…";
+  if (btnRefresh) btnRefresh.disabled = true;
+
   try{
-    const resp = await fetch(apiUrl);
-    if(!resp.ok) throw new Error(resp.status);
+    const resp = await fetch(apiUrl, { cache: "no-store" });
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
     const json = await resp.json();
-    const rows = (json.values||[]).slice(1);
+    const values = json.values || [];
 
-    const filtered = rows
-      .filter(r=>norm(r[4]).includes(ONLY_AREA))
-      .sort((a,b)=> new Date(b[0]) - new Date(a[0]))
-      .slice(0,LIMIT);
+    const rows = values.length ? values.slice(1) : [];
 
-    const tbody = document.getElementById("tbody");
-    tbody.innerHTML = filtered.map(r=>`
+    const infra = rows
+      .filter(isInfraRow)
+      .sort((a,b) => (tryParseDate(b[0])?.getTime() || 0) - (tryParseDate(a[0])?.getTime() || 0))
+      .slice(0, LIMIT);
+
+    if(!infra.length){
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">
+        No hay registros para Infraestructura (columna H).
+      </td></tr>`;
+      subtitle.textContent = "0 registros";
+      statusLine.textContent = "OK (sin coincidencias)";
+      lastUpdate.textContent = `Actualizado: ${nowFmt()}`;
+      return;
+    }
+
+    tbody.innerHTML = infra.map(r => `
       <tr>
-        <td>${fmtDate(r[0])}</td>
-        <td><b>${r[1]}</b></td>
-        <td>${r[2]}</td>
-        <td>${r[3]}</td>
-        <td>${badge(r[9])}</td>
+        <td>${esc(fmtDate(r[0]))}</td>
+        <td><b>${esc(r[1])}</b></td>
+        <td>${esc(r[2])}</td>
+        <td>${badge(esc(r[9]))}</td>
+        <td class="muted">${esc(r[11])}</td>
       </tr>
     `).join("");
 
-    document.getElementById("subtitle").textContent=`Mostrando ${filtered.length} registros`;
-    document.getElementById("lastUpdate").textContent=`Actualizado: ${new Date().toLocaleString("es-MX")}`;
-    document.getElementById("statusLine").textContent="OK";
+    subtitle.textContent = `Mostrando ${infra.length} registros (Infraestructura)`;
+    statusLine.textContent = "OK";
+    lastUpdate.textContent = `Actualizado: ${nowFmt()}`;
+
   }catch(e){
-    document.getElementById("statusLine").textContent="Error de carga";
+    console.error(e);
+    statusLine.textContent = `Error: ${e.message || e}`;
+    subtitle.textContent = "No se pudo cargar";
+    tbody.innerHTML = `<tr><td colspan="5" class="muted">
+      Comunicate con Emma Figueroa.
+    </td></tr>`;
+  }finally{
+    if (btnRefresh) btnRefresh.disabled = false;
   }
 }
 
-function copyTable(){
-  const rows=[...document.querySelectorAll("tbody tr")].map(tr=>
-    [...tr.querySelectorAll("td")].map(td=>td.innerText).join("\t")
+async function copyTable(){
+  const rows = [...document.querySelectorAll("tbody tr")].map(tr =>
+    [...tr.querySelectorAll("td")].map(td => td.innerText.replace(/\s+/g," ").trim()).join("\t")
   ).join("\n");
-  navigator.clipboard.writeText(rows);
+  await navigator.clipboard.writeText(rows);
 }
+
+window.fetchData = fetchData;
+window.copyTable = copyTable;
 
 fetchData();
 </script>
-
-</body>
-</html>
