@@ -3,92 +3,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pedidos — Infraestructura (Últimos 100)</title>
+  <title>Pedidos — Infraestructura</title>
   <meta name="referrer" content="strict-origin" />
   <style>
     :root{
-      --bg:#f8f6f2; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
-      --brand:#ff7f11; --accent:#10c6d1;
-      --accent-700:#0ea5b0; --ring:rgba(16,198,209,.45);
-      --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.08);
+      --bg:#f8f6f2;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
       --border:#e5e7eb;
+
+      /* Talleres */
+      --orange:#ff7f11;
+      --orange2:#f97316;
+      --turq:#10c6d1;
+      --turq2:#0ea5b0;
+
+      --shadow: 0 16px 40px rgba(17,24,39,.10);
+      --shadow2: 0 10px 22px rgba(17,24,39,.08);
+      --radius: 18px;
+
+      --ring: rgba(16,198,209,.35);
+      --ring2: rgba(255,127,17,.30);
     }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(1200px 600px at 110% -10%, rgba(16,198,209,.10), transparent 60%),
-        radial-gradient(900px 500px at -10% 10%, rgba(255,127,17,.10), transparent 60%),
-        var(--bg);
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 110% -10%, rgba(16,198,209,.14), transparent 60%),
+        radial-gradient(900px 600px at -10% 10%, rgba(255,127,17,.14), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0)),
+        var(--bg);
     }
-    .wrap{max-width:1200px; margin:28px auto; padding:0 16px;}
-    header{
+
+    .wrap{max-width:1240px; margin:28px auto; padding:0 16px;}
+
+    /* ===== Topbar ===== */
+    .topbar{
       display:flex; align-items:center; justify-content:space-between; gap:14px;
-      background:rgba(255,255,255,.8); border:1px solid var(--border);
-      border-radius:22px; padding:16px 18px; box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
+      padding:16px 18px;
+      border:1px solid rgba(229,231,235,.9);
+      border-radius:24px;
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
+      position: sticky; top: 12px; z-index: 20;
     }
-    .brand{display:flex; align-items:center; gap:14px;}
+
+    .brand{display:flex; align-items:center; gap:14px; min-width: 280px;}
     .logo{
-      width:46px; height:46px; border-radius:14px;
-      background: linear-gradient(135deg, rgba(255,127,17,.15), rgba(16,198,209,.15));
-      display:grid; place-items:center; border:1px solid rgba(0,0,0,.06);
+      width:48px; height:48px; border-radius:16px;
+      display:grid; place-items:center;
+      border:1px solid rgba(17,24,39,.08);
+      background:
+        radial-gradient(18px 18px at 30% 20%, rgba(255,127,17,.35), transparent 60%),
+        radial-gradient(22px 22px at 70% 80%, rgba(16,198,209,.28), transparent 60%),
+        #fff;
       overflow:hidden;
+      box-shadow: var(--shadow2);
+      flex: 0 0 auto;
     }
     .logo img{width:42px; height:42px; object-fit:contain}
-    .titles h1{margin:0; font-size:18px; letter-spacing:.2px}
-    .titles p{margin:2px 0 0; color:var(--muted); font-size:13px}
-    .chips{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
-    .chip{
+
+    .titles{display:flex; flex-direction:column; gap:2px}
+    .titles h1{
+      margin:0; font-size:16px; letter-spacing:.2px; line-height:1.1;
+    }
+    .titles p{margin:0; color:var(--muted); font-size:12.5px}
+
+    .toolbar{
+      display:flex; gap:10px; align-items:center; justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding:8px 10px; border-radius:999px;
-      border:1px solid var(--border); background:#fff;
+      border:1px solid var(--border);
+      background:#fff;
       font-size:12px; color:var(--muted);
+      box-shadow: 0 6px 16px rgba(17,24,39,.05);
     }
-    .dot{width:9px; height:9px; border-radius:999px; background:var(--accent);}
-    .dot.orange{background:var(--brand);}
+    .dot{width:9px; height:9px; border-radius:999px; background:var(--turq)}
+    .dot.orange{background:var(--orange)}
+
+    .btn{
+      border:1px solid rgba(229,231,235,.95);
+      background: #fff;
+      color:var(--text);
+      padding:9px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:13px;
+      transition: .15s ease;
+      box-shadow: 0 8px 20px rgba(17,24,39,.06);
+    }
+    .btn:hover{
+      border-color: rgba(16,198,209,.50);
+      box-shadow: 0 0 0 3px var(--ring), 0 12px 26px rgba(17,24,39,.08);
+      transform: translateY(-1px);
+    }
+    .btn:active{transform: translateY(0)}
+    .btn.primary{
+      border-color: rgba(255,127,17,.45);
+      background: linear-gradient(180deg, rgba(255,127,17,.14), rgba(255,127,17,.06));
+    }
+    .btn:disabled{opacity:.55; cursor:not-allowed; transform:none}
+
+    /* ===== Card ===== */
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr}
+      .brand{min-width:auto}
+    }
+
     .card{
-      margin-top:14px; background:#fff; border:1px solid var(--border);
-      border-radius:22px; box-shadow: var(--shadow);
+      background:#fff;
+      border:1px solid rgba(229,231,235,.95);
+      border-radius:24px;
+      box-shadow: var(--shadow);
       overflow:hidden;
     }
+
     .cardHead{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:14px 16px; border-bottom:1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,127,17,.06), rgba(16,198,209,.04));
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      padding:16px 16px 12px;
+      border-bottom:1px solid rgba(229,231,235,.9);
+      background:
+        radial-gradient(520px 180px at 10% 0%, rgba(255,127,17,.14), transparent 60%),
+        radial-gradient(520px 200px at 90% 0%, rgba(16,198,209,.14), transparent 60%),
+        #fff;
     }
-    .cardHead .left{display:flex; flex-direction:column; gap:2px}
     .cardHead h2{margin:0; font-size:15px}
-    .cardHead small{color:var(--muted)}
-    .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    button{
-      border:1px solid var(--border);
-      background:#fff; color:var(--text);
-      padding:9px 12px; border-radius:12px;
-      cursor:pointer; font-weight:600; font-size:13px;
+    .meta{
+      margin-top:4px;
+      display:flex; gap:10px; flex-wrap:wrap;
+      color:var(--muted);
+      font-size:12.5px;
     }
-    button:hover{border-color: rgba(16,198,209,.45); box-shadow:0 0 0 3px var(--ring)}
-    .statusLine{padding:10px 16px; color:var(--muted); font-size:13px}
+
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:12px;
+      padding:16px;
+    }
+    .kpi{
+      border:1px solid rgba(229,231,235,.95);
+      border-radius:18px;
+      padding:14px 14px;
+      background:
+        radial-gradient(240px 120px at 20% 0%, rgba(16,198,209,.10), transparent 65%),
+        radial-gradient(240px 120px at 80% 0%, rgba(255,127,17,.10), transparent 65%),
+        #fff;
+      box-shadow: 0 10px 24px rgba(17,24,39,.06);
+    }
+    .kpi .label{color:var(--muted); font-size:12px}
+    .kpi .value{font-size:20px; font-weight:900; margin-top:6px}
+    .kpi .sub{color:var(--muted); font-size:12px; margin-top:4px}
+
+    /* ===== Table ===== */
     .tableWrap{overflow:auto}
-    table{width:100%; border-collapse:separate; border-spacing:0; min-width:980px}
+    table{width:100%; border-collapse:separate; border-spacing:0; min-width:1040px}
     thead th{
-      position:sticky; top:0; z-index:2;
-      background:#fff; border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:5;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(6px);
+      border-bottom:1px solid rgba(229,231,235,.95);
       text-align:left; font-size:12px; color:var(--muted);
-      padding:10px 12px;
+      padding:12px 12px;
       white-space:nowrap;
     }
     tbody td{
-      padding:10px 12px; border-bottom:1px solid #f1f5f9;
-      font-size:13px; vertical-align:top;
+      padding:12px 12px;
+      border-bottom:1px solid #f1f5f9;
+      font-size:13px;
+      vertical-align:top;
     }
-    tbody tr:hover{background: rgba(16,198,209,.05)}
+    tbody tr:hover{background: rgba(16,198,209,.06)}
+
     .muted{color:var(--muted)}
+    .mono{font-variant-numeric: tabular-nums}
+
     .badge{
       display:inline-flex; align-items:center; gap:6px;
       padding:6px 10px; border-radius:999px;
-      font-size:12px; font-weight:700;
+      font-size:12px; font-weight:900;
       border:1px solid rgba(0,0,0,.06);
       background:#f8fafc; color:#334155;
       white-space:nowrap;
@@ -99,93 +209,180 @@
     .b-bad{background:rgba(239,68,68,.12); color:#7f1d1d; border-color:rgba(239,68,68,.25)}
     .b-muted{background:#f1f5f9; color:#475569; border-color:#e2e8f0}
 
-    footer{padding:14px; text-align:center; color:var(--muted); font-size:12px}
+    .statusLine{
+      padding:10px 16px 0;
+      color:var(--muted);
+      font-size:13px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .loading{
+      display:inline-flex; align-items:center; gap:10px;
+    }
+    .spinner{
+      width:16px; height:16px;
+      border-radius:999px;
+      border:2px solid rgba(16,198,209,.25);
+      border-top-color: var(--turq2);
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin{to{transform: rotate(360deg)}}
+
+    footer{
+      padding:14px 16px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      border-top:1px solid rgba(229,231,235,.9);
+      background:#fff;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
+    <div class="topbar">
       <div class="brand">
         <div class="logo" aria-hidden="true">
-          <!-- Si ya tienes el escudo en tu repo, ajusta la ruta -->
-          <img src="escudo.png" alt="">
+          <img src="escudo.png" alt="" onerror="this.style.display='none'">
         </div>
         <div class="titles">
           <h1>Pedidos — Infraestructura</h1>
           <p>Dirección de Talleres · Municipio de Hermosillo</p>
         </div>
       </div>
-      <div class="chips">
-        <div class="chip"><span class="dot"></span>Filtro: Área = Infraestructura</div>
-        <div class="chip"><span class="dot orange"></span>Últimos 100 registros</div>
-      </div>
-    </header>
 
-    <section class="card">
-      <div class="cardHead">
-        <div class="left">
-          <h2>Listado</h2>
-          <small id="subtitle">Cargando…</small>
+      <div class="toolbar">
+        <div class="pill"><span class="dot"></span>Área: Infraestructura</div>
+        <div class="pill"><span class="dot orange"></span><span id="pillLimit">Últimos 100</span></div>
+        <button id="btnRefresh" class="btn primary" type="button">Actualizar</button>
+        <button id="btnCopy" class="btn" type="button">Copiar tabla</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <div class="cardHead">
+          <div>
+            <h2>Listado</h2>
+            <div class="meta">
+              <span class="mono" id="subtitle">Cargando…</span>
+              <span>·</span>
+              <span class="mono" id="lastUpdate">—</span>
+            </div>
+          </div>
         </div>
-        <div class="actions">
-          <button id="btnRefresh" type="button">Actualizar</button>
-          <button id="btnCopy" type="button">Copiar tabla</button>
+
+        <div class="statusLine">
+          <div id="statusLine" class="loading"><span class="spinner"></span>Preparando…</div>
+          <div class="muted mono" id="countLine">—</div>
         </div>
-      </div>
 
-      <div class="statusLine" id="statusLine">Preparando…</div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Unidad</th>
+                <th>Petición</th>
+                <th>Quién solicita</th>
+                <th>Área</th>
+                <th>Estatus</th>
+                <th>Recepción</th>
+                <th>Proveedor</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td class="muted" colspan="8">Cargando datos…</td></tr>
+            </tbody>
+          </table>
+        </div>
 
-      <div class="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Unidad</th>
-              <th>Petición</th>
-              <th>Quién solicita</th>
-              <th>Área</th>
-              <th>Estatus</th>
-              <th>Recepción</th>
-              <th>Proveedor</th>
-            </tr>
-          </thead>
-          <tbody id="tbody">
-            <tr><td class="muted" colspan="8">Cargando datos…</td></tr>
-          </tbody>
-        </table>
-      </div>
+        <footer>© 2026 Dirección de Talleres · Municipio de Hermosillo</footer>
+      </section>
 
-      <footer>© 2026 Dirección de Talleres · Municipio de Hermosillo</footer>
-    </section>
+      <aside class="card">
+        <div class="cardHead">
+          <div>
+            <h2>Resumen</h2>
+            <div class="meta">
+              <span class="muted">Vista rápida del filtro aplicado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="label">Registros mostrados</div>
+            <div class="value mono" id="kpiTotal">—</div>
+            <div class="sub">Límite: <span class="mono" id="kpiLimit">100</span></div>
+          </div>
+          <div class="kpi">
+            <div class="label">Más reciente</div>
+            <div class="value mono" style="font-size:16px" id="kpiNewest">—</div>
+            <div class="sub">Ordenado por fecha</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Con estatus “Recibido”</div>
+            <div class="value mono" id="kpiRecibido">—</div>
+            <div class="sub">Detecta “recib” en estatus</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Pendientes</div>
+            <div class="value mono" id="kpiPend">—</div>
+            <div class="sub">Detecta “pend/esper/revisión”</div>
+          </div>
+        </div>
+      </aside>
+    </div>
   </div>
 
   <script>
-    /* ================= CONFIG ================= */
-const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
-const sheetId = '1NSpI6iWqYbXmJvSFrZ5bPKIPTlIQ8V0wlqhUXUxPN2w';
-const SHEET_NAME = 'PEDIDOS';
-    
-    const apiUrl = "https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}";
+    /* ================= CONFIG (CORREGIDO) ================= */
+    const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
+    const sheetId = '1NSpI6iWqYbXmJvSFrZ5bPKIPTlIQ8V0wlqhUXUxPN2w';
+    const SHEET_NAME = 'PEDIDOS';
 
     const ONLY_AREA = "infraestructura";
     const LIMIT = 100;
 
-    const elTbody = document.getElementById("tbody");
-    const elStatus = document.getElementById("statusLine");
-    const elSub = document.getElementById("subtitle");
-    const btnRefresh = document.getElementById("btnRefresh");
-    const btnCopy = document.getElementById("btnCopy");
+    // Ajusta si ocupas más columnas
+    const range = `${SHEET_NAME}!A:L`;
+
+    // ✅ backticks
+    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+
+    /* ================= ELEMENTOS ================= */
+    const elTbody     = document.getElementById("tbody");
+    const elStatus    = document.getElementById("statusLine");
+    const elSub       = document.getElementById("subtitle");
+    const elLastUpd   = document.getElementById("lastUpdate");
+    const elCountLine = document.getElementById("countLine");
+    const btnRefresh  = document.getElementById("btnRefresh");
+    const btnCopy     = document.getElementById("btnCopy");
+
+    const elKpiTotal   = document.getElementById("kpiTotal");
+    const elKpiLimit   = document.getElementById("kpiLimit");
+    const elKpiNewest  = document.getElementById("kpiNewest");
+    const elKpiRecib   = document.getElementById("kpiRecibido");
+    const elKpiPend    = document.getElementById("kpiPend");
+    document.getElementById("pillLimit").textContent = `Últimos ${LIMIT}`;
+    elKpiLimit.textContent = `${LIMIT}`;
 
     const norm = (s) => (s ?? "").toString().trim().toLowerCase();
+
+    function nowFmt(){
+      const d = new Date();
+      const pad = (n)=> String(n).padStart(2,"0");
+      return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
 
     function tryParseDate(v){
       if (!v) return null;
 
-      // Caso: ya viene como Date ISO
       const d1 = new Date(v);
       if (!Number.isNaN(d1.getTime())) return d1;
 
-      // Caso: "5/02/2026 15:40:57" (d/M/yyyy HH:mm:ss)
       const s = v.toString().trim();
       const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
       if (m){
@@ -204,19 +401,6 @@ const SHEET_NAME = 'PEDIDOS';
       return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
 
-    function badgeForStatus(raw){
-      const s = (raw ?? "").toString().trim();
-      const n = norm(s);
-
-      // Ajusta si tus estatus manejan otras palabras
-      if (!n) return `<span class="badge b-muted">SIN ESTATUS</span>`;
-      if (n.includes("recib") || n.includes("entreg") || n.includes("ok")) return `<span class="badge b-ok">${escapeHtml(s)}</span>`;
-      if (n.includes("pend") || n.includes("esper") || n.includes("revision") || n.includes("revisión")) return `<span class="badge b-warn">${escapeHtml(s)}</span>`;
-      if (n.includes("pedido") || n.includes("enviado") || n.includes("captur")) return `<span class="badge b-info">${escapeHtml(s)}</span>`;
-      if (n.includes("rechaz") || n.includes("cancel") || n.includes("error")) return `<span class="badge b-bad">${escapeHtml(s)}</span>`;
-      return `<span class="badge b-muted">${escapeHtml(s)}</span>`;
-    }
-
     function escapeHtml(str){
       return (str ?? "").toString()
         .replaceAll("&","&amp;")
@@ -226,49 +410,20 @@ const SHEET_NAME = 'PEDIDOS';
         .replaceAll("'","&#039;");
     }
 
-    /**
-     * Soporta dos formatos comunes:
-     * A) { rows: [ [A,B,C,...], ... ] }
-     * B) [ [A,B,C,...], ... ]
-     * C) { data: [...] }
-     */
-    function pickRows(json){
-      if (Array.isArray(json)) return json;
-      if (json && Array.isArray(json.rows)) return json.rows;
-      if (json && Array.isArray(json.data)) return json.data;
-      return [];
-    }
+    function badgeForStatus(raw){
+      const s = (raw ?? "").toString().trim();
+      const n = norm(s);
 
-    /**
-     * Mapea a columnas visibles:
-     * 0 fecha/timestamp
-     * 1 unidad
-     * 2 peticion
-     * 3 solicita
-     * 4 area
-     * 5 status
-     * 6 recepcion
-     * 7 proveedor
-     *
-     * Si tu API trae más columnas, no pasa nada; usamos índices seguros.
-     */
-    function projectRow(r){
-      const a = Array.isArray(r) ? r : [];
-      return {
-        fecha: a[0] ?? "",
-        unidad: a[1] ?? "",
-        peticion: a[2] ?? "",
-        solicita: a[3] ?? "",
-        area: a[4] ?? "",
-        status: a[9] ?? a[5] ?? "",        // por si status viene en J (índice 9) como en tu script
-        recepcion: a[10] ?? a[6] ?? "",
-        proveedor: a[11] ?? a[7] ?? ""
-      };
+      if (!n) return `<span class="badge b-muted">SIN ESTATUS</span>`;
+      if (n.includes("recib") || n.includes("entreg") || n.includes("ok")) return `<span class="badge b-ok">${escapeHtml(s)}</span>`;
+      if (n.includes("pend") || n.includes("esper") || n.includes("revision") || n.includes("revisión")) return `<span class="badge b-warn">${escapeHtml(s)}</span>`;
+      if (n.includes("pedido") || n.includes("enviado") || n.includes("captur")) return `<span class="badge b-info">${escapeHtml(s)}</span>`;
+      if (n.includes("rechaz") || n.includes("cancel") || n.includes("error")) return `<span class="badge b-bad">${escapeHtml(s)}</span>`;
+      return `<span class="badge b-muted">${escapeHtml(s)}</span>`;
     }
 
     function areaIsInfra(area){
       const v = norm(area);
-      // “infraestructura”, “INFRAESTRUCTURA”, “Infraestructura - ...”
       return v === ONLY_AREA || v.startsWith(ONLY_AREA) || v.includes("infraestructura");
     }
 
@@ -280,19 +435,38 @@ const SHEET_NAME = 'PEDIDOS';
       return tb - ta;
     }
 
+   
+    function pickValues(json){
+      return (json && Array.isArray(json.values)) ? json.values : [];
+    }
+
+    function projectRow(r){
+      const a = Array.isArray(r) ? r : [];
+      return {
+        fecha: a[0] ?? "",
+        unidad: a[1] ?? "",
+        peticion: a[2] ?? "",
+        solicita: a[3] ?? "",
+        area: a[4] ?? "",
+        status: a[9] ?? "",
+        // Ajusta si recepción/proveedor están en otras columnas
+        recepcion: a[6] ?? "",
+        proveedor: a[7] ?? ""
+      };
+    }
+
     function render(rows){
       if (!rows.length){
         elTbody.innerHTML = `<tr><td class="muted" colspan="8">No hay registros de Infraestructura.</td></tr>`;
         return;
       }
-
       elTbody.innerHTML = rows.map(r => `
         <tr>
-          <td>${escapeHtml(fmtDate(r.fecha))}</td>
+          <td class="mono">${escapeHtml(fmtDate(r.fecha))}</td>
           <td><b>${escapeHtml(r.unidad)}</b></td>
           <td>${escapeHtml(r.peticion)}</td>
           <td>${escapeHtml(r.solicita)}</td>
-          <td>${escapeHtml(r.area)}</td>
+          <td class="muted">${escapeHtml(r.area)}</td>
           <td>${badgeForStatus(r.status)}</td>
           <td class="muted">${escapeHtml(r.recepcion)}</td>
           <td class="muted">${escapeHtml(r.proveedor)}</td>
@@ -300,23 +474,33 @@ const SHEET_NAME = 'PEDIDOS';
       `).join("");
     }
 
+    function setLoading(msg){
+      elStatus.innerHTML = `<span class="spinner"></span>${escapeHtml(msg)}`;
+    }
+
     async function fetchData(){
-      if (!apiUrl || apiUrl.includes("PEGA_AQUI")){
-        elStatus.textContent = "⚠️ Falta configurar apiUrl (pon la misma URL que usas en statusPedidos.html).";
+      if (!apiKey || !sheetId || !SHEET_NAME){
         elSub.textContent = "Sin conexión";
-        elTbody.innerHTML = `<tr><td class="muted" colspan="8">Configura apiUrl para cargar datos.</td></tr>`;
+        elLastUpd.textContent = "—";
+        elStatus.textContent = "⚠️ Comunicate con Emma.";
+        elTbody.innerHTML = `<tr><td class="muted" colspan="8">Configura credenciales para cargar datos.</td></tr>`;
         return;
       }
 
-      elStatus.textContent = "Cargando…";
-      elSub.textContent = "Conectando a la base…";
+      setLoading("Cargando…");
+      elSub.textContent = "Leyendo base de datos…";
       btnRefresh.disabled = true;
 
       try{
         const resp = await fetch(apiUrl, { cache: "no-store" });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
         const json = await resp.json();
-        const rows = pickRows(json).map(projectRow);
+
+        const values = pickValues(json);
+        const dataRows = values.length ? values.slice(1) : [];
+
+        const rows = dataRows.map(projectRow);
 
         const infra = rows
           .filter(r => areaIsInfra(r.area))
@@ -326,15 +510,34 @@ const SHEET_NAME = 'PEDIDOS';
         const total = infra.length;
         const newest = infra[0]?.fecha ? fmtDate(infra[0].fecha) : "—";
 
-        elSub.textContent = `Mostrando ${total} registros · Más reciente: ${newest}`;
-        elStatus.textContent = `OK · Área Infraestructura · Últimos ${LIMIT}`;
+        // KPIs
+        elKpiTotal.textContent = `${total}`;
+        elKpiNewest.textContent = newest;
+
+        const recib = infra.filter(r => norm(r.status).includes("recib")).length;
+        const pend  = infra.filter(r => {
+          const s = norm(r.status);
+          return s.includes("pend") || s.includes("esper") || s.includes("revision") || s.includes("revisión");
+        }).length;
+
+        elKpiRecib.textContent = `${recib}`;
+        elKpiPend.textContent  = `${pend}`;
+
+        elSub.textContent = `Mostrando ${total} registros`;
+        elLastUpd.textContent = `Actualizado: ${nowFmt()}`;
+        elCountLine.textContent = `Filtro: Infraestructura · Límite: ${LIMIT}`;
+
+        elStatus.textContent = `OK · Infraestructura · Últimos ${LIMIT}`;
         render(infra);
 
       }catch(err){
         console.error(err);
         elSub.textContent = "Error de carga";
+        elLastUpd.textContent = `Intento: ${nowFmt()}`;
         elStatus.textContent = `Error: ${err.message || err}`;
-        elTbody.innerHTML = `<tr><td class="muted" colspan="8">No se pudo cargar la información. Revisa apiUrl y permisos del endpoint.</td></tr>`;
+        elTbody.innerHTML = `<tr><td class="muted" colspan="8">
+          No se pudo cargar. Si ves 403/400: Comunicate con Emma Figueroa.
+        </td></tr>`;
       }finally{
         btnRefresh.disabled = false;
       }
@@ -343,15 +546,14 @@ const SHEET_NAME = 'PEDIDOS';
     btnRefresh.addEventListener("click", fetchData);
 
     btnCopy.addEventListener("click", async () => {
-      // Copia tabla como texto tabulado (pega directo en Excel)
       const rows = [...document.querySelectorAll("tbody tr")].map(tr =>
         [...tr.querySelectorAll("td")].map(td => td.innerText.replace(/\s+/g," ").trim()).join("\t")
       ).join("\n");
 
       try{
         await navigator.clipboard.writeText(rows);
-        elStatus.textContent = "Copiado al portapapeles (formato Excel).";
-        setTimeout(()=> elStatus.textContent = `OK · Área Infraestructura · Últimos ${LIMIT}`, 1600);
+        elStatus.textContent = "Copiado al portapapeles (Excel).";
+        setTimeout(()=> elStatus.textContent = `OK · Infraestructura · Últimos ${LIMIT}`, 1400);
       }catch(e){
         elStatus.textContent = "No se pudo copiar (permiso del navegador).";
       }
