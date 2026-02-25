@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consulta de Peticiones de Infraestructura</title>
+
+  <style>
+    :root{
+      --bg:#f8f6f2; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --brand:#ff7f11; --accent:#10c6d1;
+      --accent-700:#0ea5b0; --ring:rgba(16,198,209,.45);
+      --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 600px at 110% -10%, rgba(16,198,209,.10), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(255,127,17,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+    header{
+      background:linear-gradient(135deg,var(--brand),var(--accent));
+      color:#fff; box-shadow:var(--shadow);
+    }
+    .hero{
+      max-width:1100px; margin:auto; padding:24px 16px;
+      display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    }
+    .logo{
+      width:56px; height:56px; border-radius:12px;
+      background:rgba(255,255,255,.15);
+      display:grid; place-items:center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+      overflow:hidden;
+    }
+    .logo img{width:44px; height:auto; filter: drop-shadow(0 2px 2px rgba(0,0,0,.15));}
+    main{padding:26px 16px 36px}
+    .card{
+      max-width:1100px; margin:auto; background:#fff;
+      border-radius:var(--radius); box-shadow:var(--shadow);
+      overflow:hidden; border:1px solid rgba(16,198,209,.12);
+    }
+    .card-head{
+      padding:16px 18px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      border-bottom:1px solid rgba(16,198,209,.12);
+      background: linear-gradient(180deg, rgba(16,198,209,.10), transparent);
+    }
+    .badgeTotal{
+      background:rgba(255,127,17,.12);
+      border:1px solid rgba(255,127,17,.35);
+      padding:4px 10px; border-radius:999px; font-size:.8rem; font-weight:800;
+      color:#4a2a06;
+    }
+    .controls{padding:14px 18px}
+    .control{position:relative}
+    .control input{
+      width:100%; padding:12px 14px 12px 40px;
+      border-radius:12px; border:1px solid #e5e7eb; font-size:1rem;
+      outline:none; transition: border-color .2s, box-shadow .2s;
+    }
+    .control input:focus{ border-color: var(--accent-700); box-shadow: 0 0 0 4px var(--ring); }
+    .control span{
+      position:absolute; left:12px; top:50%; transform:translateY(-50%);
+      color:var(--muted);
+    }
+
+    .table-wrap{ padding: 0 18px 18px; }
+    .scroller{
+      border:1px solid #e5e7eb; border-radius:12px; overflow:auto; background:#fff;
+      max-height: 60vh;
+    }
+    table{width:100%; border-collapse:separate; border-spacing:0}
+    thead th{
+      position:sticky; top:0; z-index:1;
+      background: linear-gradient(180deg, rgba(16,198,209,.10), #fff);
+      padding:10px 12px; border-bottom:1px solid #e5e7eb;
+      text-align:left; font-size:.9rem; white-space:nowrap;
+    }
+    tbody td{
+      padding:10px 12px; border-bottom:1px solid #f1f5f9; font-size:.92rem; vertical-align:top;
+    }
+    tbody tr:hover{background:rgba(16,198,209,.05)}
+    .hl{ background: linear-gradient(transparent 30%, rgba(16,198,209,.35) 30%, rgba(16,198,209,.35) 70%, transparent 70%); }
+    .state{padding:10px 18px; color:var(--muted)}
+
+    /* ===== Badges estatus ===== */
+    .status-badge{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:4px 10px; border-radius:999px; font-weight:800; font-size:.78rem;
+      border:1px solid transparent; white-space:nowrap;
+    }
+    .sb-green{ background: rgba(34,197,94,.12); border-color: rgba(34,197,94,.35); color:#14532d; }
+    .sb-blue{  background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.35); color:#1e3a8a; }
+    .sb-amber{ background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.35); color:#78350f; }
+    .sb-red{   background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35); color:#7f1d1d; }
+    .sb-gray{  background: rgba(107,114,128,.12); border-color: rgba(107,114,128,.28); color:#374151; }
+
+    footer{
+      text-align:center; padding: 22px 16px; color:#fff;
+      background:linear-gradient(135deg,var(--brand),var(--accent));
+    }
+    footer small{ opacity:.95; }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="hero">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Escudo_de_Hermosillo.svg" alt="Escudo de Hermosillo">
+    </div>
+    <div>
+      <h1 style="margin:0;font-weight:900;">Consulta de Peticiones</h1>
+      <p style="margin:.25rem 0 0;opacity:.95;">Dirección de Talleres · Municipio de Hermosillo</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="title">
+    <div class="card-head">
+      <h2 id="title" style="margin:0;">Infraestructura · Últimos 20 días</h2>
+      <span id="totalBadge" class="badgeTotal">Cargando…</span>
+    </div>
+
+    <div class="controls">
+      <div class="control">
+        <span>🔎</span>
+        <input id="searchBox" type="text"
+          placeholder="Buscar por Unidad, Petición, Quién solicita o Proveedor…" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:170px;">Fecha</th>
+              <th style="width:140px;">Unidad</th>
+              <th style="min-width:420px;">Petición</th>
+              <th style="width:220px;">Quién solicita</th>
+              <th style="width:200px;">Área</th>
+              <th style="width:160px;">Estatus</th>
+              <th style="width:180px;">Recepción</th>
+              <th style="width:180px;">Proveedor</th>
+            </tr>
+          </thead>
+          <tbody id="dataTable">
+            <tr><td colspan="8" class="state">Cargando datos…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="statusText" class="state"></div>
+  </section>
+</main>
+
+<footer>
+  <small>&copy; 2026 Dirección de Talleres · Municipio de Hermosillo</small>
+</footer>
+
+<script>
+/* ================= CONFIG ================= */
+const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
+const sheetId = '1NSpI6iWqYbXmJvSFrZ5bPKIPTlIQ8V0wlqhUXUxPN2w';
+const SHEET_NAME = 'PEDIDOS';
+
+const range = `${SHEET_NAME}!A:L`;
+const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+
+const DAYS_BACK = 20;
+
+// ✅ ÁREA OBJETIVO (ajusta si quieres que sea EXACTA)
+const TARGET_AREA = 'Infraestructura';
+
+/* ================= DOM ================= */
+const $ = (id) => document.getElementById(id);
+const table = $('dataTable');
+const badge = $('totalBadge');
+const statusText = $('statusText');
+const searchBox = $('searchBox');
+
+/* ================= HELPERS ================= */
+const norm = (s) => (s || '')
+  .toString()
+  .normalize('NFD').replace(/\p{Diacritic}/gu,'')
+  .toLowerCase().trim();
+
+function escHTML(str){
+  return (str ?? '').toString()
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+function highlight(text, query){
+  const safe = escHTML(text);
+  if(!query) return safe;
+
+  const nText = norm(text);
+  const nQuery = norm(query);
+  const idx = nText.indexOf(nQuery);
+  if(idx < 0) return safe;
+
+  const start = safe.slice(0, idx);
+  const match = safe.slice(idx, idx + query.length);
+  const end   = safe.slice(idx + query.length);
+  return `${start}<span class="hl">${match}</span>${end}`;
+}
+
+/* ================= FECHA: parse + formato bonito ================= */
+function parseDateSmart(v){
+  if(!v) return null;
+
+  if(typeof v === 'number'){
+    if(v > 1e12) return new Date(v);
+    if(v > 1e9)  return new Date(v * 1000);
+  }
+
+  const s = v.toString().trim();
+  if(!s) return null;
+
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+  if(m){
+    const dd = parseInt(m[1],10);
+    const mm = parseInt(m[2],10) - 1;
+    const yy = parseInt(m[3],10);
+    const hh = parseInt(m[4] || '0',10);
+    const mi = parseInt(m[5] || '0',10);
+    const ss = parseInt(m[6] || '0',10);
+    const d = new Date(yy, mm, dd, hh, mi, ss);
+    return isNaN(d) ? null : d;
+  }
+
+  const d2 = new Date(s);
+  return isNaN(d2) ? null : d2;
+}
+
+function formatDateNice(v){
+  const d = parseDateSmart(v);
+  if(!d) return escHTML(v);
+
+  const hasTime = d.getHours() !== 0 || d.getMinutes() !== 0 || d.getSeconds() !== 0;
+
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yy = d.getFullYear();
+
+  if(!hasTime) return `${dd}/${mm}/${yy}`;
+
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yy} ${hh}:${mi}`;
+}
+
+function statusClass(statusRaw){
+  const s = norm(statusRaw);
+  if(s.includes('entreg') || s.includes('recibid') || s.includes('complet') || s.includes('cerrad')) return 'sb-green';
+  if(s.includes('pedido') || s.includes('en proceso') || s.includes('tramit') || s.includes('compra')) return 'sb-blue';
+  if(s.includes('pend') || s.includes('por surtir') || s.includes('espera') || s.includes('revision')) return 'sb-amber';
+  if(s.includes('cancel') || s.includes('rechaz') || s.includes('no procede')) return 'sb-red';
+  return 'sb-gray';
+}
+
+function renderStatusBadge(statusText){
+  const txt = (statusText || '').toString().trim();
+  const cls = statusClass(txt);
+  const label = txt || 'Sin estatus';
+  return `<span class="status-badge ${cls}">${escHTML(label)}</span>`;
+}
+
+function lastNDaysOnly(rows, daysBack){
+  const cutoff = new Date();
+  cutoff.setHours(0,0,0,0);
+  cutoff.setDate(cutoff.getDate() - daysBack);
+
+  return rows.filter(r => {
+    const d = parseDateSmart(r[0]);
+    if(!d) return false;
+    return d >= cutoff;
+  });
+}
+
+/* ================= FILTRO SOLO ÁREA GASOLINA ================= */
+function gasolineOnly(rows){
+  return rows.filter(r => {
+    const area = norm(r[6] || '');
+    return area.includes(TARGET_AREA);
+  });
+}
+
+/* FILTRO DE BÚSQUEDA  */
+function filterRows(allRows, query){
+  if(!query) return allRows;
+  const q = norm(query);
+
+  return allRows.filter(r => {
+    const unidad    = norm(r[1] || '');
+    const peticion  = norm(r[2] || '');
+    const solicita  = norm(r[3] || '');
+    const proveedor = norm(r[10] || '');
+    const area      = norm(r[6] || '');
+    return unidad.includes(q) || peticion.includes(q) || solicita.includes(q) || proveedor.includes(q) || area.includes(q);
+  });
+}
+
+function debounce(fn, ms=220){
+  let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+let ALL = [];
+let ALL_RAW = [];
+
+function renderTable(rows, query=''){
+  table.innerHTML = '';
+
+  if(!rows.length){
+    table.innerHTML = `<tr><td colspan="8" class="state">Sin resultados.</td></tr>`;
+    return;
+  }
+
+  const frag = document.createDocumentFragment();
+
+  rows.forEach(r => {
+    const fecha     = r[0]  || '';
+    const unidad    = r[1]  || '';
+    const peticion  = r[2]  || '';
+    const solicita  = r[3]  || '';
+    const area      = r[6]  || '';
+    const estatus   = r[9]  || '';
+    const proveedor = r[10] || '';
+    const recep     = r[11] || '';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${formatDateNice(fecha)}</td>
+      <td>${highlight(unidad, query)}</td>
+      <td>${highlight(peticion, query)}</td>
+      <td>${highlight(solicita, query)}</td>
+      <td>${highlight(area, query)}</td>
+      <td>${renderStatusBadge(estatus)}</td>
+      <td>${escHTML(recep)}</td>
+      <td>${highlight(proveedor, query)}</td>
+    `;
+    frag.appendChild(tr);
+  });
+
+  table.appendChild(frag);
+}
+
+const handleSearch = debounce(() => {
+  const q = searchBox.value;
+  const filtered = filterRows(ALL, q);
+  badge.textContent = `${filtered.length} de ${ALL.length}`;
+  renderTable(filtered, q);
+  statusText.textContent = q ? `Filtrado por “${escHTML(q)}” (Unidad/Petición/Solicita/Proveedor)` : '';
+}, 220);
+
+async function fetchData(){
+  try{
+    badge.textContent = 'Cargando…';
+    statusText.textContent = '';
+
+    const resp = await fetch(apiUrl);
+    const json = await resp.json();
+
+    if(!resp.ok || json.error){
+      const msg = json?.error?.message || `HTTP ${resp.status}`;
+      throw new Error(msg);
+    }
+
+    const values = json.values || [];
+    if(values.length <= 1){
+      badge.textContent = '0 registros';
+      table.innerHTML = `<tr><td colspan="8" class="state">Sin datos: ${escHTML(range)}</td></tr>`;
+      return;
+    }
+
+    ALL_RAW = values.slice(1);
+
+    let rows = lastNDaysOnly(ALL_RAW, DAYS_BACK);
+
+    rows = gasolineOnly(rows);
+
+    rows.sort((a,b) => {
+      const da = parseDateSmart(a[0]) || new Date(0);
+      const db = parseDateSmart(b[0]) || new Date(0);
+      return db - da;
+    });
+
+    ALL = rows;
+
+    badge.textContent = `${ALL.length} registros (Infraestructura · últimos ${DAYS_BACK} días)`;
+    renderTable(ALL);
+
+    if(ALL.length === 0){
+      statusText.textContent =
+        `No hay registros de Infraestructura con fecha válida en los últimos ${DAYS_BACK} días. ` +
+        `Si hay dudas, consulta con Emma Figueroa`;
+    }
+
+  }catch(e){
+    console.error(e);
+    badge.textContent = 'Error';
+    table.innerHTML = `<tr><td colspan="8" class="state">Error al cargar la hoja. Detalle: ${escHTML(e.message)}</td></tr>`;
+    statusText.textContent = 'Error, consulta con Emma Figueroa.';
+  }
+}
+
+/* ================= INIT ================= */
+searchBox.addEventListener('input', handleSearch);
+fetchData();
+</script>
+
+</body>
+</html>
