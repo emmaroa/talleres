@@ -290,7 +290,7 @@ function lastNDaysOnly(rows, daysBack){
 }
 
 /* ================= FILTRO SOLO ÁREA GASOLINA ================= */
-function gasolineOnly(rows){
+function infraestructuraOnly(rows){
   return rows.filter(r => {
     const area = norm(r[6] || '');
     return area.includes(TARGET_AREA);
@@ -388,7 +388,7 @@ async function fetchData(){
 
     let rows = lastNDaysOnly(ALL_RAW, DAYS_BACK);
 
-    rows = gasolineOnly(rows);
+    rows = infraestructuraOnly(rows);
 
     rows.sort((a,b) => {
       const da = parseDateSmart(a[0]) || new Date(0);
