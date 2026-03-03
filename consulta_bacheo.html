@@ -3,67 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Peticiones — Infraestructura</title>
+  <title>Consulta de Peticiones de Infraestructura</title>
 
   <style>
     :root{
-      --bg:#f8f6f2;
-      --card:#ffffff;
-      --text:#1f2937;
-      --muted:#6b7280;
-
-      --brand:#ff7f11;
-      --brand-600:#e66e0a;
-      --accent:#10c6d1;
-      --accent-700:#0ea5b0;
-
-      --ring:rgba(16,198,209,.45);
-      --radius:18px;
-      --shadow:0 10px 30px rgba(0,0,0,.10);
-      --shadow-strong:0 18px 40px rgba(0,0,0,.12);
+      --bg:#f8f6f2; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
+      --brand:#ff7f11; --accent:#10c6d1;
+      --accent-700:#0ea5b0; --ring:rgba(16,198,209,.45);
+      --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.08);
     }
-
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
-      color:var(--text);
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:
         radial-gradient(1200px 600px at 110% -10%, rgba(16,198,209,.10), transparent 60%),
         radial-gradient(900px 500px at -10% 110%, rgba(255,127,17,.10), transparent 60%),
         var(--bg);
-      min-height:100vh;
+      color:var(--text);
     }
-
     header{
-      background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-      color:#fff;
-      box-shadow:var(--shadow);
+      background:linear-gradient(135deg,var(--brand),var(--accent));
+      color:#fff; box-shadow:var(--shadow);
     }
     .hero{
-      max-width:1100px;
-      margin:0 auto;
-      padding:24px 16px;
-      display:flex;
-      align-items:center;
-      gap:16px;
-      flex-wrap:wrap;
+      max-width:1100px; margin:auto; padding:24px 16px;
+      display:flex; align-items:center; gap:16px; flex-wrap:wrap;
     }
     .logo{
-      width:56px; height:56px;
-      border-radius:12px;
+      width:56px; height:56px; border-radius:12px;
       background:rgba(255,255,255,.15);
-      display:grid;
-      place-items:center;
+      display:grid; place-items:center;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
       overflow:hidden;
     }
-    .logo img{
-      width:44px; height:auto;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,.15));
-    }
-    .titles h1{ margin:0; font-weight:900; }
-    .titles p{ margin:.25rem 0 0; opacity:.95; }
+    .logo img{width:44px; height:auto; filter: drop-shadow(0 2px 2px rgba(0,0,0,.15));}
 
     .backBtn{
       margin-left:auto;
@@ -83,144 +56,71 @@
     .backBtn:hover{ background:rgba(255,255,255,.22); }
     .backBtn:focus-visible{ outline:0; box-shadow:0 0 0 4px var(--ring); }
 
-    main{ padding:26px 16px 36px; display:grid; place-items:center; }
-    .wrap{ width:100%; max-width:1100px; }
-
+    main{padding:26px 16px 36px}
     .card{
-      background: color-mix(in srgb, var(--card) 85%, #fff 15%);
-      border-radius: var(--radius);
-      border: 1px solid rgba(16,198,209,.12);
-      box-shadow: var(--shadow);
-      overflow: clip;
+      max-width:1100px; margin:auto; background:#fff;
+      border-radius:var(--radius); box-shadow:var(--shadow);
+      overflow:hidden; border:1px solid rgba(16,198,209,.12);
     }
     .card-head{
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      padding: 18px 20px;
+      padding:16px 18px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
       border-bottom:1px solid rgba(16,198,209,.12);
       background: linear-gradient(180deg, rgba(16,198,209,.10), transparent);
     }
-    .badge{
-      background: rgba(255,127,17,.12);
-      color:#4a2a06;
-      border:1px solid rgba(255,127,17,.35);
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:900;
-      font-size:.82rem;
-    }
-
-    form{ padding:18px; }
-    .grid{ display:grid; gap:16px; grid-template-columns: 1fr; }
-    @media(min-width: 760px){
-      .grid{ grid-template-columns: 1fr 1fr; }
-      .full{ grid-column: 1 / -1; }
-    }
-
-    .field{
-      background:rgba(255,255,255,.75);
-      border:1px solid #e5e7eb;
-      border-radius:16px;
-      padding:14px;
-      box-shadow: 0 10px 22px rgba(0,0,0,.05);
-    }
-
-    label{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      font-size:12px; color:var(--muted);
-      margin:0 0 8px;
-      font-weight:800;
-    }
-    .reqMark{
-      font-size:11px;
+    .badgeTotal{
       background:rgba(255,127,17,.12);
       border:1px solid rgba(255,127,17,.35);
+      padding:4px 10px; border-radius:999px; font-size:.8rem; font-weight:800;
       color:#4a2a06;
-      padding:2px 8px;
-      border-radius:999px;
-      font-weight:900;
+    }
+    .controls{padding:14px 18px}
+    .control{position:relative}
+    .control input{
+      width:100%; padding:12px 14px 12px 40px;
+      border-radius:12px; border:1px solid #e5e7eb; font-size:1rem;
+      outline:none; transition: border-color .2s, box-shadow .2s;
+    }
+    .control input:focus{ border-color: var(--accent-700); box-shadow: 0 0 0 4px var(--ring); }
+    .control span{
+      position:absolute; left:12px; top:50%; transform:translateY(-50%);
+      color:var(--muted);
     }
 
-    input, textarea, select{
-      width:100%;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid #e5e7eb;
-      font-size:1rem;
-      outline:none;
-      transition: border-color .2s, box-shadow .2s;
-      background:#fff;
-      color:var(--text);
+    .table-wrap{ padding: 0 18px 18px; }
+    .scroller{
+      border:1px solid #e5e7eb; border-radius:12px; overflow:auto; background:#fff;
+      max-height: 60vh;
     }
-    textarea{ min-height:120px; resize:vertical; }
-    input:focus, textarea:focus, select:focus{
-      border-color: var(--accent-700);
-      box-shadow: 0 0 0 4px var(--ring);
+    table{width:100%; border-collapse:separate; border-spacing:0}
+    thead th{
+      position:sticky; top:0; z-index:1;
+      background: linear-gradient(180deg, rgba(16,198,209,.10), #fff);
+      padding:10px 12px; border-bottom:1px solid #e5e7eb;
+      text-align:left; font-size:.9rem; white-space:nowrap;
     }
+    tbody td{
+      padding:10px 12px; border-bottom:1px solid #f1f5f9; font-size:.92rem; vertical-align:top;
+    }
+    tbody tr:hover{background:rgba(16,198,209,.05)}
+    .hl{ background: linear-gradient(transparent 30%, rgba(16,198,209,.35) 30%, rgba(16,198,209,.35) 70%, transparent 70%); }
+    .state{padding:10px 18px; color:var(--muted)}
 
-    .readonly{
-      background: linear-gradient(180deg, rgba(248,246,242,.95), #fff);
+    .status-badge{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:4px 10px; border-radius:999px; font-weight:800; font-size:.78rem;
+      border:1px solid transparent; white-space:nowrap;
     }
-    .hint{ margin-top:8px; font-size:12px; color:var(--muted); }
-
-    .actions{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      padding: 14px 18px;
-      border-top:1px solid rgba(16,198,209,.12);
-      background: linear-gradient(180deg, rgba(255,127,17,.06), transparent);
-      flex-wrap:wrap;
-    }
-    .btns{ display:flex; gap:10px; flex-wrap:wrap; }
-    button{
-      border:0;
-      cursor:pointer;
-      padding:12px 14px;
-      border-radius:14px;
-      font-weight:900;
-      font-size:14px;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      user-select:none;
-    }
-    .btnPrimary{
-      color:#fff;
-      background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-      box-shadow: var(--shadow-strong);
-    }
-    .btnGhost{
-      background:#fff;
-      border:1px solid rgba(15,23,42,.12);
-      color:var(--text);
-      box-shadow:none;
-    }
-    button:disabled{ opacity:.65; cursor:not-allowed; }
+    .sb-green{ background: rgba(34,197,94,.12); border-color: rgba(34,197,94,.35); color:#14532d; }
+    .sb-blue{  background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.35); color:#1e3a8a; }
+    .sb-amber{ background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.35); color:#78350f; }
+    .sb-red{   background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35); color:#7f1d1d; }
+    .sb-gray{  background: rgba(107,114,128,.12); border-color: rgba(107,114,128,.28); color:#374151; }
 
     footer{
-      text-align:center;
-      padding:22px 16px;
-      color:#fff;
-      background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+      text-align:center; padding: 22px 16px; color:#fff;
+      background:linear-gradient(135deg,var(--brand),var(--accent));
     }
     footer small{ opacity:.95; }
-
-    .toast{
-      position:fixed; right:18px; bottom:18px;
-      background:#0b1220; color:#fff;
-      border:1px solid rgba(255,255,255,.12);
-      padding:12px 14px; border-radius:16px;
-      box-shadow:0 18px 55px rgba(0,0,0,.28);
-      display:none;
-      max-width:min(420px, calc(100vw - 36px));
-      font-size:13px;
-      z-index:9999;
-    }
-    .toast.show{display:block}
-    .toast small{display:block; opacity:.82; margin-top:4px}
-    .toast.ok{border-color: rgba(16,198,209,.45)}
-    .toast.err{border-color: rgba(255,127,17,.55)}
   </style>
 </head>
 
@@ -230,9 +130,9 @@
     <div class="logo">
       <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Escudo_de_Hermosillo.svg" alt="Escudo de Hermosillo">
     </div>
-    <div class="titles">
-      <h1>Peticiones — Infraestructura</h1>
-      <p>Dirección de Talleres · Municipio de Hermosillo</p>
+    <div>
+      <h1 style="margin:0;font-weight:900;">Consulta de Peticiones</h1>
+      <p style="margin:.25rem 0 0;opacity:.95;">Dirección de Talleres · Municipio de Hermosillo</p>
     </div>
 
     <a class="backBtn" href="bacheo.html">⬅️ Regresar al menú</a>
@@ -240,119 +140,293 @@
 </header>
 
 <main>
-  <div class="wrap">
-    <section class="card" aria-labelledby="title">
-      <div class="card-head">
-        <h2 id="title" style="margin:0">Captura de petición</h2>
-        <span class="badge">Infraestructura · Karl Lohr</span>
+  <section class="card" aria-labelledby="title">
+    <div class="card-head">
+      <h2 id="title" style="margin:0;">Infraestructura · Últimos 20 días</h2>
+      <span id="totalBadge" class="badgeTotal">Cargando…</span>
+    </div>
+
+    <div class="controls">
+      <div class="control">
+        <span>🔎</span>
+        <input id="searchBox" type="text"
+          placeholder="Buscar por Unidad, Petición, Quién solicita o Proveedor…" autocomplete="off">
       </div>
+    </div>
 
-      <form id="petForm" autocomplete="on">
-        <div class="grid">
-          <div class="field">
-            <label for="unidad"><span>Unidad</span><span class="reqMark">Obligatorio</span></label>
-            <input id="unidad" name="unidad" type="text" inputmode="numeric" pattern="^[0-9]+$"
-                   placeholder="Solo números (ej. 01535)" autocomplete="off" required />
-            <div class="hint">Solo números. Para pedidos de stock, poner 0.</div>
-          </div>
+    <div class="table-wrap">
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:170px;">Fecha</th>
+              <th style="width:140px;">Unidad</th>
+              <th style="min-width:420px;">Petición</th>
+              <th style="width:220px;">Quién solicita</th>
+              <th style="width:200px;">Área</th>
+              <th style="width:160px;">Estatus</th>
+              <th style="width:180px;">Recepción</th>
+              <th style="width:180px;">Proveedor</th>
+            </tr>
+          </thead>
+          <tbody id="dataTable">
+            <tr><td colspan="8" class="state">Cargando datos…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-          <div class="field">
-            <label for="area_visible"><span>Área</span><span class="reqMark">Obligatorio</span></label>
-            <input id="area_visible" type="text" class="readonly" value="Infraestructura" readonly autocomplete="off"/>
-            <input id="area" name="tipo_equipo" type="hidden" value="Infraestructura" />
-            <div class="hint">Campo fijo (no se puede cambiar).</div>
-          </div>
-
-          <div class="field">
-            <label for="solicita_visible"><span>Quién solicita</span><span class="reqMark">Obligatorio</span></label>
-            <input id="solicita_visible" type="text" class="readonly" value="Karl Lohr" readonly autocomplete="name"/>
-            <input id="solicita" name="solicita" type="hidden" value="Karl Lohr" />
-            <div class="hint">Campo fijo (no se puede cambiar).</div>
-          </div>
-
-          <div class="field">
-            <label for="motor"><span>Tipo de motor</span><span style="font-size:11px;color:var(--muted)">Opcional</span></label>
-            <input id="motor" name="motor" type="text" maxlength="60" placeholder="Ej. 6.7L, 4 cil., eléctrico, etc." autocomplete="off"/>
-            <div class="hint">Texto corto (máx. 60 caracteres).</div>
-          </div>
-
-          <div class="field full">
-            <label for="peticion"><span>Petición</span><span class="reqMark">Obligatorio</span></label>
-            <textarea id="peticion" name="peticion" placeholder="Describe la necesidad con detalle (material, medidas, marca, num. parte, cotización, etc.)" autocomplete="off" required></textarea>
-          </div>
-
-          <div class="field full">
-            <label for="muestra"><span>¿Se deja muestra en almacén de talleres?</span><span class="reqMark">Obligatorio</span></label>
-            <select id="muestra" name="muestra" required>
-              <option value="" selected disabled>Seleccione…</option>
-              <option value="Sí">Sí</option>
-              <option value="No">No</option>
-            </select>
-            <div class="hint">Selecciona “Sí” si se dejó muestra física en almacén.</div>
-          </div>
-        </div>
-
-        <div class="actions">
-          <div class="hint" style="margin:0">* Exclusivo de Infraestructura. Área y solicitante son fijos.</div>
-          <div class="btns">
-            <button class="btnGhost" type="reset">Limpiar</button>
-            <button id="btnSend" class="btnPrimary" type="submit">Enviar petición</button>
-          </div>
-        </div>
-      </form>
-    </section>
-  </div>
+    <div id="statusText" class="state"></div>
+  </section>
 </main>
 
 <footer>
   <small>&copy; 2026 Dirección de Talleres · Municipio de Hermosillo</small>
 </footer>
 
-<div id="toast" class="toast" role="status" aria-live="polite"></div>
-
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzAFGaEktKIH6Qfn4XINN30PPes7nHcKdXNQcXeaEYGyvzD-aOeIh3HrROj3MoJWKA/exec";
+/* ================= CONFIG ================= */
+const apiKey  = 'AIzaSyBuDCgUZi7USIvmh6xW8QAQCPsE0wjNi7A';
+const sheetId = '1NSpI6iWqYbXmJvSFrZ5bPKIPTlIQ8V0wlqhUXUxPN2w';
 
-  const form = document.getElementById("petForm");
-  const btn = document.getElementById("btnSend");
-  const toast = document.getElementById("toast");
+/* ✅ CAMBIO: ahora consulta la hoja NUEVA */
+const SHEET_NAME = 'Peticiones_infra';
 
-  function showToast(type, msg, sub){
-    toast.className = "toast show " + (type === "ok" ? "ok" : "err");
-    toast.innerHTML = `${msg}${sub ? `<small>${sub}</small>` : ""}`;
-    setTimeout(()=>toast.classList.remove("show"), 3800);
+const range = `${SHEET_NAME}!A:L`;
+const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+
+const DAYS_BACK = 20;
+
+/* ================= DOM ================= */
+const $ = (id) => document.getElementById(id);
+const table = $('dataTable');
+const badge = $('totalBadge');
+const statusText = $('statusText');
+const searchBox = $('searchBox');
+
+/* ================= HELPERS ================= */
+const norm = (s) => (s || '')
+  .toString()
+  .normalize('NFD').replace(/\p{Diacritic}/gu,'')
+  .toLowerCase().trim();
+
+function escHTML(str){
+  return (str ?? '').toString()
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+function highlight(text, query){
+  const safe = escHTML(text);
+  if(!query) return safe;
+
+  const nText = norm(text);
+  const nQuery = norm(query);
+  const idx = nText.indexOf(nQuery);
+  if(idx < 0) return safe;
+
+  const start = safe.slice(0, idx);
+  const match = safe.slice(idx, idx + query.length);
+  const end   = safe.slice(idx + query.length);
+  return `${start}<span class="hl">${match}</span>${end}`;
+}
+
+function parseDateSmart(v){
+  if(!v) return null;
+
+  if(typeof v === 'number'){
+    if(v > 1e12) return new Date(v);
+    if(v > 1e9)  return new Date(v * 1000);
   }
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  const s = v.toString().trim();
+  if(!s) return null;
 
-    const unidad = (document.getElementById("unidad").value || "").trim();
-    if(!/^\d+$/.test(unidad)){
-      showToast("err", "⚠️ La unidad debe ser numérica.", "Ejemplo: 01535");
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+  if(m){
+    const dd = parseInt(m[1],10);
+    const mm = parseInt(m[2],10) - 1;
+    const yy = parseInt(m[3],10);
+    const hh = parseInt(m[4] || '0',10);
+    const mi = parseInt(m[5] || '0',10);
+    const ss = parseInt(m[6] || '0',10);
+    const d = new Date(yy, mm, dd, hh, mi, ss);
+    return isNaN(d) ? null : d;
+  }
+
+  const d2 = new Date(s);
+  return isNaN(d2) ? null : d2;
+}
+
+function formatDateNice(v){
+  const d = parseDateSmart(v);
+  if(!d) return escHTML(v);
+
+  const hasTime = d.getHours() !== 0 || d.getMinutes() !== 0 || d.getSeconds() !== 0;
+
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yy = d.getFullYear();
+
+  if(!hasTime) return `${dd}/${mm}/${yy}`;
+
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mi = String(d.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yy} ${hh}:${mi}`;
+}
+
+function statusClass(statusRaw){
+  const s = norm(statusRaw);
+  if(s.includes('entreg') || s.includes('recibid') || s.includes('complet') || s.includes('cerrad')) return 'sb-green';
+  if(s.includes('pedido') || s.includes('en proceso') || s.includes('tramit') || s.includes('compra')) return 'sb-blue';
+  if(s.includes('pend') || s.includes('por surtir') || s.includes('espera') || s.includes('revision')) return 'sb-amber';
+  if(s.includes('cancel') || s.includes('rechaz') || s.includes('no procede')) return 'sb-red';
+  return 'sb-gray';
+}
+
+function renderStatusBadge(statusText){
+  const txt = (statusText || '').toString().trim();
+  const cls = statusClass(txt);
+  const label = txt || 'Sin estatus';
+  return `<span class="status-badge ${cls}">${escHTML(label)}</span>`;
+}
+
+function lastNDaysOnly(rows, daysBack){
+  const cutoff = new Date();
+  cutoff.setHours(0,0,0,0);
+  cutoff.setDate(cutoff.getDate() - daysBack);
+
+  return rows.filter(r => {
+    const d = parseDateSmart(r[0]);
+    if(!d) return false;
+    return d >= cutoff;
+  });
+}
+
+function filterRows(allRows, query){
+  if(!query) return allRows;
+  const q = norm(query);
+
+  return allRows.filter(r => {
+    const unidad    = norm(r[1] || '');
+    const peticion  = norm(r[2] || '');
+    const solicita  = norm(r[3] || '');
+    const area      = norm(r[6] || '');
+    const estatus   = norm(r[9] || '');
+    const proveedor = norm(r[10] || '');
+    const recep     = norm(r[11] || '');
+    return (
+      unidad.includes(q) || peticion.includes(q) || solicita.includes(q) ||
+      area.includes(q) || estatus.includes(q) || proveedor.includes(q) || recep.includes(q)
+    );
+  });
+}
+
+function debounce(fn, ms=220){
+  let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+let ALL = [];
+let ALL_RAW = [];
+
+function renderTable(rows, query=''){
+  table.innerHTML = '';
+
+  if(!rows.length){
+    table.innerHTML = `<tr><td colspan="8" class="state">Sin resultados.</td></tr>`;
+    return;
+  }
+
+  const frag = document.createDocumentFragment();
+
+  rows.forEach(r => {
+    const fecha     = r[0]  || '';
+    const unidad    = r[1]  || '';
+    const peticion  = r[2]  || '';
+    const solicita  = r[3]  || '';
+    const area      = r[6]  || '';
+    const estatus   = r[9]  || '';
+    const proveedor = r[10] || '';
+    const recep     = r[11] || '';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${formatDateNice(fecha)}</td>
+      <td>${highlight(unidad, query)}</td>
+      <td>${highlight(peticion, query)}</td>
+      <td>${highlight(solicita, query)}</td>
+      <td>${highlight(area, query)}</td>
+      <td>${renderStatusBadge(estatus)}</td>
+      <td>${highlight(recep, query)}</td>
+      <td>${highlight(proveedor, query)}</td>
+    `;
+    frag.appendChild(tr);
+  });
+
+  table.appendChild(frag);
+}
+
+const handleSearch = debounce(() => {
+  const q = searchBox.value;
+  const filtered = filterRows(ALL, q);
+  badge.textContent = `${filtered.length} de ${ALL.length}`;
+  renderTable(filtered, q);
+  statusText.textContent = q ? `Filtrado por “${q}”` : '';
+}, 220);
+
+async function fetchData(){
+  try{
+    badge.textContent = 'Cargando…';
+    statusText.textContent = '';
+
+    const resp = await fetch(apiUrl);
+    const json = await resp.json();
+
+    if(!resp.ok || json.error){
+      const msg = json?.error?.message || `HTTP ${resp.status}`;
+      throw new Error(msg);
+    }
+
+    const values = json.values || [];
+    if(values.length <= 1){
+      badge.textContent = '0 registros';
+      table.innerHTML = `<tr><td colspan="8" class="state">Sin datos: ${escHTML(range)}</td></tr>`;
       return;
     }
 
-    const fd = new FormData(form);
-    fd.set("tipo_equipo", "Infraestructura");
-    fd.set("solicita", "Karl Lohr");
+    ALL_RAW = values.slice(1);
 
-    btn.disabled = true;
-    btn.textContent = "Enviando…";
+    let rows = lastNDaysOnly(ALL_RAW, DAYS_BACK);
 
-    try{
-      const res = await fetch(scriptURL, { method: "POST", body: fd });
-      if(!res.ok) throw new Error("Respuesta no OK");
+    // Orden por fecha desc
+    rows.sort((a,b) => {
+      const da = parseDateSmart(a[0]) || new Date(0);
+      const db = parseDateSmart(b[0]) || new Date(0);
+      return db - da;
+    });
 
-      showToast("ok", "✅ Petición enviada.", "Infraestructura · Karl Lohr");
-      form.reset();
-    }catch(err){
-      console.error(err);
-      showToast("err", "❌ No se pudo enviar.", "Comunícate con Víctor Zárate o Emma Figueroa.");
-    }finally{
-      btn.disabled = false;
-      btn.textContent = "Enviar petición";
+    ALL = rows;
+
+    badge.textContent = `${ALL.length} registros (últimos ${DAYS_BACK} días)`;
+    renderTable(ALL);
+
+    if(ALL.length === 0){
+      statusText.textContent = `No hay registros con fecha válida en los últimos ${DAYS_BACK} días.`;
     }
-  });
+
+  }catch(e){
+    console.error(e);
+    badge.textContent = 'Error';
+    table.innerHTML = `<tr><td colspan="8" class="state">Error al cargar la hoja. Detalle: ${escHTML(e.message)}</td></tr>`;
+    statusText.textContent = 'Error, consulta con Emma Figueroa.';
+  }
+}
+
+searchBox.addEventListener('input', handleSearch);
+fetchData();
 </script>
 </body>
 </html>
