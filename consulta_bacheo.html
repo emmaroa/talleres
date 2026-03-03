@@ -315,9 +315,9 @@ function filterRows(allRows, query){
     const peticion  = norm(r[2] || '');
     const solicita  = norm(r[3] || '');
     const area      = norm(r[6] || '');
-    const estatus   = norm(r[9] || '');
-    const proveedor = norm(r[10] || '');
-    const recep     = norm(r[11] || '');
+    const estatus   = norm(r[8] || '');
+    const proveedor = norm(r[9] || '');
+    const recep     = norm(r[10] || '');
     return (
       unidad.includes(q) || peticion.includes(q) || solicita.includes(q) ||
       area.includes(q) || estatus.includes(q) || proveedor.includes(q) || recep.includes(q)
@@ -348,9 +348,9 @@ function renderTable(rows, query=''){
     const peticion  = r[2]  || '';
     const solicita  = r[3]  || '';
     const area      = r[6]  || '';
-    const estatus   = r[9]  || '';
-    const proveedor = r[10] || '';
-    const recep     = r[11] || '';
+    const estatus   = r[8]  || '';
+    const proveedor = r[9] || '';
+    const recep     = r[10] || '';
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
