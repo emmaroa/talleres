@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Menú Principal — Direccion de Talleres, enlace Infraestructura.</title>
+  <title>Menú Principal — Dirección de Talleres · Infraestructura</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
   <style>
     :root{
       --bg: #f8f6f2;
@@ -12,9 +13,9 @@
       --text: #1f2937;
       --muted: #6b7280;
 
-      --brand: #ff7f11;    
+      --brand: #ff7f11;
       --brand-600: #e66e0a;
-      --accent: #10c6d1;     
+      --accent: #10c6d1;
       --accent-700: #0ea5b0;
 
       --ring: rgba(16,198,209,.45);
@@ -26,7 +27,8 @@
     *{ box-sizing: border-box; }
     html, body{ height: 100%; }
     body{
-      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
       color: var(--text);
       background:
         radial-gradient(1200px 600px at 110% -10%, rgba(16,198,209,.10), transparent 60%),
@@ -36,21 +38,49 @@
 
     header{
       background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-      color: white; box-shadow: var(--shadow);
+      color: white;
+      box-shadow: var(--shadow);
     }
     .hero{
-      max-width: 1100px; margin: 0 auto; padding: 28px 18px 18px;
-      display:flex; align-items:center; gap:16px; flex-wrap: wrap;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 18px 18px;
+      display:flex;
+      align-items:center;
+      gap:16px;
+      flex-wrap: wrap;
     }
     .logo{
-      width:64px; height:64px; border-radius: 14px; background: rgba(255,255,255,.14);
-      display:grid; place-items:center; box-shadow: inset 0 0 0 1px rgba(255,255,255,.25); overflow:hidden;
+      width:64px;
+      height:64px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.14);
+      display:grid;
+      place-items:center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+      overflow:hidden;
     }
-    .logo img{ width: 50px; height:auto; filter: drop-shadow(0 2px 2px rgba(0,0,0,.15)); }
-    .titles h1{ margin:0; font-weight: 900; letter-spacing:.3px; font-size: clamp(1.2rem, 3.2vw, 1.8rem); }
-    .titles p{ margin:.3rem 0 0; opacity:.95; }
+    .logo img{
+      width: 50px;
+      height:auto;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.15));
+    }
+    .titles h1{
+      margin:0;
+      font-weight: 900;
+      letter-spacing:.3px;
+      font-size: clamp(1.2rem, 3.2vw, 1.8rem);
+    }
+    .titles p{
+      margin:.3rem 0 0;
+      opacity:.95;
+    }
 
-    main{ display:grid; place-items:center; padding: 28px 16px 36px; }
+    main{
+      display:grid;
+      place-items:center;
+      padding: 28px 16px 36px;
+    }
     .wrap{ width:100%; max-width: 1100px; }
 
     .menu-card{
@@ -62,38 +92,81 @@
       overflow: clip;
     }
     .menu-head{
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      padding: 18px 20px; border-bottom:1px solid rgba(16,198,209,.12);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding: 18px 20px;
+      border-bottom:1px solid rgba(16,198,209,.12);
       background: linear-gradient(180deg, rgba(16,198,209,.10), transparent);
     }
     .menu-head h2{ margin:0; font-size:1.1rem; color:#0f172a; }
-    .badge{ background: rgba(255,127,17,.12); color:#4a2a06; border:1px solid rgba(255,127,17,.35); padding:6px 10px; border-radius:999px; font-weight:800; font-size:.8rem; }
+    .badge{
+      background: rgba(255,127,17,.12);
+      color:#4a2a06;
+      border:1px solid rgba(255,127,17,.35);
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:.8rem;
+    }
 
+    /* ✅ AQUÍ ESTÁ EL ARREGLO: este grid envuelve los tiles */
     .grid{
-      display: grid; gap: 16px; padding: 18px; grid-template-columns: 1fr;
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+      grid-template-columns: 1fr;
     }
     @media (min-width: 620px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 960px){ .grid{ grid-template-columns: repeat(3, 1fr); } }
 
     .tile{
-      position: relative; display: flex; align-items: center; gap: 12px;
-      text-decoration: none; color: inherit; padding: 16px; border-radius: 16px;
-      border: 1px solid #e5e7eb; background: #fff;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
       transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease;
     }
-    .tile:hover{ transform: translateY(-2px); box-shadow: var(--shadow-strong); border-color: rgba(16,198,209,.35); }
-    .tile:focus-visible{ outline: 0; box-shadow: 0 0 0 4px var(--ring); }
+    .tile:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-strong);
+      border-color: rgba(16,198,209,.35);
+    }
+    .tile:focus-visible{
+      outline: 0;
+      box-shadow: 0 0 0 4px var(--ring);
+    }
 
     .tile-icon{
-      flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px; display:grid; place-items:center;
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display:grid;
+      place-items:center;
       background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-      color: #fff; font-weight: 900; font-size: 1.05rem;
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.05rem;
       box-shadow: 0 8px 18px rgba(255,127,17,.25), 0 6px 14px rgba(16,198,209,.18);
     }
     .tile h3{ margin:0; font-size: 1rem; font-weight: 800; }
     .tile p{ margin:.2rem 0 0; font-size: .9rem; color: var(--muted); }
 
-    footer{ text-align:center; padding: 22px 16px; color:#fff; background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%); }
+    footer{
+      text-align:center;
+      padding: 22px 16px;
+      color:#fff;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+    }
     footer small{ opacity:.95; }
 
     @media (prefers-reduced-motion: reduce){
@@ -101,6 +174,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="hero">
@@ -109,7 +183,7 @@
       </div>
       <div class="titles">
         <h1>Menú Principal</h1>
-        <p>Dirección de Talleres · Direccion de Inbfraestructura. Municipio de Hermosillo</p>
+        <p>Dirección de Talleres · Infraestructura · Municipio de Hermosillo</p>
       </div>
     </div>
   </header>
@@ -118,28 +192,27 @@
     <div class="wrap">
       <section class="menu-card" aria-labelledby="menu-title">
         <div class="menu-head">
-          <h2 id="menu-title">Accesos </h2>
+          <h2 id="menu-title">Accesos</h2>
           <span class="badge">Panel</span>
         </div>
 
-       
-          <a class="tile" href="peticionesbacheo.html">
+        <!-- ✅ ARREGLO: ahora sí existe el contenedor grid -->
+        <div class="grid">
+          <a class="tile" href="peticionesinfra.html">
             <div class="tile-icon">🧰</div>
             <div>
               <h3>Peticiones</h3>
-              <p>Peticiones de Refacciones .</p>
+              <p>Captura de peticiones (Infraestructura).</p>
             </div>
           </a>
 
-                         
-          <a class="tile" href="Peticiones_Infra.html">
+          <a class="tile" href="consultas_infra.html">
             <div class="tile-icon">🔎</div>
             <div>
-              <h3>Consulta de Peticiones Almacen </h3>
-              <p>Consulta de Peticiones y Estatus.</p>
+              <h3>Consulta de Peticiones</h3>
+              <p>Consulta de peticiones y estatus.</p>
             </div>
           </a>
-         
         </div>
       </section>
     </div>
@@ -150,6 +223,5 @@
   </footer>
 
   <meta name="google-site-verification" content="googlee906135aae620dd7.html">
-
 </body>
 </html>
