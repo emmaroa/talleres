@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Peticiones — Infraestructura</title>
+
+  <style>
+    :root{
+      --bg:#f8f6f2; --card:#ffffff; --text:#111827; --muted:#6b7280; --border:#e5e7eb;
+      --orange:#ff7f11; --turq:#10c6d1; --turq700:#0ea5b0; --ring:rgba(16,198,209,.35);
+      --radius:22px; --shadow:0 18px 45px rgba(17,24,39,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
+      background:
+        radial-gradient(900px 520px at 110% -10%, rgba(16,198,209,.12), transparent 60%),
+        radial-gradient(900px 520px at -10% 0%, rgba(255,127,17,.10), transparent 60%),
+        var(--bg);
+    }
+    .wrap{max-width:980px; margin:28px auto; padding:0 16px}
+    .top{
+      display:flex; gap:14px; align-items:center; justify-content:space-between; margin-bottom:14px;
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .logo{
+      width:46px; height:46px; border-radius:14px;
+      background:linear-gradient(135deg, rgba(255,127,17,.20), rgba(16,198,209,.18));
+      border:1px solid rgba(17,24,39,.10);
+      display:grid; place-items:center;
+      box-shadow:0 10px 25px rgba(17,24,39,.08);
+    }
+    .logo span{font-weight:900; color:var(--orange)}
+    h1{font-size:22px; margin:0}
+    .sub{margin:2px 0 0; color:var(--muted); font-size:13px}
+    .badge{
+      padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(17,24,39,.10);
+      background:rgba(255,255,255,.6);
+      font-size:12px; color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid rgba(17,24,39,.10);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .cardHead{
+      padding:16px 18px;
+      border-bottom:1px solid rgba(17,24,39,.08);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .cardHead h2{margin:0; font-size:16px}
+    .pill{
+      font-size:12px; color:#0f172a;
+      background:linear-gradient(90deg, rgba(16,198,209,.18), rgba(255,127,17,.16));
+      border:1px solid rgba(17,24,39,.10);
+      padding:6px 10px; border-radius:999px;
+    }
+
+    form{padding:18px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 760px){
+      .grid{grid-template-columns:1fr}
+      .badge{display:none}
+    }
+
+    label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
+    .req::after{content:" *"; color:var(--orange); font-weight:700}
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(17,24,39,.14);
+      background:#fff;
+      color:var(--text);
+      outline:none;
+      transition:box-shadow .15s, border-color .15s;
+      font-size:14px;
+    }
+    textarea{min-height:110px; resize:vertical}
+    input:focus, select:focus, textarea:focus{
+      border-color:rgba(16,198,209,.55);
+      box-shadow:0 0 0 4px var(--ring);
+    }
+    .hint{margin-top:6px; font-size:12px; color:var(--muted)}
+    .readonly{
+      background:linear-gradient(180deg, rgba(248,246,242,.85), rgba(255,255,255,.92));
+    }
+
+    .full{grid-column:1 / -1}
+
+    .actions{
+      display:flex; gap:10px; align-items:center; justify-content:flex-end;
+      border-top:1px solid rgba(17,24,39,.08);
+      padding:14px 18px;
+      background:rgba(248,246,242,.55);
+    }
+    button{
+      border:0; cursor:pointer;
+      padding:12px 14px; border-radius:14px;
+      font-weight:700; font-size:14px;
+      display:inline-flex; align-items:center; gap:10px;
+      box-shadow:0 14px 35px rgba(17,24,39,.12);
+    }
+    .btnPrimary{
+      color:#0b1220;
+      background:linear-gradient(90deg, rgba(16,198,209,.92), rgba(255,127,17,.92));
+    }
+    .btnGhost{
+      background:#fff;
+      border:1px solid rgba(17,24,39,.12);
+      box-shadow:none;
+      color:#111827;
+    }
+    button:disabled{opacity:.65; cursor:not-allowed}
+
+    .toast{
+      position:fixed; right:18px; bottom:18px;
+      background:#0b1220; color:#fff;
+      border:1px solid rgba(255,255,255,.12);
+      padding:12px 14px; border-radius:14px;
+      box-shadow:0 18px 50px rgba(0,0,0,.22);
+      display:none;
+      max-width:min(420px, calc(100vw - 36px));
+      font-size:13px;
+    }
+    .toast.show{display:block}
+    .toast small{display:block; opacity:.8; margin-top:4px}
+    footer{color:var(--muted); font-size:12px; text-align:center; padding:14px 0}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><span>HT</span></div>
+        <div>
+          <h1>Registro de Petición — Infraestructura</h1>
+          <p class="sub">Dirección de Talleres · Municipio de Hermosillo</p>
+        </div>
+      </div>
+      <div class="badge">Captura rápida · Infraestructura</div>
+    </div>
+
+    <div class="card">
+      <div class="cardHead">
+        <h2>Formulario</h2>
+        <div class="pill">.</div>
+      </div>
+
+      <form id="petForm" autocomplete="off">
+        <div class="grid">
+          <div>
+            <label class="req" for="unidad">Unidad</label>
+            <input
+              id="unidad" name="unidad"
+              type="text"
+              inputmode="numeric"
+              pattern="^[0-9]+$"
+              placeholder="Solo números (ej. 01535)"
+              required
+            />
+            <div class="hint">Solo números. Para pedidos de stock, pon 0.</div>
+          </div>
+
+          <div>
+            <label class="req">Área</label>
+            <input class="readonly" type="text" value="Infraestructura" readonly />
+            <input type="hidden" id="area" name="area" value="Infraestructura" />
+          </div>
+
+          <div>
+            <label class="req">Quién solicita</label>
+            <input class="readonly" type="text" value="Karl Lohr" readonly />
+            <input type="hidden" id="solicita" name="solicita" value="Karl Lohr" />
+          </div>
+
+          <div>
+            <label for="tipo_motor">Tipo de motor</label>
+            <input
+              id="tipo_motor" name="tipo_motor"
+              type="text"
+              maxlength="60"
+              placeholder="Ej. 6.7L, 4 cilindros, eléctrico, etc."
+            />
+          </div>
+
+          <div class="full">
+            <label class="req" for="peticion">Petición</label>
+            <textarea
+              id="peticion" name="peticion"
+              placeholder="Describe la necesidad con detalle (material, medidas, marca, numero de parte o folio de cotizacion, etc.)"
+              required
+            ></textarea>
+          </div>
+
+          <div class="full">
+            <label class="req" for="muestra">¿Se deja muestra en almacén de talleres?</label>
+            <select id="muestra" name="muestra" required>
+              <option value="" selected disabled>Seleccione…</option>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btnGhost" type="reset">Limpiar</button>
+          <button id="btnSend" class="btnPrimary" type="submit">
+            Enviar petición
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <footer>© 2026 Dirección de Talleres · Municipio de Hermosillo</footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const scriptURL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT";
+
+    const form = document.getElementById("petForm");
+    const btn = document.getElementById("btnSend");
+    const toast = document.getElementById("toast");
+
+    function showToast(msg, sub){
+      toast.innerHTML = `${msg}${sub ? `<small>${sub}</small>` : ""}`;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 3800);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const unidad = (document.getElementById("unidad").value || "").trim();
+      if(!/^\d+$/.test(unidad)){
+        showToast("⚠️ La unidad debe ser numérica.", "Ejemplo: 01535");
+        return;
+      }
+
+      const fd = new FormData(form);
+
+      fd.set("area", "Infraestructura");
+      fd.set("solicita", "Karl Lohr");
+
+      if(!scriptURL || scriptURL.includes("https://script.google.com/macros/s/AKfycbzAFGaEktKIH6Qfn4XINN30PPes7nHcKdXNQcXeaEYGyvzD-aOeIh3HrROj3MoJWKA/exec")){
+        showToast("⚠️");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Enviando…";
+
+      try{
+        const res = await fetch(scriptURL, { method: "POST", body: fd });
+        if(!res.ok) throw new Error("Respuesta no OK");
+
+        showToast("✅ Petición enviada.", "Infraestructura · Karl Lohr");
+        form.reset();
+
+        document.getElementById("area").value = "Infraestructura";
+        document.getElementById("solicita").value = "Karl Lohr";
+
+      }catch(err){
+        showToast("❌ No se pudo enviar.", "Comunicate con Emma Figueroa o Victor Zarate");
+        console.error(err);
+      }finally{
+        btn.disabled = false;
+        btn.textContent = "Enviar petición";
+      }
+    });
+  </script>
+</body>
+</html>
