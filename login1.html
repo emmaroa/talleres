@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso | Dirección de Talleres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:rgba(148,163,184,.24);
+
+      --brand:#ff7f11;
+      --brand-2:#ff9e43;
+      --brand-dark:#e46d00;
+
+      --accent:#10c6d1;
+      --accent-dark:#0c9ca6;
+
+      --white:rgba(255,255,255,.96);
+      --glass:rgba(255,255,255,.12);
+
+      --shadow-xl:0 30px 80px rgba(15,23,42,.22);
+      --shadow-lg:0 18px 40px rgba(15,23,42,.16);
+      --shadow-md:0 10px 24px rgba(15,23,42,.10);
+
+      --radius-xl:34px;
+      --radius-lg:24px;
+      --radius-md:18px;
+      --radius-sm:14px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    html, body{
+      margin:0;
+      min-height:100%;
+      font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+    }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(rgba(9,17,30,.62), rgba(9,17,30,.62)),
+        url("https://www.mobil.com.mx/lubricantes/-/media/project/wep/mobil/mobil-mx/consumidor/talleres-refaccionarias/talleres/refccionarias/image-tuerc/tuerc-screen-xl.jpg")
+        center center / cover no-repeat fixed;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(16,198,209,.22), transparent 28%),
+        radial-gradient(circle at 88% 14%, rgba(255,127,17,.20), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(255,255,255,.06), transparent 32%);
+      pointer-events:none;
+    }
+
+    .login-shell{
+      position:relative;
+      z-index:1;
+      width:100%;
+      max-width:1240px;
+      min-height:730px;
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      border-radius:var(--radius-xl);
+      overflow:hidden;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      backdrop-filter:blur(18px);
+      box-shadow:var(--shadow-xl);
+    }
+
+    .left-panel{
+      position:relative;
+      padding:42px 42px 34px;
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      background:
+        linear-gradient(155deg, rgba(255,127,17,.70), rgba(255,127,17,.48) 34%, rgba(16,198,209,.55)),
+        linear-gradient(rgba(15,23,42,.28), rgba(15,23,42,.28));
+    }
+
+    .left-panel::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      pointer-events:none;
+    }
+
+    .topbar{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .brand-mark{
+      width:74px;
+      height:74px;
+      border-radius:22px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.22);
+      padding:10px;
+      display:grid;
+      place-items:center;
+      backdrop-filter:blur(10px);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+    }
+
+    .brand-mark img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      filter:drop-shadow(0 2px 8px rgba(0,0,0,.18));
+    }
+
+    .brand-copy small{
+      display:block;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      opacity:.92;
+      margin-bottom:5px;
+    }
+
+    .brand-copy strong{
+      display:block;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .brand-copy span{
+      display:block;
+      margin-top:4px;
+      font-size:13px;
+      color:rgba(255,255,255,.88);
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.13);
+      border:1px solid rgba(255,255,255,.16);
+      font-size:13px;
+      font-weight:700;
+      white-space:nowrap;
+      backdrop-filter:blur(8px);
+    }
+
+    .status-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#bbf7d0;
+      box-shadow:0 0 12px rgba(187,247,208,.85);
+    }
+
+    .hero{
+      position:relative;
+      z-index:1;
+      margin-top:24px;
+      max-width:590px;
+    }
+
+    .hero-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 16px;
+      border-radius:999px;
+      margin-bottom:22px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      backdrop-filter:blur(8px);
+    }
+
+    .hero h1{
+      margin:0 0 16px;
+      font-size:54px;
+      line-height:1.02;
+      letter-spacing:-.045em;
+      font-weight:800;
+      text-wrap:balance;
+    }
+
+    .hero p{
+      margin:0;
+      max-width:540px;
+      font-size:16px;
+      line-height:1.8;
+      color:rgba(255,255,255,.94);
+    }
+
+    .dashboard-preview{
+      position:relative;
+      z-index:1;
+      margin-top:34px;
+      width:min(100%, 570px);
+      padding:18px;
+      border-radius:26px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.16);
+      backdrop-filter:blur(14px);
+      box-shadow:var(--shadow-lg);
+    }
+
+    .preview-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .preview-title{
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .preview-dots{
+      display:flex;
+      gap:8px;
+    }
+
+    .preview-dots span{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:rgba(255,255,255,.58);
+    }
+
+    .mini-cards{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .mini-card{
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:18px;
+      padding:14px 12px;
+    }
+
+    .mini-card span{
+      display:block;
+      font-size:12px;
+      opacity:.86;
+      margin-bottom:8px;
+    }
+
+    .mini-card strong{
+      font-size:22px;
+      font-weight:800;
+    }
+
+    .chart{
+      display:grid;
+      grid-template-columns:repeat(8, 1fr);
+      align-items:end;
+      gap:8px;
+      height:120px;
+      padding:10px 6px 2px;
+    }
+
+    .bar{
+      border-radius:14px 14px 8px 8px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.38));
+      min-height:24px;
+    }
+
+    .features{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+      margin-top:28px;
+    }
+
+    .feature{
+      padding:18px 16px;
+      border-radius:20px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      backdrop-filter:blur(8px);
+    }
+
+    .feature-icon{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(255,255,255,.16);
+      margin-bottom:12px;
+      font-size:18px;
+    }
+
+    .feature h3{
+      margin:0 0 6px;
+      font-size:15px;
+      font-weight:700;
+    }
+
+    .feature p{
+      margin:0;
+      font-size:13px;
+      line-height:1.58;
+      color:rgba(255,255,255,.88);
+    }
+
+    .right-panel{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:38px;
+      background:rgba(255,255,255,.10);
+      backdrop-filter:blur(8px);
+    }
+
+    .form-card{
+      width:100%;
+      max-width:445px;
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(255,255,255,.72);
+      border-radius:30px;
+      box-shadow:var(--shadow-lg);
+      padding:30px 30px 26px;
+      backdrop-filter:blur(16px);
+    }
+
+    .form-logo{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:20px;
+      padding-bottom:18px;
+      border-bottom:1px solid #e2e8f0;
+    }
+
+    .form-logo-mark{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      padding:8px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, rgba(255,127,17,.10), rgba(16,198,209,.10));
+      border:1px solid #e2e8f0;
+      box-shadow:var(--shadow-md);
+    }
+
+    .form-logo-mark img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+
+    .form-logo-copy small{
+      display:block;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      color:#94a3b8;
+      margin-bottom:4px;
+      font-weight:800;
+    }
+
+    .form-logo-copy strong{
+      display:block;
+      font-size:18px;
+      color:#0f172a;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .form-logo-copy span{
+      display:block;
+      margin-top:3px;
+      font-size:13px;
+      color:#64748b;
+    }
+
+    .form-header{
+      margin-bottom:24px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(16,198,209,.10);
+      color:var(--accent-dark);
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:14px;
+    }
+
+    .form-header h2{
+      margin:0 0 10px;
+      font-size:34px;
+      line-height:1.05;
+      letter-spacing:-.04em;
+      font-weight:800;
+      color:#0f172a;
+    }
+
+    .form-header p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.7;
+    }
+
+    .error-box{
+      display:none;
+      margin-bottom:16px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(239,68,68,.08);
+      border:1px solid rgba(239,68,68,.18);
+      color:#b91c1c;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .error-box.show{
+      display:block;
+    }
+
+    .field{
+      margin-bottom:16px;
+    }
+
+    .field label{
+      display:block;
+      margin-bottom:9px;
+      font-size:14px;
+      font-weight:700;
+      color:#334155;
+    }
+
+    .input-shell{
+      position:relative;
+    }
+
+    .input-shell input{
+      width:100%;
+      height:58px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#f8fafc;
+      padding:0 18px 0 48px;
+      font-size:15px;
+      color:#0f172a;
+      outline:none;
+      transition:.22s ease;
+    }
+
+    .input-shell input:focus{
+      background:#fff;
+      border-color:rgba(16,198,209,.55);
+      box-shadow:0 0 0 5px rgba(16,198,209,.12);
+    }
+
+    .input-icon{
+      position:absolute;
+      left:16px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:18px;
+      color:#94a3b8;
+      pointer-events:none;
+    }
+
+    .toggle-pass{
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      color:#64748b;
+      font-size:13px;
+      font-weight:700;
+      padding:8px 10px;
+      border-radius:10px;
+    }
+
+    .toggle-pass:hover{
+      background:#f1f5f9;
+      color:#0f172a;
+    }
+
+    .form-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin:4px 0 20px;
+    }
+
+    .check{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:14px;
+      color:#475569;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .check input{
+      width:16px;
+      height:16px;
+      accent-color:var(--brand);
+    }
+
+    .link{
+      color:var(--accent-dark);
+      text-decoration:none;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .link:hover{
+      text-decoration:underline;
+    }
+
+    .btn-primary{
+      width:100%;
+      height:58px;
+      border:none;
+      border-radius:18px;
+      background:linear-gradient(135deg, var(--brand), var(--brand-2));
+      color:#fff;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 16px 30px rgba(255,127,17,.24);
+      transition:.22s ease;
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-1px);
+      background:linear-gradient(135deg, var(--brand-dark), var(--brand));
+    }
+
+    .divider{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin:22px 0;
+      color:#94a3b8;
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .divider::before,
+    .divider::after{
+      content:"";
+      flex:1;
+      height:1px;
+      background:#e2e8f0;
+    }
+
+    .btn-secondary{
+      width:100%;
+      height:54px;
+      border-radius:16px;
+      border:1px solid #e2e8f0;
+      background:#fff;
+      color:#334155;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn-secondary:hover{
+      background:#f8fafc;
+    }
+
+    .support{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      margin-top:18px;
+      padding:14px;
+      border-radius:18px;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+    }
+
+    .support-icon{
+      width:38px;
+      height:38px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(16,198,209,.10);
+      color:var(--accent-dark);
+      flex-shrink:0;
+      font-size:18px;
+      font-weight:700;
+    }
+
+    .support strong{
+      display:block;
+      font-size:14px;
+      margin-bottom:4px;
+    }
+
+    .support p{
+      margin:0;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .footer-note{
+      text-align:center;
+      margin-top:18px;
+      font-size:12px;
+      color:#94a3b8;
+      line-height:1.6;
+    }
+
+    @media (max-width: 1100px){
+      .login-shell{
+        grid-template-columns:1fr;
+        max-width:760px;
+      }
+
+      .left-panel{
+        padding:30px 24px;
+      }
+
+      .right-panel{
+        padding:24px;
+      }
+
+      .hero h1{
+        font-size:40px;
+      }
+
+      .features{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 640px){
+      body{
+        padding:14px;
+      }
+
+      .login-shell{
+        min-height:auto;
+        border-radius:24px;
+      }
+
+      .form-card{
+        padding:22px 18px 20px;
+        border-radius:24px;
+      }
+
+      .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .hero h1{
+        font-size:32px;
+      }
+
+      .form-header h2{
+        font-size:28px;
+      }
+
+      .mini-cards,
+      .features{
+        grid-template-columns:1fr;
+      }
+
+      .form-row{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="login-shell">
+    <section class="left-panel">
+      <div>
+        <div class="topbar">
+          <div class="brand">
+            <div class="brand-mark">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Escudo_de_Hermosillo.svg/960px-Escudo_de_Hermosillo.svg.png" alt="Escudo de Hermosillo">
+            </div>
+            <div class="brand-copy">
+              <small>H. Ayuntamiento de Hermosillo</small>
+              <strong>Dirección de Talleres</strong>
+              <span>Plataforma de gestión interna</span>
+            </div>
+          </div>
+
+          <div class="status-pill">
+            <span class="status-dot"></span>
+            Sistema disponible
+          </div>
+        </div>
+
+        <div class="hero">
+          <div class="hero-tag">Acceso institucional</div>
+          <h1>Gestión operativa moderna para la Dirección de Talleres</h1>
+          <p>
+            Consulta módulos, peticiones, requisiciones, vales y seguimiento administrativo
+            desde una plataforma centralizada con imagen institucional y acceso controlado.
+          </p>
+        </div>
+
+        <div class="dashboard-preview">
+          <div class="preview-top">
+            <div class="preview-title">Resumen del sistema</div>
+            <div class="preview-dots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div class="mini-cards">
+            <div class="mini-card">
+              <span>Peticiones activas</span>
+              <strong>148</strong>
+            </div>
+            <div class="mini-card">
+              <span>Vales emitidos</span>
+              <strong>62</strong>
+            </div>
+            <div class="mini-card">
+              <span>Requisiciones</span>
+              <strong>27</strong>
+            </div>
+          </div>
+
+          <div class="chart">
+            <div class="bar" style="height:38%"></div>
+            <div class="bar" style="height:64%"></div>
+            <div class="bar" style="height:49%"></div>
+            <div class="bar" style="height:78%"></div>
+            <div class="bar" style="height:56%"></div>
+            <div class="bar" style="height:84%"></div>
+            <div class="bar" style="height:68%"></div>
+            <div class="bar" style="height:92%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="features">
+        <article class="feature">
+          <div class="feature-icon">🛡️</div>
+          <h3>Acceso controlado</h3>
+          <p>Ingreso exclusivo para personal autorizado con validación de credenciales.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon">📊</div>
+          <h3>Seguimiento claro</h3>
+          <p>Consulta rápida de estatus, movimientos y procesos operativos del área.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon">⚙️</div>
+          <h3>Gestión integrada</h3>
+          <p>Una sola experiencia para centralizar módulos y operación administrativa.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="right-panel">
+      <div class="form-card">
+        <div class="form-logo">
+          <div class="form-logo-mark">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Escudo_de_Hermosillo.svg/960px-Escudo_de_Hermosillo.svg.png" alt="Escudo de Hermosillo">
+          </div>
+          <div class="form-logo-copy">
+            <small>Gobierno Municipal</small>
+            <strong>Dirección de Talleres</strong>
+            <span>Sistema integral de acceso</span>
+          </div>
+        </div>
+
+        <div class="form-header">
+          <div class="eyebrow">Acceso seguro</div>
+          <h2>Iniciar sesión</h2>
+          <p>
+            Ingresa tus credenciales para ingresar.
+          </p>
+        </div>
+
+        <div id="errorBox" class="error-box">
+          Usuario o contraseña incorrectos.
+        </div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="usuario">Usuario</label>
+            <div class="input-shell">
+              <span class="input-icon">👤</span>
+              <input
+                type="text"
+                id="usuario"
+                name="usuario"
+                placeholder="Ej. e.figueroa"
+                autocomplete="username"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">Contraseña</label>
+            <div class="input-shell">
+              <span class="input-icon">🔒</span>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                required
+              />
+              <button type="button" class="toggle-pass" id="togglePass">Mostrar</button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="check">
+              <input type="checkbox" id="remember">
+              <span>Recordar mi acceso</span>
+            </label>
+
+            <a href="#" class="link">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button class="btn-primary" type="submit">Entrar al sistema</button>
+
+          <div class="divider">o</div>
+
+          <button class="btn-secondary" type="button">Solicitar acceso al administrador</button>
+
+          <div class="support">
+            <div class="support-icon">i</div>
+            <div>
+              <strong>Soporte institucional</strong>
+              <p>
+                Para alta de usuarios, recuperación de acceso o incidencias, comunícate con Administrador de Talleres.
+              </p>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            Plataforma interna de uso administrativo. El acceso está sujeto a autorización institucional.
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const togglePass = document.getElementById("togglePass");
+    const passwordInput = document.getElementById("password");
+    const loginForm = document.getElementById("loginForm");
+    const errorBox = document.getElementById("errorBox");
+
+    togglePass.addEventListener("click", () => {
+      const isPassword = passwordInput.type === "password";
+      passwordInput.type = isPassword ? "text" : "password";
+      togglePass.textContent = isPassword ? "Ocultar" : "Mostrar";
+    });
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const usuario = document.getElementById("usuario").value.trim();
+      const password = passwordInput.value.trim();
+
+      // Demo temporal
+      if (usuario === "admin" && password === "1234") {
+        errorBox.classList.remove("show");
+        alert("Login correcto. Aquí después redirigimos al panel.");
+        // window.location.href = "dashboard.html";
+      } else {
+        errorBox.classList.add("show");
+      }
+    });
+  </script>
+
+</body>
+</html>
