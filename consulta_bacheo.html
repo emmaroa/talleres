@@ -142,7 +142,7 @@
 <main>
   <section class="card" aria-labelledby="title">
     <div class="card-head">
-      <h2 id="title" style="margin:0;">Infraestructura · Últimos 20 días</h2>
+      <h2 id="title" style="margin:0;">Infraestructura</h2>
       <span id="totalBadge" class="badgeTotal">Cargando…</span>
     </div>
 
@@ -195,7 +195,7 @@ const SHEET_NAME = 'Peticiones_infra';
 const range = `${SHEET_NAME}!A:L`;
 const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
 
-const DAYS_BACK = 20;
+const DAYS_BACK = 200;
 
 /* ================= DOM ================= */
 const $ = (id) => document.getElementById(id);
